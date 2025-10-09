@@ -1,0 +1,375 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+game.Players.LocalPlayer.PlayerGui.MouseUnlock.Enabled = true
+
+local Window = Rayfield:CreateWindow({
+	Name = "Examination",
+	Icon = 109763877151262,
+	LoadingTitle = "Examination hub",
+	LoadingSubtitle = "by mktlvu",
+	ShowText = "Examination hub",
+	Theme = "Default",
+	ToggleUIKeybind = "K",
+	DisableRayfieldPrompts = false,
+	DisableBuildWarnings = false,
+	ConfigurationSaving = {
+    	Enabled = true,
+    	FolderName = "Examination",
+		FileName = "Examination hub"
+	}
+})
+
+Rayfield:Notify({
+	Title = "Thanks for using Examination hub",
+	Content = "Message to developers: BRING FLARE BACK!!!1",
+	Duration = 6.5,
+	Image = 4483362458,
+})
+
+local MainTab = Window:CreateTab("Main", "crown")
+
+local BurnSection = MainTab:CreateSection("Burnout")
+local BurnButton = MainTab:CreateButton({
+	Name = "Burn yourself",
+	Callback = function()
+		game.Players.LocalPlayer.Character.IsHunter.Value = true
+		game.Players.LocalPlayer.Character.Humanoid.Health = 20
+	end,
+})
+
+local BurnKeybind = MainTab:CreateKeybind({
+	Name = "Burn keybind",
+	CurrentKeybind = "B",
+	HoldToInteract = false,
+	Flag = "BurnKeybind",
+	Callback = function()
+		game.Players.LocalPlayer.Character.IsHunter.Value = true
+		game.Players.LocalPlayer.Character.Humanoid.Health = 20
+	end,
+})
+
+local Divider = MainTab:CreateDivider()
+
+local ResetSection = MainTab:CreateSection("Reset")
+local ResetButton = MainTab:CreateButton({
+	Name = "Reset",
+	Callback = function()
+		game.Players.LocalPlayer.Character.Humanoid.Health = 0
+	end,
+})
+
+local ResetKeybind = MainTab:CreateKeybind({
+	Name = "Reset keybind",
+	CurrentKeybind = "V",
+	HoldToInteract = false,
+	Flag = "Keybind2",
+	Callback = function()
+		game.Players.LocalPlayer.Character.Humanoid.Health = 0
+	end,
+})
+
+local Divider = MainTab:CreateDivider()
+
+local CameraSection = MainTab:CreateSection("Camera")
+local FPButton = MainTab:CreateButton({
+	Name = "First person",
+	Callback = function()
+		game.Players.LocalPlayer.CameraMode = Enum.CameraMode.LockFirstPerson
+	end,
+})
+
+local TPButton = MainTab:CreateButton({
+	Name = "Third person",
+	Callback = function()
+		game.Players.LocalPlayer.CameraMode = Enum.CameraMode.Classic
+		game.Players.LocalPlayer.CameraMaxZoomDistance = 15
+	end,
+})
+
+local TPKeybind = MainTab:CreateKeybind({
+	Name = "Third person keybind",
+	CurrentKeybind = "T",
+	HoldToInteract = false,
+	Flag = "TPBind",
+	Callback = function()
+		game.Players.LocalPlayer.CameraMode = Enum.CameraMode.Classic
+		game.Players.LocalPlayer.CameraMaxZoomDistance = 15
+	end,
+})
+
+local Divider = MainTab:CreateDivider()
+local ChatSection = MainTab:CreateSection("Chat")
+
+local WindowButton = MainTab:CreateButton({
+	Name = "Enable chat window",
+	Callback = function()
+		while true do
+			game.TextChatService.ChatWindowConfiguration.Enabled = true
+			task.wait(5)
+		end
+	end,
+})
+
+local DistanceSlider = MainTab:CreateSlider({
+	Name = "Increase maximum bubble distance",
+	Range = {0, 1000},
+	Increment = 10,
+	Suffix = "studs",
+	CurrentValue = 100,
+	Flag = "DistanceSlider",
+	Callback = function(v)
+		game.TextChatService.BubbleChatConfiguration.MaxDistance = v
+	end,
+})
+
+local Divider = MainTab:CreateDivider()
+
+local MovementSection = MainTab:CreateSection("Movement")
+local SpeedSlider = MainTab:CreateSlider({
+	Name = "Walk speed",
+	Range = {0, 500},
+	Increment = 5,
+	Suffix = "speed",
+	CurrentValue = 7,
+	Flag = "SpeedSlider",
+	Callback = function(v)
+		while true do
+			task.wait()
+			game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = v
+		end
+	end,
+})
+
+local JumpSlider = MainTab:CreateSlider({
+	Name = "JumpPower",
+	Range = {0, 100},
+	Increment = 1,
+	Suffix = "studs",
+	CurrentValue = 2,
+	Flag = "JumpSlider",
+	Callback = function(v)
+		game.Players.LocalPlayer.Character.Humanoid.UseJumpPower = false
+
+		while true do
+			task.wait()
+			game.Players.LocalPlayer.Character.Humanoid.JumpHeight = v
+		end
+	end,
+})
+
+local LightingTab = Window:CreateTab("Lighting", "zap")
+local FogSection = LightingTab:CreateSection("Fog")
+
+local NoFogButton = LightingTab:CreateButton({
+	Name = "No fog",
+	Callback = function()
+   		while true do
+			task.wait(5)
+			game.Lighting.FogStart = 1000
+			game.Lighting.FogEnd = 1000
+		end
+	end,
+})
+
+local FogStartSlider = LightingTab:CreateSlider({
+	Name = "Fog start",
+	Range = {0, 1000},
+	Increment = 50,
+	Suffix = "studs",
+	CurrentValue = 0,
+	Flag = "FogStartSlider",
+	Callback = function(v)
+		game.Lighting.FogStart = v
+	end,
+})
+
+local FogEndSlider = LightingTab:CreateSlider({
+	Name = "Fog end",
+	Range = {0, 1000},
+	Increment = 50,
+	Suffix = "studs",
+	CurrentValue = 0,
+	Flag = "FogEndSlider",
+	Callback = function(v)
+		game.Lighting.FogEnd = v
+	end,
+})
+
+local Divider = LightingTab:CreateDivider()
+
+local BrightnessSection = LightingTab:CreateSection("Brightness")
+local FullbrightButton = LightingTab:CreateButton({
+	Name = "Fullbright",
+	Callback = function()
+		game.Lighting.Ambient = Color3.fromRGB(255,255,255)
+	end,
+})
+
+local ColorPicker = LightingTab:CreateColorPicker({
+	Name = "Ambient color",
+	Color = Color3.fromRGB(255,255,255),
+	Flag = "AmbientColorPicker",
+	Callback = function(v)
+		game.Lighting.Ambient = v
+	end
+})
+
+local GUITab = Window:CreateTab("GUI", "panel-left")
+
+local NoDeathSection = GUITab:CreateSection("Death UI")
+local NoDeathButton = GUITab:CreateButton({
+	Name = "Hide death UI",
+	Callback = function()
+		local LocalPlayer = game.Players.LocalPlayer
+		LocalPlayer.PlayerGui.Death.Enabled = false
+
+		local function onCharacterAdded(Character)
+			local Humanoid = Character:WaitForChild("Humanoid")
+
+			Humanoid.Died:Connect(function()
+				LocalPlayer.PlayerGui.Death.Enabled = false
+			end)
+		end
+
+		if Character then
+			onCharacterAdded(LocalPlayer.Character)
+		end
+
+		LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
+	end,
+})
+
+local NoDeathKeybind = GUITab:CreateKeybind({
+	Name = "Hide death UI (keybind)",
+	CurrentKeybind = "M",
+	HoldToInteract = false,
+	Flag = "NoDeathKeybind",
+	Callback = function()
+		local LocalPlayer = game.Players.LocalPlayer
+		LocalPlayer.PlayerGui.Death.Enabled = false
+
+		local function onCharacterAdded(Character)
+			local Humanoid = Character:WaitForChild("Humanoid")
+
+			Humanoid.Died:Connect(function()
+				LocalPlayer.PlayerGui.Death.Enabled = false
+			end)
+		end
+
+		if Character then
+			onCharacterAdded(LocalPlayer.Character)
+		end
+
+		LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
+	end,
+})
+
+local Divider = GUITab:CreateDivider()
+
+local GasmaskSection = GUITab:CreateSection("Gasmask")
+local NoGasmaskButton = GUITab:CreateButton({
+	Name = "Hide gasmask UI",
+	Callback = function()
+		game.Players.LocalPlayer.PlayerGui.Gasmask.Enabled = false
+	end,
+})
+
+local NoGasmaskKeybind = GUITab:CreateKeybind({
+	Name = "Hide gasmask UI (keybind)",
+	CurrentKeybind = "H",
+	HoldToInteract = false,
+	Flag = "GasmaskKeybind",
+	Callback = function()
+		game.Players.LocalPlayer.PlayerGui.Gasmask.Enabled = false
+	end,
+})
+
+local Divider = GUITab:CreateDivider()
+
+local InfectionSection = GUITab:CreateSection("Infection")
+local WarningLabel = GUITab:CreateLabel("You must equip class for correct work of controllable infected UI", "circle-alert")
+local InfectedButton = GUITab:CreateButton({
+	Name = "Enable controllable infected UI",
+	Callback = function()
+		game.Players.LocalPlayer.PlayerGui.Gasmask.MaskHole.Infection.ACTIVATE.Playing = true
+		game.Players.LocalPlayer.PlayerGui.Gasmask.MaskHole.Infection.HATRED.Playing = true
+		local Red = Instance.new("ColorCorrectionEffect")
+		Red.Parent = game.Lighting
+		Red.Name = "InfectionColorCorrection"
+		Red.TintColor = Color3.fromRGB(255,0,0)
+		game.Players.LocalPlayer.Character.Head.Color = Color3.fromRGB(0,0,0)
+		game.Players.LocalPlayer.Character.Head.InfectedLeft.ParticleEmitter.Enabled = true
+		game.Players.LocalPlayer.Character.Head.InfectedRight.ParticleEmitter.Enabled = true
+		game.Players.LocalPlayer.Character.Hat_Gear.Handle.Lens.Transparency = 1
+		game.Players.LocalPlayer.Character.Head.Face:Destroy()
+		wait(105)
+		Red:Destroy()
+	end,
+})
+
+local Divider = GUITab:CreateDivider()
+
+local ESPSection = GUITab:CreateSection("ESP")
+local ESPButton = GUITab:CreateButton({
+	Name = "Enable ESP",
+	Callback = function()
+		local Players = game:GetService("Players")
+		local CharactersContainer = workspace:WaitForChild("Characters")
+		local MenloColor = Color3.fromRGB(80, 109, 84)
+		local RifColor = Color3.fromRGB(255, 0, 0)
+		local DefaultColor = Color3.fromRGB(255, 255, 255)
+
+		local function GetCharacterTeam(Character)
+			local Player = Players:GetPlayerFromCharacter(Character)
+			if Player then
+				return "Menlo"
+			end
+
+			local TeamValue = Character:FindFirstChild("Team", true) 
+			if TeamValue and TeamValue:IsA("StringValue") then
+				local TeamName = TeamValue.Value
+				if TeamName == "RIF" then
+					return "RIF"
+				end
+			end
+
+    		return nil
+		end
+
+		local function CreateHighlightForCharacter(Character)
+			local Highlight = Character:FindFirstChildOfClass("Highlight")
+			if not Highlight then
+				Highlight = Instance.new("Highlight")
+				Highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+				Highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+				Highlight.OutlineTransparency = 0
+				Highlight.Enabled = true
+				Highlight.Parent = Character
+			end
+
+			local Team = GetCharacterTeam(Character)
+			local FillColor = RifColor
+
+			if Team == "Menlo" then
+				FillColor = MenloColor
+			elseif team == "RIF" then
+				FillColor = RifColor
+			end
+
+			Highlight.FillColor = FillColor
+		end
+
+		for _, Character in ipairs(CharactersContainer:GetChildren()) do
+			CreateHighlightForCharacter(Character)
+		end
+
+		CharactersContainer.ChildAdded:Connect(CreateHighlightForCharacter)	
+	end,
+})
+
+local InfoTab = Window:CreateTab("Information", "square-library")
+local CreditsSection = InfoTab:CreateSection("Credits")
+local AuthorLabel = InfoTab:CreateLabel("mktlvu — creator | Discord: mehappiness", 103527901139150, Color3.fromRGB(128, 121, 103))
+
+local Divider = InfoTab:CreateDivider()
+
+local AuthorLabel = InfoTab:CreateLabel("If you want to suggest idea or report bug — please, tell in DM!")
