@@ -1,3 +1,5 @@
+loadstring(game:HttpGet('https://raw.githubusercontent.com/DarkNetworks/Infinite-Yield/main/latest.lua'))()
+
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 game.Players.LocalPlayer.PlayerGui.MouseUnlock.Enabled = true
 
@@ -290,6 +292,10 @@ local WarningLabel = GUITab:CreateLabel("You must equip class for correct work o
 local InfectedButton = GUITab:CreateButton({
 	Name = "Enable controllable infected UI",
 	Callback = function()
+		local Animation = Instance.new("Animation")
+		Animation.AnimationId = "rbxassetid://136775254837264"
+		local AnimationTrack = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Animation)
+		AnimationTrack:Play()
 		game.Players.LocalPlayer.PlayerGui.Gasmask.MaskHole.Infection.ACTIVATE.Playing = true
 		game.Players.LocalPlayer.PlayerGui.Gasmask.MaskHole.Infection.HATRED.Playing = true
 		local Red = Instance.new("ColorCorrectionEffect")
@@ -363,6 +369,130 @@ local ESPButton = GUITab:CreateButton({
 		end
 
 		CharactersContainer.ChildAdded:Connect(CreateHighlightForCharacter)	
+	end,
+})
+
+local FunTab = Window:CreateTab("Fun", "smile")
+local AnimsSection = FunTab:CreateSection("Animations")
+
+local ChimeraExectionButton = FunTab:CreateButton({
+	Name = "Chimera's execution animation",
+	Callback = function()
+		local Humanoid = game.Players.LocalPlayer.Character.Humanoid
+		local Animation = Instance.new("Animation")
+		Animation.AnimationId = "rbxassetid://97305733594978"
+		local AnimationTrack = Humanoid:LoadAnimation(Animation)
+		AnimationTrack:Play()
+	end,
+})
+
+local ChimeraVictimButton = FunTab:CreateButton({
+	Name = "Chimera's victim animation",
+	Callback = function()
+		local Humanoid = game.Players.LocalPlayer.Character.Humanoid
+		local Animation = Instance.new("Animation")
+		Animation.AnimationId = "rbxassetid://83991914102646"
+		local AnimationTrack = Humanoid:LoadAnimation(Animation)
+		AnimationTrack:Play()
+	end,
+})
+
+local ChimeraTeleportButton = FunTab:CreateButton({
+	Name = "Chimera's teleport animation",
+	Callback = function()
+		local Humanoid = game.Players.LocalPlayer.Character.Humanoid
+		local Animation = Instance.new("Animation")
+		Animation.AnimationId = "rbxassetid://126809285460597"
+		local AnimationTrack = Humanoid:LoadAnimation(Animation)
+		AnimationTrack:Play()
+	end,
+})
+
+local ChimeraRageButton = FunTab:CreateButton({
+	Name = "Chimera's rage animation",
+	Callback = function()
+		local Humanoid = game.Players.LocalPlayer.Character.Humanoid
+		local Animation = Instance.new("Animation")
+		Animation.AnimationId = "rbxassetid://75151963392982"
+		local AnimationTrack = Humanoid:LoadAnimation(Animation)
+		AnimationTrack:Play()
+	end,
+})
+
+local GilbertIdleButton = FunTab:CreateButton({
+	Name = "Gilbert's idle animation",
+	Callback = function()
+		local Humanoid = game.Players.LocalPlayer.Character.Humanoid
+		local Animation = Instance.new("Animation")
+		Animation.AnimationId = "rbxassetid://93686257760742"
+		local AnimationTrack = Humanoid:LoadAnimation(Animation)
+		AnimationTrack:Play()
+	end,
+})
+
+local GilbertRageButton = FunTab:CreateButton({
+	Name = "Gilbert's rage animation",
+	Callback = function()
+		local Humanoid = game.Players.LocalPlayer.Character.Humanoid
+		local Animation = Instance.new("Animation")
+		Animation.AnimationId = "rbxassetid://93590784469036"
+		local AnimationTrack = Humanoid:LoadAnimation(Animation)
+		AnimationTrack:Play()
+	end,
+})
+
+local KamikazeRunButton = FunTab:CreateButton({
+	Name = "Kamikaze's run animation",
+	Callback = function()
+		local Humanoid = game.Players.LocalPlayer.Character.Humanoid
+		local Animation = Instance.new("Animation")
+		Animation.AnimationId = "rbxassetid://78355773495995"
+		local AnimationTrack = Humanoid:LoadAnimation(Animation)
+		AnimationTrack:Play()
+	end,
+})
+
+local InfectedAnimationButton = FunTab:CreateButton({
+	Name = "Infected animation (default)",
+	Callback = function()
+		local Humanoid = game.Players.LocalPlayer.Character.Humanoid
+		local Animation = Instance.new("Animation")
+		Animation.AnimationId = "rbxassetid://99985127815659"
+		local AnimationTrack = Humanoid:LoadAnimation(Animation)
+		AnimationTrack:Play()
+	end,
+})
+
+local InfectedFullAnimationButton = FunTab:CreateButton({
+	Name = "Infected animation (faster)",
+	Callback = function()
+		local Humanoid = game.Players.LocalPlayer.Character.Humanoid
+		local Animation = Instance.new("Animation")
+		Animation.AnimationId = "rbxassetid://139465334169627"
+		local AnimationTrack = Humanoid:LoadAnimation(Animation)
+		AnimationTrack:Play()
+	end,
+})
+
+local UnstableAnimationButton = FunTab:CreateButton({
+	Name = "Unstable animation",
+	Callback = function()
+		local Humanoid = game.Players.LocalPlayer.Character.Humanoid
+		local Animation = Instance.new("Animation")
+		Animation.AnimationId = "rbxassetid://9146103628"
+		local AnimationTrack = Humanoid:LoadAnimation(Animation)
+		AnimationTrack:Play()
+	end,
+})
+
+local CoughAnimationButton = FunTab:CreateButton({
+	Name = "Cough animation",
+	Callback = function()
+		local Humanoid = game.Players.LocalPlayer.Character.Humanoid
+		local Animation = Instance.new("Animation")
+		Animation.AnimationId = "rbxassetid://111615919261340"
+		local AnimationTrack = Humanoid:LoadAnimation(Animation)
+		AnimationTrack:Play()
 	end,
 })
 
