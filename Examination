@@ -1,505 +1,892 @@
-loadstring(game:HttpGet('https://raw.githubusercontent.com/DarkNetworks/Infinite-Yield/main/latest.lua'))()
-
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
-game.Players.LocalPlayer.PlayerGui.MouseUnlock.Enabled = true
+	local Window = Rayfield:CreateWindow({
+		Name = "Examination",
+		Icon = 109763877151262,
+		LoadingTitle = "Examination hub",
+		LoadingSubtitle = "by mktlvu",
+		ShowText = "Examination hub",
+		Theme = "Ocean",
+		ToggleUIKeybind = "K",
+		DisableRayfieldPrompts = false,
+		DisableBuildWarnings = false,
+		ConfigurationSaving = {
+    		Enabled = true,
+    		FolderName = "Examination",
+			FileName = "Hub"
+		}
+	})
 
-local Window = Rayfield:CreateWindow({
-	Name = "Examination",
-	Icon = 109763877151262,
-	LoadingTitle = "Examination hub",
-	LoadingSubtitle = "by mktlvu",
-	ShowText = "Examination hub",
-	Theme = "Default",
-	ToggleUIKeybind = "K",
-	DisableRayfieldPrompts = false,
-	DisableBuildWarnings = false,
-	ConfigurationSaving = {
-    	Enabled = true,
-    	FolderName = "Examination",
-		FileName = "Examination hub"
-	}
-})
+	Rayfield:Notify({
+		Title = "Thanks for using Examination hub",
+		Content = "Message to developers: BRING FLARE BACK!!!1",
+		Duration = 6.5,
+		Image = 4483362458,
+	})
 
-Rayfield:Notify({
-	Title = "Thanks for using Examination hub",
-	Content = "Message to developers: BRING FLARE BACK!!!1",
-	Duration = 6.5,
-	Image = 4483362458,
-})
+	local Main = Window:CreateTab("Main", "crown")
+		local Button = Main:CreateButton({
+			Name = "Burn yourself",
+			Callback = function()
+				game.Players.LocalPlayer.Character.IsHunter.Value = true
+				game.Players.LocalPlayer.Character.Humanoid.Health = 20
+			end,
+		})
 
-local MainTab = Window:CreateTab("Main", "crown")
+		local Button = Main:CreateButton({
+			Name = "Reset",
+			Callback = function()
+				game.Players.LocalPlayer.Character.Humanoid.Health = 0
+			end,
+		})
 
-local BurnSection = MainTab:CreateSection("Burnout")
-local BurnButton = MainTab:CreateButton({
-	Name = "Burn yourself",
-	Callback = function()
-		game.Players.LocalPlayer.Character.IsHunter.Value = true
-		game.Players.LocalPlayer.Character.Humanoid.Health = 20
-	end,
-})
-
-local BurnKeybind = MainTab:CreateKeybind({
-	Name = "Burn keybind",
-	CurrentKeybind = "B",
-	HoldToInteract = false,
-	Flag = "BurnKeybind",
-	Callback = function()
-		game.Players.LocalPlayer.Character.IsHunter.Value = true
-		game.Players.LocalPlayer.Character.Humanoid.Health = 20
-	end,
-})
-
-local Divider = MainTab:CreateDivider()
-
-local ResetSection = MainTab:CreateSection("Reset")
-local ResetButton = MainTab:CreateButton({
-	Name = "Reset",
-	Callback = function()
-		game.Players.LocalPlayer.Character.Humanoid.Health = 0
-	end,
-})
-
-local ResetKeybind = MainTab:CreateKeybind({
-	Name = "Reset keybind",
-	CurrentKeybind = "V",
-	HoldToInteract = false,
-	Flag = "Keybind2",
-	Callback = function()
-		game.Players.LocalPlayer.Character.Humanoid.Health = 0
-	end,
-})
-
-local Divider = MainTab:CreateDivider()
-
-local CameraSection = MainTab:CreateSection("Camera")
-local FPButton = MainTab:CreateButton({
-	Name = "First person",
-	Callback = function()
-		game.Players.LocalPlayer.CameraMode = Enum.CameraMode.LockFirstPerson
-	end,
-})
-
-local TPButton = MainTab:CreateButton({
-	Name = "Third person",
-	Callback = function()
-		game.Players.LocalPlayer.CameraMode = Enum.CameraMode.Classic
-		game.Players.LocalPlayer.CameraMaxZoomDistance = 15
-	end,
-})
-
-local TPKeybind = MainTab:CreateKeybind({
-	Name = "Third person keybind",
-	CurrentKeybind = "T",
-	HoldToInteract = false,
-	Flag = "TPBind",
-	Callback = function()
-		game.Players.LocalPlayer.CameraMode = Enum.CameraMode.Classic
-		game.Players.LocalPlayer.CameraMaxZoomDistance = 15
-	end,
-})
-
-local Divider = MainTab:CreateDivider()
-local ChatSection = MainTab:CreateSection("Chat")
-
-local WindowButton = MainTab:CreateButton({
-	Name = "Enable chat window",
-	Callback = function()
-		while true do
-			game.TextChatService.ChatWindowConfiguration.Enabled = true
-			task.wait(5)
-		end
-	end,
-})
-
-local DistanceSlider = MainTab:CreateSlider({
-	Name = "Increase maximum bubble distance",
-	Range = {0, 1000},
-	Increment = 10,
-	Suffix = "studs",
-	CurrentValue = 100,
-	Flag = "DistanceSlider",
-	Callback = function(v)
-		game.TextChatService.BubbleChatConfiguration.MaxDistance = v
-	end,
-})
-
-local Divider = MainTab:CreateDivider()
-
-local MovementSection = MainTab:CreateSection("Movement")
-local SpeedSlider = MainTab:CreateSlider({
-	Name = "Walk speed",
-	Range = {0, 500},
-	Increment = 5,
-	Suffix = "speed",
-	CurrentValue = 7,
-	Flag = "SpeedSlider",
-	Callback = function(v)
-		while true do
-			task.wait()
-			game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = v
-		end
-	end,
-})
-
-local JumpSlider = MainTab:CreateSlider({
-	Name = "JumpPower",
-	Range = {0, 100},
-	Increment = 1,
-	Suffix = "studs",
-	CurrentValue = 2,
-	Flag = "JumpSlider",
-	Callback = function(v)
-		game.Players.LocalPlayer.Character.Humanoid.UseJumpPower = false
-
-		while true do
-			task.wait()
-			game.Players.LocalPlayer.Character.Humanoid.JumpHeight = v
-		end
-	end,
-})
-
-local LightingTab = Window:CreateTab("Lighting", "zap")
-local FogSection = LightingTab:CreateSection("Fog")
-
-local NoFogButton = LightingTab:CreateButton({
-	Name = "No fog",
-	Callback = function()
-   		while true do
-			task.wait(5)
-			game.Lighting.FogStart = 1000
-			game.Lighting.FogEnd = 1000
-		end
-	end,
-})
-
-local FogStartSlider = LightingTab:CreateSlider({
-	Name = "Fog start",
-	Range = {0, 1000},
-	Increment = 50,
-	Suffix = "studs",
-	CurrentValue = 0,
-	Flag = "FogStartSlider",
-	Callback = function(v)
-		game.Lighting.FogStart = v
-	end,
-})
-
-local FogEndSlider = LightingTab:CreateSlider({
-	Name = "Fog end",
-	Range = {0, 1000},
-	Increment = 50,
-	Suffix = "studs",
-	CurrentValue = 0,
-	Flag = "FogEndSlider",
-	Callback = function(v)
-		game.Lighting.FogEnd = v
-	end,
-})
-
-local Divider = LightingTab:CreateDivider()
-
-local BrightnessSection = LightingTab:CreateSection("Brightness")
-local FullbrightButton = LightingTab:CreateButton({
-	Name = "Fullbright",
-	Callback = function()
-		game.Lighting.Ambient = Color3.fromRGB(255,255,255)
-	end,
-})
-
-local ColorPicker = LightingTab:CreateColorPicker({
-	Name = "Ambient color",
-	Color = Color3.fromRGB(255,255,255),
-	Flag = "AmbientColorPicker",
-	Callback = function(v)
-		game.Lighting.Ambient = v
-	end
-})
-
-local GUITab = Window:CreateTab("GUI", "panel-left")
-
-local NoDeathSection = GUITab:CreateSection("Death UI")
-local NoDeathButton = GUITab:CreateButton({
-	Name = "Hide death UI",
-	Callback = function()
-		local LocalPlayer = game.Players.LocalPlayer
-		LocalPlayer.PlayerGui.Death.Enabled = false
-
-		local function onCharacterAdded(Character)
-			local Humanoid = Character:WaitForChild("Humanoid")
-
-			Humanoid.Died:Connect(function()
-				LocalPlayer.PlayerGui.Death.Enabled = false
-			end)
-		end
-
-		if Character then
-			onCharacterAdded(LocalPlayer.Character)
-		end
-
-		LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
-	end,
-})
-
-local NoDeathKeybind = GUITab:CreateKeybind({
-	Name = "Hide death UI (keybind)",
-	CurrentKeybind = "M",
-	HoldToInteract = false,
-	Flag = "NoDeathKeybind",
-	Callback = function()
-		local LocalPlayer = game.Players.LocalPlayer
-		LocalPlayer.PlayerGui.Death.Enabled = false
-
-		local function onCharacterAdded(Character)
-			local Humanoid = Character:WaitForChild("Humanoid")
-
-			Humanoid.Died:Connect(function()
-				LocalPlayer.PlayerGui.Death.Enabled = false
-			end)
-		end
-
-		if Character then
-			onCharacterAdded(LocalPlayer.Character)
-		end
-
-		LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
-	end,
-})
-
-local Divider = GUITab:CreateDivider()
-
-local GasmaskSection = GUITab:CreateSection("Gasmask")
-local NoGasmaskButton = GUITab:CreateButton({
-	Name = "Hide gasmask UI",
-	Callback = function()
-		game.Players.LocalPlayer.PlayerGui.Gasmask.Enabled = false
-	end,
-})
-
-local NoGasmaskKeybind = GUITab:CreateKeybind({
-	Name = "Hide gasmask UI (keybind)",
-	CurrentKeybind = "H",
-	HoldToInteract = false,
-	Flag = "GasmaskKeybind",
-	Callback = function()
-		game.Players.LocalPlayer.PlayerGui.Gasmask.Enabled = false
-	end,
-})
-
-local Divider = GUITab:CreateDivider()
-
-local InfectionSection = GUITab:CreateSection("Infection")
-local WarningLabel = GUITab:CreateLabel("You must equip class for correct work of controllable infected UI", "circle-alert")
-local InfectedButton = GUITab:CreateButton({
-	Name = "Enable controllable infected UI",
-	Callback = function()
-		local Animation = Instance.new("Animation")
-		Animation.AnimationId = "rbxassetid://136775254837264"
-		local AnimationTrack = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Animation)
-		AnimationTrack:Play()
-		game.Players.LocalPlayer.PlayerGui.Gasmask.MaskHole.Infection.ACTIVATE.Playing = true
-		game.Players.LocalPlayer.PlayerGui.Gasmask.MaskHole.Infection.HATRED.Playing = true
-		local Red = Instance.new("ColorCorrectionEffect")
-		Red.Parent = game.Lighting
-		Red.Name = "InfectionColorCorrection"
-		Red.TintColor = Color3.fromRGB(255,0,0)
-		game.Players.LocalPlayer.Character.Head.Color = Color3.fromRGB(0,0,0)
-		game.Players.LocalPlayer.Character.Head.InfectedLeft.ParticleEmitter.Enabled = true
-		game.Players.LocalPlayer.Character.Head.InfectedRight.ParticleEmitter.Enabled = true
-		game.Players.LocalPlayer.Character.Hat_Gear.Handle.Lens.Transparency = 1
-		game.Players.LocalPlayer.Character.Head.Face:Destroy()
-		wait(105)
-		Red:Destroy()
-	end,
-})
-
-local Divider = GUITab:CreateDivider()
-
-local ESPSection = GUITab:CreateSection("ESP")
-local ESPButton = GUITab:CreateButton({
-	Name = "Enable ESP",
-	Callback = function()
-		local Players = game:GetService("Players")
-		local CharactersContainer = workspace:WaitForChild("Characters")
-		local MenloColor = Color3.fromRGB(80, 109, 84)
-		local RifColor = Color3.fromRGB(255, 0, 0)
-		local DefaultColor = Color3.fromRGB(255, 255, 255)
-
-		local function GetCharacterTeam(Character)
-			local Player = Players:GetPlayerFromCharacter(Character)
-			if Player then
-				return "Menlo"
-			end
-
-			local TeamValue = Character:FindFirstChild("Team", true) 
-			if TeamValue and TeamValue:IsA("StringValue") then
-				local TeamName = TeamValue.Value
-				if TeamName == "RIF" then
-					return "RIF"
+		local Toggle = Main:CreateToggle({
+  			Name = "Third person",
+			CurrentValue = false,
+			Flag = "ThirdPersonToggle",
+			Callback = function(v)
+				if v == false then
+					game.Players.LocalPlayer.CameraMode = Enum.CameraMode.LockFirstPerson
 				end
-			end
 
-    		return nil
-		end
+				if v == true then
+					game.Players.LocalPlayer.CameraMode = Enum.CameraMode.Classic
+					game.Players.LocalPlayer.CameraMaxZoomDistance = 15
+				end
+			end,
+		})
 
-		local function CreateHighlightForCharacter(Character)
-			local Highlight = Character:FindFirstChildOfClass("Highlight")
-			if not Highlight then
-				Highlight = Instance.new("Highlight")
-				Highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-				Highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-				Highlight.OutlineTransparency = 0
-				Highlight.Enabled = true
-				Highlight.Parent = Character
-			end
+		local Toggle = Main:CreateToggle({
+  			Name = "Chat history",
+			CurrentValue = false,
+			Flag = "ChatWindowToggle",
+			Callback = function(v)
+				if v == false then
+					game.TextChatService.ChatWindowConfiguration.Enabled = false
+				end
 
-			local Team = GetCharacterTeam(Character)
-			local FillColor = RifColor
+				if v == true then
+					task.wait()
+					game.TextChatService.ChatWindowConfiguration.Enabled = true
+				end
+			end,
+		})
 
-			if Team == "Menlo" then
-				FillColor = MenloColor
-			elseif team == "RIF" then
-				FillColor = RifColor
-			end
+		local Slider = Main:CreateSlider({
+			Name = "Increase maximum message bubble distance",
+			Range = {0, 1000},
+			Increment = 10,
+			Suffix = "studs",
+			CurrentValue = 100,
+			Flag = "DistanceSlider",
+			Callback = function(v)
+				game.TextChatService.BubbleChatConfiguration.MaxDistance = v
+			end,
+		})
 
-			Highlight.FillColor = FillColor
-		end
+		local Divider = Main:CreateDivider()
 
-		for _, Character in ipairs(CharactersContainer:GetChildren()) do
-			CreateHighlightForCharacter(Character)
-		end
+		local Section = Main:CreateSection("Movement")
+			local Slider = Main:CreateSlider({
+				Name = "Walk speed",
+				Range = {0, 500},
+				Increment = 5,
+				Suffix = "speed",
+				CurrentValue = 7,
+				Flag = "SpeedSlider",
+				Callback = function(v)
+					while true do
+						task.wait()
+						game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = v
+					end
+				end,
+			})
 
-		CharactersContainer.ChildAdded:Connect(CreateHighlightForCharacter)	
-	end,
-})
+			local Slider = Main:CreateSlider({
+				Name = "Jump power",
+				Range = {0, 100},
+				Increment = 1,
+				Suffix = "studs",
+				CurrentValue = 2,
+				Flag = "JumpSlider",
+				Callback = function(v)
+					game.Players.LocalPlayer.Character.Humanoid.UseJumpPower = false
+					while true do
+						task.wait()
+						game.Players.LocalPlayer.Character.Humanoid.JumpHeight = v
+					end
+				end,
+			})
 
-local FunTab = Window:CreateTab("Fun", "smile")
-local AnimsSection = FunTab:CreateSection("Animations")
+	local Lighting = Window:CreateTab("Lighting", "zap")
+		local Section = Lighting:CreateSection("Fog")
+			local Button = Lighting:CreateButton({
+				Name = "No fog",
+				Callback = function()
+					while true do
+						task.wait()
+						game.Lighting.FogStart = 1000
+						game.Lighting.FogEnd = 1000
+					end
+				end,
+			})
 
-local ChimeraExectionButton = FunTab:CreateButton({
-	Name = "Chimera's execution animation",
-	Callback = function()
-		local Humanoid = game.Players.LocalPlayer.Character.Humanoid
-		local Animation = Instance.new("Animation")
-		Animation.AnimationId = "rbxassetid://97305733594978"
-		local AnimationTrack = Humanoid:LoadAnimation(Animation)
-		AnimationTrack:Play()
-	end,
-})
+			local Slider = Lighting:CreateSlider({
+				Name = "Fog start",
+				Range = {0, 1000},
+				Increment = 50,
+				Suffix = "studs",
+				CurrentValue = 0,
+				Flag = "FogStartSlider",
+				Callback = function(v)
+					while true do
+						task.wait()
+						game.Lighting.FogStart = v
+					end
+				end,
+			})
 
-local ChimeraVictimButton = FunTab:CreateButton({
-	Name = "Chimera's victim animation",
-	Callback = function()
-		local Humanoid = game.Players.LocalPlayer.Character.Humanoid
-		local Animation = Instance.new("Animation")
-		Animation.AnimationId = "rbxassetid://83991914102646"
-		local AnimationTrack = Humanoid:LoadAnimation(Animation)
-		AnimationTrack:Play()
-	end,
-})
+			local FogEndSlider = Lighting:CreateSlider({
+				Name = "Fog end",
+				Range = {0, 1000},
+				Increment = 50,
+				Suffix = "studs",
+				CurrentValue = 0,
+				Flag = "FogEndSlider",
+				Callback = function(v)
+					while true do
+						task.wait()
+						game.Lighting.FogEnd = v
+					end
+				end,
+			})
 
-local ChimeraTeleportButton = FunTab:CreateButton({
-	Name = "Chimera's teleport animation",
-	Callback = function()
-		local Humanoid = game.Players.LocalPlayer.Character.Humanoid
-		local Animation = Instance.new("Animation")
-		Animation.AnimationId = "rbxassetid://126809285460597"
-		local AnimationTrack = Humanoid:LoadAnimation(Animation)
-		AnimationTrack:Play()
-	end,
-})
+		local Divider = Lighting:CreateDivider()
 
-local ChimeraRageButton = FunTab:CreateButton({
-	Name = "Chimera's rage animation",
-	Callback = function()
-		local Humanoid = game.Players.LocalPlayer.Character.Humanoid
-		local Animation = Instance.new("Animation")
-		Animation.AnimationId = "rbxassetid://75151963392982"
-		local AnimationTrack = Humanoid:LoadAnimation(Animation)
-		AnimationTrack:Play()
-	end,
-})
+		local Section = Lighting:CreateSection("Brightness")
+			local Toggle = Lighting:CreateToggle({
+  				Name = "Fullbright",
+				CurrentValue = false,
+				Flag = "FullbrightToggle",
+				Callback = function(v)
+					if v == false then
+						game.Lighting.Ambient = Color3.fromRGB(0,0,0)
 
-local GilbertIdleButton = FunTab:CreateButton({
-	Name = "Gilbert's idle animation",
-	Callback = function()
-		local Humanoid = game.Players.LocalPlayer.Character.Humanoid
-		local Animation = Instance.new("Animation")
-		Animation.AnimationId = "rbxassetid://93686257760742"
-		local AnimationTrack = Humanoid:LoadAnimation(Animation)
-		AnimationTrack:Play()
-	end,
-})
+					elseif v == true then
+						game.Lighting.Ambient = Color3.fromRGB(255,255,255)
+					end
+				end,
+			})
 
-local GilbertRageButton = FunTab:CreateButton({
-	Name = "Gilbert's rage animation",
-	Callback = function()
-		local Humanoid = game.Players.LocalPlayer.Character.Humanoid
-		local Animation = Instance.new("Animation")
-		Animation.AnimationId = "rbxassetid://93590784469036"
-		local AnimationTrack = Humanoid:LoadAnimation(Animation)
-		AnimationTrack:Play()
-	end,
-})
+			local ColorPicker = Lighting:CreateColorPicker({
+				Name = "Ambient color",
+				Color = Color3.fromRGB(255,255,255),
+				Flag = "AmbientColorPicker",
+				Callback = function(v)
+						wait(5)
+						game.Lighting.Ambient = v
+				end
+			})
 
-local KamikazeRunButton = FunTab:CreateButton({
-	Name = "Kamikaze's run animation",
-	Callback = function()
-		local Humanoid = game.Players.LocalPlayer.Character.Humanoid
-		local Animation = Instance.new("Animation")
-		Animation.AnimationId = "rbxassetid://78355773495995"
-		local AnimationTrack = Humanoid:LoadAnimation(Animation)
-		AnimationTrack:Play()
-	end,
-})
+	local GUI = Window:CreateTab("GUI", "panel-left")
+		local Section = GUI:CreateSection("Death UI")
+			local Toggle = GUI:CreateToggle({
+				Name = "Hide death UI",
+				CurrentValue = false,
+				Flag = "DeathUIToggle",
+				Callback = function(v)
+					if v == false then
+						game.Players.LocalPlayer.PlayerGui.Death.Enabled = true
+					elseif v == true then
+						game.Players.LocalPlayer.PlayerGui.Death.Enabled = false
+					end
+				end,
+			})
 
-local InfectedAnimationButton = FunTab:CreateButton({
-	Name = "Infected animation (default)",
-	Callback = function()
-		local Humanoid = game.Players.LocalPlayer.Character.Humanoid
-		local Animation = Instance.new("Animation")
-		Animation.AnimationId = "rbxassetid://99985127815659"
-		local AnimationTrack = Humanoid:LoadAnimation(Animation)
-		AnimationTrack:Play()
-	end,
-})
+		local Divider = GUI:CreateDivider()
 
-local InfectedFullAnimationButton = FunTab:CreateButton({
-	Name = "Infected animation (faster)",
-	Callback = function()
-		local Humanoid = game.Players.LocalPlayer.Character.Humanoid
-		local Animation = Instance.new("Animation")
-		Animation.AnimationId = "rbxassetid://139465334169627"
-		local AnimationTrack = Humanoid:LoadAnimation(Animation)
-		AnimationTrack:Play()
-	end,
-})
+		local Section = GUI:CreateSection("Gasmask UI")
+			local Toggle = GUI:CreateToggle({
+				Name = "Hide gasmask UI",
+				CurrentValue = false,
+				Flag = "GasmaskUIToggle",
+				Callback = function(v)
+					if v == false then
+						game.Players.LocalPlayer.PlayerGui.Gasmask.Enabled = true
+					elseif v == true then
+						game.Players.LocalPlayer.PlayerGui.Gasmask.Enabled = false
+					end
+				end,
+			})
 
-local UnstableAnimationButton = FunTab:CreateButton({
-	Name = "Unstable animation",
-	Callback = function()
-		local Humanoid = game.Players.LocalPlayer.Character.Humanoid
-		local Animation = Instance.new("Animation")
-		Animation.AnimationId = "rbxassetid://9146103628"
-		local AnimationTrack = Humanoid:LoadAnimation(Animation)
-		AnimationTrack:Play()
-	end,
-})
+		local Divider = GUI:CreateDivider()
 
-local CoughAnimationButton = FunTab:CreateButton({
-	Name = "Cough animation",
-	Callback = function()
-		local Humanoid = game.Players.LocalPlayer.Character.Humanoid
-		local Animation = Instance.new("Animation")
-		Animation.AnimationId = "rbxassetid://111615919261340"
-		local AnimationTrack = Humanoid:LoadAnimation(Animation)
-		AnimationTrack:Play()
-	end,
-})
+		local InfectionSection = GUI:CreateSection("Infection")
+			local Label = GUI:CreateLabel("You must equip class for correct work of controllable infected UI", "circle-alert")
 
-local InfoTab = Window:CreateTab("Information", "square-library")
-local CreditsSection = InfoTab:CreateSection("Credits")
-local AuthorLabel = InfoTab:CreateLabel("mktlvu — creator | Discord: mehappiness", 103527901139150, Color3.fromRGB(128, 121, 103))
+			local Animation = Instance.new("Animation")
+			Animation.AnimationId = "rbxassetid://136775254837264"
+			local Sound = game.Players.LocalPlayer.PlayerGui.Gasmask.MaskHole.Infection.ACTIVATE
+			local Music = game.Players.LocalPlayer.PlayerGui.Gasmask.MaskHole.Infection.HATRED
+			local Red = Instance.new("ColorCorrectionEffect")
+			Red.Name = "InfectionColorCorrection"
+			Red.Parent = game.Lighting
+			Red.Enabled = false
+			Red.TintColor = Color3.fromRGB(255,0,0)
 
-local Divider = InfoTab:CreateDivider()
+			local Toggle = GUI:CreateToggle({
+				Name = "Enable controllable infected UI",
+				CurrentValue = false,
+				Flag = "InfectedUIToggle",
+				Callback = function(v)
+					local AnimationTrack = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Animation)
+					if v == false then
+						Red.Enabled = false
+						Music.Playing = false
+						game.Players.LocalPlayer.Character.Head.InfectedLeft.ParticleEmitter.Enabled = false
+						game.Players.LocalPlayer.Character.Head.InfectedRight.ParticleEmitter.Enabled = false
+						if game.Players.LocalPlayer.Character.Hat_Gear.Handle.Lens then
+							game.Players.LocalPlayer.Character.Hat_Gear.Handle.Lens.Transparency = 0.05
+						end
+					elseif v == true then
+						AnimationTrack:Play()
+						Sound.Playing = true
+						Music.Playing = true
+						Red.Enabled = true
+						game.Players.LocalPlayer.Character.Head.InfectedLeft.ParticleEmitter.Enabled = true
+						game.Players.LocalPlayer.Character.Head.InfectedRight.ParticleEmitter.Enabled = true
+						if game.Players.LocalPlayer.Character.Hat_Gear.Handle.Lens then
+							game.Players.LocalPlayer.Character.Hat_Gear.Handle.Lens.Transparency = 0
+						end
+					end
+				end,
+			})
 
-local AuthorLabel = InfoTab:CreateLabel("If you want to suggest idea or report bug — please, tell in DM!")
+			local Divider = GUI:CreateDivider()
+
+			local Toggle = GUI:CreateToggle({
+				Name = "Enable ESP",
+				CurrentValue = false,
+				Flag = "ESPToggle",
+				Callback = function(v)
+					local Players = game:GetService("Players")
+					local CharactersContainer = workspace:WaitForChild("Characters")
+					local MenloColor = Color3.fromRGB(80, 109, 84)
+					local HostileColor = Color3.fromRGB(255, 0, 0)
+					local DefaultColor = Color3.fromRGB(255, 255, 255)
+
+					local function GetCharacterTeam(Character)
+						local Player = Players:GetPlayerFromCharacter(Character)
+						if Player then
+							return "Menlo"
+						end
+
+						local TeamValue = Character:FindFirstChild("Team", true) 
+						if TeamValue and TeamValue:IsA("StringValue") then
+							local TeamName = TeamValue.Value
+							if TeamName == "RIF" then
+								return "RIF"
+							end
+						end
+					return nil
+					end
+
+					local function CreateHighlightForCharacter(Character)
+						local Highlight = Character:FindFirstChildOfClass("Highlight")
+						if not Highlight then
+							Highlight = Instance.new("Highlight")
+							Highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+							Highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+							Highlight.OutlineTransparency = 0
+							Highlight.Enabled = false
+							Highlight.Parent = Character
+						end
+
+						local Team = GetCharacterTeam(Character)
+						local FillColor = HostileColor
+						if Team == "Menlo" then
+							FillColor = MenloColor
+						elseif team == "RIF" then
+							FillColor = HostileColor
+						end
+
+						Highlight.FillColor = FillColor
+					end
+
+					for _, Character in ipairs(CharactersContainer:GetChildren()) do
+						CreateHighlightForCharacter(Character)
+					end
+
+					CharactersContainer.ChildAdded:Connect(CreateHighlightForCharacter)
+
+					if v == false then
+						local function DisableAllHighlights()
+   							for _, Character in ipairs(CharactersContainer:GetChildren()) do
+       							local Highlight = Character:FindFirstChildOfClass("Highlight")
+      							if Highlight then
+        							Highlight.Enabled = false
+        						end
+    						end
+						end
+
+						DisableAllHighlights()
+
+					elseif v == true then
+						local function EnableAllHighlights()
+   							for _, Character in ipairs(CharactersContainer:GetChildren()) do
+     							local Highlight = Character:FindFirstChildOfClass("Highlight")
+    							if Highlight then
+        							Highlight.Enabled = true
+        						end
+    						end
+						end
+
+						EnableAllHighlights()
+					end
+				end,
+			})
+
+	local Teleport = Window:CreateTab("Teleports", "square-library")
+		local Section = Teleport:CreateSection("Sector 1")
+			local Button = Teleport:CreateButton({
+				Name = "Generator (1)",
+				Callback = function()
+					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(135, -30, -1225)
+				end,
+			})
+
+			local Button = Teleport:CreateButton({
+				Name = "Backup reactor",
+				Callback = function()
+					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-230, -30, -1428)
+				end,
+			})
+
+			local Button = Teleport:CreateButton({
+				Name = "Basement valve",
+				Callback = function()
+					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-225, -35, -1635)
+				end,
+			})
+
+			local Button = Teleport:CreateButton({
+				Name = "Generator (2)",
+				Callback = function()
+					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-140, -30, -1145)
+				end,
+			})
+
+		local Divider = GUI:CreateDivider()
+
+		local Section = Teleport:CreateSection("Sector 2")
+			local Button = Teleport:CreateButton({
+				Name = "Sector entrance",
+				Callback = function()
+					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-110, -10, -825)
+				end,
+			})
+
+			local Button = Teleport:CreateButton({
+				Name = "Russman's office",
+				Callback = function()
+					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(38, -10, -895)
+				end,
+			})
+
+			local Button = Teleport:CreateButton({
+				Name = "Armory",
+				Callback = function()
+					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-45, -10, -890)
+				end,
+			})
+
+			local Button = Teleport:CreateButton({
+				Name = "Logistics area",
+				Callback = function()
+					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(15, -10, -1040)
+				end,
+			})
+
+			local Button = Teleport:CreateButton({
+				Name = "Steve Remington's body",
+				Callback = function()
+					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-30, 0, -1058)
+				end,
+			})
+
+	local Fun = Window:CreateTab("Fun", "smile")
+		local Section = Fun:CreateSection("Animations")
+			local Toggle = Fun:CreateToggle({
+				Name = "Chimera's execution animation",
+				CurrentValue = false,
+				Flag = "ExecutionAnimation",
+				Callback = function(v)
+					local Animator = game.Players.LocalPlayer.Character.Humanoid.Animator
+					local AnimationTrack
+					local Condition = v
+					local function PlayOrStopAnimation(Condition)
+						if Condition then
+        					if not AnimationTrack then
+            					local Animation = Instance.new("Animation")
+        						Animation.AnimationId = "rbxassetid://97305733594978"
+								ExecutionTrack = Animator:LoadAnimation(Animation)
+								ExecutionTrack.Looped = true
+    						end
+
+    						ExecutionTrack:Play()
+
+						else
+   							if ExecutionTrack then
+								ExecutionTrack:Stop()
+        						ExecutionTrack:Destroy()
+    						end
+						end
+					end
+					PlayOrStopAnimation(Condition)
+				end,
+			})
+
+			local Toggle = Fun:CreateToggle({
+				Name = "Chimera's victim animation",
+				CurrentValue = false,
+				Flag = "VictimAnimation",
+				Callback = function(v)
+					local Animator = game.Players.LocalPlayer.Character.Humanoid.Animator
+					local AnimationTrack
+					local Condition = v
+					local function PlayOrStopAnimation(Condition)
+						if Condition then
+        					if not AnimationTrack then
+            					local Animation = Instance.new("Animation")
+        						Animation.AnimationId = "rbxassetid://83991914102646"
+								VictimTrack = Animator:LoadAnimation(Animation)
+								VictimTrack.Looped = true
+    						end
+
+    						VictimTrack:Play()
+
+						else
+   							if VictimTrack then
+								VictimTrack:Stop()
+        						VictimTrack:Destroy()
+    						end
+						end
+					end
+					PlayOrStopAnimation(Condition)
+				end,
+			})
+
+			local Toggle = Fun:CreateToggle({
+				Name = "Chimera's teleport animation",
+				CurrentValue = false,
+				Flag = "TeleportAnimation",
+				Callback = function(v)
+					local Animator = game.Players.LocalPlayer.Character.Humanoid.Animator
+					local AnimationTrack
+					local Condition = v
+					local function PlayOrStopAnimation(Condition)
+						if Condition then
+        					if not AnimationTrack then
+            					local Animation = Instance.new("Animation")
+        						Animation.AnimationId = "rbxassetid://126809285460597"
+								TeleportTrack = Animator:LoadAnimation(Animation)
+								TeleportTrack.Looped = true
+    						end
+
+    						TeleportTrack:Play()
+
+						else
+   							if TeleportTrack then
+								TeleportTrack:Stop()
+        						TeleportTrack:Destroy()
+    						end
+						end
+					end
+					PlayOrStopAnimation(Condition)
+				end,
+			})
+
+			local Toggle = Fun:CreateToggle({
+				Name = "Chimera's exposed animation",
+				CurrentValue = false,
+				Flag = "ChimeraRageAnimation",
+				Callback = function(v)
+					local Animator = game.Players.LocalPlayer.Character.Humanoid.Animator
+					local AnimationTrack
+					local Condition = v
+					local function PlayOrStopAnimation(Condition)
+						if Condition then
+        					if not AnimationTrack then
+            					local Animation = Instance.new("Animation")
+        						Animation.AnimationId = "rbxassetid://75151963392982"
+								ExposedTrack = Animator:LoadAnimation(Animation)
+								ExposedTrack.Looped = true
+    						end
+
+    						ExposedTrack:Play()
+
+						else
+   							if ExposedTrack then
+								ExposedTrack:Stop()
+        						ExposedTrack:Destroy()
+    						end
+						end
+					end
+					PlayOrStopAnimation(Condition)
+				end,
+			})
+
+			local Toggle = Fun:CreateToggle({
+				Name = "Gilbert's idle animation",
+				CurrentValue = false,
+				Flag = "IdleAnimation",
+				Callback = function(v)
+					local Animator = game.Players.LocalPlayer.Character.Humanoid.Animator
+					local AnimationTrack
+					local Condition = v
+					local function PlayOrStopAnimation(Condition)
+						if Condition then
+        					if not AnimationTrack then
+            					local Animation = Instance.new("Animation")
+        						Animation.AnimationId = "rbxassetid://93686257760742"
+								IdleTrack = Animator:LoadAnimation(Animation)
+								IdleTrack.Looped = true
+    						end
+
+    						IdleTrack:Play()
+
+						else
+   							if IdleTrack then
+								IdleTrack:Stop()
+        						IdleTrack:Destroy()
+    						end
+						end
+					end
+					PlayOrStopAnimation(Condition)
+				end,
+			})
+
+			local Toggle = Fun:CreateToggle({
+				Name = "Gilbert's rage animation",
+				CurrentValue = false,
+				Flag = "GilbertRageAnimation",
+				Callback = function(v)
+					local Animator = game.Players.LocalPlayer.Character.Humanoid.Animator
+					local AnimationTrack
+					local Condition = v
+					local function PlayOrStopAnimation(Condition)
+						if Condition then
+        					if not AnimationTrack then
+            					local Animation = Instance.new("Animation")
+        						Animation.AnimationId = "rbxassetid://93590784469036"
+								RageTrack = Animator:LoadAnimation(Animation)
+								RageTrack.Looped = true
+    						end
+
+    						RageTrack:Play()
+
+						else
+   							if RageTrack then
+								RageTrack:Stop()
+        						RageTrack:Destroy()
+    						end
+						end
+					end
+					PlayOrStopAnimation(Condition)
+				end,
+			})
+
+			local Toggle = Fun:CreateToggle({
+				Name = "Kamikaze's run animation",
+				CurrentValue = false,
+				Flag = "KamikazeAnimation",
+				Callback = function(v)
+					local Animator = game.Players.LocalPlayer.Character.Humanoid.Animator
+					local AnimationTrack
+					local Condition = v
+					local function PlayOrStopAnimation(Condition)
+						if Condition then
+        					if not AnimationTrack then
+            					local Animation = Instance.new("Animation")
+        						Animation.AnimationId = "rbxassetid://78355773495995"
+								RunTrack = Animator:LoadAnimation(Animation)
+								RunTrack.Looped = true
+    						end
+
+    						RunTrack:Play()
+
+						else
+   							if RunTrack then
+								RunTrack:Stop()
+        						RunTrack:Destroy()
+    						end
+						end
+					end
+					PlayOrStopAnimation(Condition)
+				end,
+			})
+
+			local Toggle = Fun:CreateToggle({
+				Name = "Infection fall animation (1)",
+				CurrentValue = false,
+				Flag = "InfectionAnimation1",
+				Callback = function(v)
+					local Animator = game.Players.LocalPlayer.Character.Humanoid.Animator
+					local AnimationTrack
+					local Condition = v
+					local function PlayOrStopAnimation(Condition)
+						if Condition then
+        					if not AnimationTrack then
+            					local Animation = Instance.new("Animation")
+        						Animation.AnimationId = "rbxassetid://99985127815659"
+								PainTrack = Animator:LoadAnimation(Animation)
+								PainTrack.Looped = true
+    						end
+
+    						RunTrack:Play()
+
+						else
+   							if PainTrack then
+								PainTrack:Stop()
+        						PainTrack:Destroy()
+    						end
+						end
+					end
+					PlayOrStopAnimation(Condition)
+				end,
+			})
+
+			local Toggle = Fun:CreateToggle({
+				Name = "Infection fall animation (2)",
+				CurrentValue = false,
+				Flag = "InfectionAnimation2",
+				Callback = function(v)
+					local Animator = game.Players.LocalPlayer.Character.Humanoid.Animator
+					local AnimationTrack
+					local Condition = v
+					local function PlayOrStopAnimation(Condition)
+						if Condition then
+        					if not AnimationTrack then
+            					local Animation = Instance.new("Animation")
+        						Animation.AnimationId = "rbxassetid://139465334169627"
+								HatredTrack = Animator:LoadAnimation(Animation)
+								HatredTrack.Looped = true
+    						end
+
+    						HatredTrack:Play()
+
+						else
+   							if HatredTrack then
+								HatredTrack:Stop()
+        						HatredTrack:Destroy()
+    						end
+						end
+					end
+					PlayOrStopAnimation(Condition)
+				end,
+			})
+
+			local Toggle = Fun:CreateToggle({
+				Name = "Head shake animation",
+				CurrentValue = false,
+				Flag = "HeadShakeAnimation",
+				Callback = function(v)
+					local Animator = game.Players.LocalPlayer.Character.Humanoid.Animator
+					local AnimationTrack
+					local Condition = v
+					local function PlayOrStopAnimation(Condition)
+						if Condition then
+        					if not AnimationTrack then
+            					local Animation = Instance.new("Animation")
+        						Animation.AnimationId = "rbxassetid://111615919261340"
+								InfectionTrack = Animator:LoadAnimation(Animation)
+								InfectionTrack.Looped = true
+    						end
+
+    						InfectionTrack:Play()
+
+						else
+   							if InfectionTrack then
+								InfectionTrack:Stop()
+        						InfectionTrack:Destroy()
+    						end
+						end
+					end
+					PlayOrStopAnimation(Condition)
+				end,
+			})
+
+			local Toggle = Fun:CreateToggle({
+				Name = "Unstable animation",
+				CurrentValue = false,
+				Flag = "UnstableAnimation",
+				Callback = function(v)
+					local Animator = game.Players.LocalPlayer.Character.Humanoid.Animator
+					local AnimationTrack
+					local Condition = v
+					local function PlayOrStopAnimation(Condition)
+						if Condition then
+        					if not AnimationTrack then
+            					local Animation = Instance.new("Animation")
+        						Animation.AnimationId = "rbxassetid://9146103628"
+								UnstableTrack = Animator:LoadAnimation(Animation)
+								UnstableTrack.Looped = true
+    						end
+
+    						UnstableTrack:Play()
+
+						else
+   							if UnstableTrack then
+								UnstableTrack:Stop()
+        						UnstableTrack:Destroy()
+    						end
+						end
+					end
+					PlayOrStopAnimation(Condition)
+				end,
+			})
+
+			local Toggle = Fun:CreateToggle({
+				Name = "Cought animation",
+				CurrentValue = false,
+				Flag = "CoughAnimation",
+				Callback = function(v)
+					local Animator = game.Players.LocalPlayer.Character.Humanoid.Animator
+					local AnimationTrack
+					local Condition = v
+					local function PlayOrStopAnimation(Condition)
+						if Condition then
+        					if not AnimationTrack then
+            					local Animation = Instance.new("Animation")
+        						Animation.AnimationId = "rbxassetid://111615919261340"
+								CoughTrack = Animator:LoadAnimation(Animation)
+								CoughTrack.Looped = true
+    						end
+
+    						CoughTrack:Play()
+
+						else
+   							if CoughTrack then
+								CoughTrack:Stop()
+        						CoughTrack:Destroy()
+    						end
+						end
+					end
+					PlayOrStopAnimation(Condition)
+				end,
+			})
+
+	local Keybinds = Window:CreateTab("Keybinds", "keyboard")
+		local Keybind = Keybinds:CreateKeybind({
+			Name = "Burn yourself",
+			CurrentKeybind = "B",
+			HoldToInteract = false,
+			Flag = "BurnKeybind",
+			Callback = function()
+				game.Players.LocalPlayer.Character.IsHunter.Value = true
+				game.Players.LocalPlayer.Character.Humanoid.Health = 20
+			end,
+		})
+
+		local Keybind = Keybinds:CreateKeybind({
+			Name = "Reset (keybind)",
+			CurrentKeybind = "V",
+			HoldToInteract = false,
+			Flag = "ResetKeybind",
+			Callback = function()
+				game.Players.LocalPlayer.Character.Humanoid.Health = 0
+			end,
+		})
+
+		local Keybind = Keybinds:CreateKeybind({
+			Name = "Third person (keybind)",
+			CurrentKeybind = "T",
+			HoldToInteract = false,
+			Flag = "ThirdPersonKeybind",
+			Callback = function()
+				game.Players.LocalPlayer.CameraMode = Enum.CameraMode.Classic
+				game.Players.LocalPlayer.CameraMaxZoomDistance = 15
+			end,
+		})
+
+	local Settings = Window:CreateTab("Settings", "settings")
+		local Section = Settings:CreateSection("Themes")
+			local Button = Settings:CreateButton({
+				Name = "Default theme",
+				Callback = function()
+					Window.ModifyTheme('Default')
+				end,
+			})
+
+			local Button = Settings:CreateButton({
+				Name = "Amber glow theme",
+				Callback = function()
+					Window.ModifyTheme('AmberGlow')
+				end,
+			})
+
+			local Button = Settings:CreateButton({
+				Name = "Amethyst theme",
+				Callback = function()
+					Window.ModifyTheme('Amethyst')
+				end,
+			})
+
+			local Button = Settings:CreateButton({
+				Name = "Bloom theme",
+				Callback = function()
+					Window.ModifyTheme('Bloom')
+				end,
+			})
+
+			local Button = Settings:CreateButton({
+				Name = "Dark blue theme",
+				Callback = function()
+					Window.ModifyTheme('DarkBlue')
+				end,
+			})
+
+			local Button = Settings:CreateButton({
+				Name = "Green theme",
+				Callback = function()
+					Window.ModifyTheme('Green')
+				end,
+			})
+
+			local Button = Settings:CreateButton({
+				Name = "Light theme",
+				Callback = function()
+					Window.ModifyTheme('Light')
+				end,
+			})
+
+			local Button = Settings:CreateButton({
+				Name = "Ocean theme",
+				Callback = function()
+					Window.ModifyTheme('Ocean')
+				end,
+			})
+
+			local Button = Settings:CreateButton({
+				Name = "Serenity",
+				Callback = function()
+					Window.ModifyTheme('Serenity')
+				end,
+			})
+
+			local Button = Settings:CreateButton({
+				Name = "Destroy Rayfield",
+				Callback = function()
+					Rayfield:Destroy()
+				end,
+			})
+	local Info = Window:CreateTab("Information", "square-library")
+		local Section = Info:CreateSection("Credits")
+			local Label = Info:CreateLabel("mktlvu — creator | Discord: mehappiness", 103527901139150, Color3.fromRGB(128, 121, 103))
+			local Label = Info:CreateLabel("Google Gemini — assistant | Helped me alot :D", 135347394446477, Color3.fromRGB(128, 121, 103))
+		local Divider = Info:CreateDivider()
+
+		local Label = Info:CreateLabel("If you want to suggest idea or report bug — please, tell in DM!")
+
+		local Divider = Info:CreateDivider()
+
+		local Paragraph = Info:CreateParagraph({Title = "Upcoming content", Content = "Turn into Gilbert • Turn into Chimera • More fun things"})
