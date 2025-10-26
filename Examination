@@ -1,892 +1,934 @@
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+	local Players = game:GetService("Players")
+	local RunService = game:GetService("RunService")
+	local ChatService = game:GetService("TextChatService")
+	local TweenService = game:GetService("TweenService")
+	local Lighting = game:GetService("Lighting")
+	local player = game.Players.LocalPlayer
+	local playerGui = player:WaitForChild("PlayerGui")
+	local char = player.Character
+	local humanoid = char:WaitForChild("Humanoid")
+
 	local Window = Rayfield:CreateWindow({
-		Name = "Examination",
-		Icon = 109763877151262,
+		Name = "Examination hub",
+		Icon = 0,
 		LoadingTitle = "Examination hub",
-		LoadingSubtitle = "by mktlvu",
-		ShowText = "Examination hub",
+		LoadingSubtitle = "by Happiness",
+		ShowText = "Rayfield",
 		Theme = "Ocean",
 		ToggleUIKeybind = "K",
 		DisableRayfieldPrompts = false,
 		DisableBuildWarnings = false,
 		ConfigurationSaving = {
-    		Enabled = true,
-    		FolderName = "Examination",
+	    	Enabled = true,
+			FolderName = "Examination",
 			FileName = "Hub"
-		}
+		},
 	})
 
-	Rayfield:Notify({
-		Title = "Thanks for using Examination hub",
-		Content = "Message to developers: BRING FLARE BACK!!!1",
-		Duration = 6.5,
-		Image = 4483362458,
-	})
-
-	local Main = Window:CreateTab("Main", "crown")
-		local Button = Main:CreateButton({
-			Name = "Burn yourself",
-			Callback = function()
-				game.Players.LocalPlayer.Character.IsHunter.Value = true
-				game.Players.LocalPlayer.Character.Humanoid.Health = 20
-			end,
-		})
-
-		local Button = Main:CreateButton({
-			Name = "Reset",
-			Callback = function()
-				game.Players.LocalPlayer.Character.Humanoid.Health = 0
-			end,
-		})
-
-		local Toggle = Main:CreateToggle({
-  			Name = "Third person",
-			CurrentValue = false,
-			Flag = "ThirdPersonToggle",
-			Callback = function(v)
-				if v == false then
-					game.Players.LocalPlayer.CameraMode = Enum.CameraMode.LockFirstPerson
-				end
-
-				if v == true then
-					game.Players.LocalPlayer.CameraMode = Enum.CameraMode.Classic
-					game.Players.LocalPlayer.CameraMaxZoomDistance = 15
-				end
-			end,
-		})
-
-		local Toggle = Main:CreateToggle({
-  			Name = "Chat history",
-			CurrentValue = false,
-			Flag = "ChatWindowToggle",
-			Callback = function(v)
-				if v == false then
-					game.TextChatService.ChatWindowConfiguration.Enabled = false
-				end
-
-				if v == true then
-					task.wait()
-					game.TextChatService.ChatWindowConfiguration.Enabled = true
-				end
-			end,
-		})
-
-		local Slider = Main:CreateSlider({
-			Name = "Increase maximum message bubble distance",
-			Range = {0, 1000},
-			Increment = 10,
-			Suffix = "studs",
-			CurrentValue = 100,
-			Flag = "DistanceSlider",
-			Callback = function(v)
-				game.TextChatService.BubbleChatConfiguration.MaxDistance = v
-			end,
-		})
-
-		local Divider = Main:CreateDivider()
-
-		local Section = Main:CreateSection("Movement")
-			local Slider = Main:CreateSlider({
-				Name = "Walk speed",
-				Range = {0, 500},
-				Increment = 5,
-				Suffix = "speed",
-				CurrentValue = 7,
-				Flag = "SpeedSlider",
-				Callback = function(v)
-					while true do
-						task.wait()
-						game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = v
+	local MainTab = Window:CreateTab("Main", "home")
+		MainTab:CreateSection("Hide & Seek")
+			MainTab:CreateButton({
+				Name = "Burn yourself",
+				Callback = function()
+					if char and humanoid and char:FindFirstChild("IsHunter") then
+						char.IsHunter.Value = true
+						humanoid.Health = 20
 					end
 				end,
 			})
 
-			local Slider = Main:CreateSlider({
-				Name = "Jump power",
+			MainTab:CreateKeybind({
+				Name = "Burn yourself (keybind)",
+				CurrentKeybind = "B",
+				HoldToInteract = false,
+				Flag = "BurnoutKeybind",
+				Callback = function()
+					if char and humanoid and char:FindFirstChild("IsHunter") then
+						char.IsHunter.Value = true
+						humanoid.Health = 20
+					end
+				end,
+			})
+
+		MainTab:CreateSection("Health")
+			MainTab:CreateButton({
+				Name = "Reset",
+				Callback = function()
+					if char and humanoid then
+						humanoid.Health = 0
+					end
+				end,
+			})
+
+			MainTab:CreateKeybind({
+				Name = "Reset (keybind)",
+				CurrentKeybind = "V",
+				HoldToInteract = false,
+				Flag = "ResetKeybind",
+				Callback = function()
+					if char and humanoid then
+						humanoid.Health = 0
+					end
+				end,
+			})
+
+		MainTab:CreateSection("Camera")
+			local cameraToggleState = false
+
+			local function ApplyCameraSettings()
+				if not player then return end
+				if cameraToggleState == true then
+					pcall(function()
+						player.CameraMode = Enum.CameraMode.Classic
+						player.CameraMaxZoomDistance = 15
+					end)
+
+					Rayfield:Notify({
+						Title = "Camera mode changed",
+						Content = "Third person enabled",
+						Duration = 2,
+						Image = "camera",
+					})
+				else
+					pcall(function()
+						player.CameraMode = Enum.CameraMode.LockFirstPerson
+					end)
+
+					Rayfield:Notify({
+						Title = "Camera mode changed",
+						Content = "Third person disabled",
+							Duration = 2,
+						Image = "camera-off",
+					})
+				end
+			end
+
+			player.CharacterAdded:Connect(function(char)
+				if char then
+					local humanoid = char:WaitForChild("Humanoid", 2)
+					task.wait(0.25)
+					ApplyCameraSettings()
+				end
+			end)
+
+			local ThirdPersonToggle = MainTab:CreateToggle({
+				Name = "Third person",
+				CurrentValue = false,
+				Flag = "ThirdPersonToggle",
+				Callback = function(v)
+					cameraToggleState = v
+					ApplyCameraSettings()
+				end,
+			})
+
+			local CameraKeybind = MainTab:CreateKeybind({
+				Name = "Third person (keybind)",
+				CurrentKeybind = "T",
+				HoldToInteract = false,
+				Flag = "CameraKeybind",
+				Callback = function()
+					cameraToggleState = not cameraToggleState
+
+					if ThirdPersonToggle and ThirdPersonToggle.SetValue then
+						pcall(function()
+							Toggle:SetValue(cameraToggleState)
+						end)
+					end
+					ApplyCameraSettings()
+				end,
+			})
+
+			local function tryReadRayfieldFlag()
+				if type(Rayfield) == "table" and Rayfield.Flags then
+					local f = Rayfield.Flags["CameraToggle"]
+					if type(f) == "table" and f.Value ~= nil then
+						return f.Value
+					end
+				end
+				return nil
+			end
+
+			task.defer(function()
+				local saved = tryReadRayfieldFlag()
+				if saved ~= nil then
+					cameraToggleState = saved
+					if Toggle and Toggle.SetValue then
+						pcall(function()
+							Toggle:SetValue(saved)
+						end)
+					end
+					ApplyCameraSettings()
+				end
+			end)
+
+		MainTab:CreateSection("Chat")
+			local chatEnabled = false
+
+			local function ApplyChatState()
+				local chatConfig = ChatService:FindFirstChild("ChatWindowConfiguration")
+
+				if chatConfig then
+					pcall(function()
+						chatConfig.Enabled = chatEnabled
+					end)
+				end
+			end
+
+			player.CharacterAdded:Connect(function()
+				task.wait(0.5)
+				ApplyChatState()
+			end)
+
+			local ChatToggle = MainTab:CreateToggle({
+				Name = "Chat history",
+				CurrentValue = false,
+				Flag = "ChatToggle",
+				Callback = function(v)
+					chatEnabled = v
+					ApplyChatState()
+
+					if v then
+						Rayfield:Notify({
+							Title = "Chat configuration changed",
+							Content = "Chat history enabled",
+							Duration = 2,
+							Image = "message-circle",
+						})
+					else
+							Rayfield:Notify({
+							Title = "Chat configuration changed",
+							Content = "Chat history disabled",
+							Duration = 2,
+								Image = "message-circle-off",
+						})
+					end
+				end,
+			})
+
+			task.defer(function()
+				if Rayfield.Flags and Rayfield.Flags["ChatToggle"] then
+					local saved = Rayfield.Flags["ChatToggle"].Value
+					if saved ~= nil then
+						chatEnabled = saved
+						if ChatToggle and ChatToggle.SetValue then
+							pcall(function()
+								ChatToggle:SetValue(saved)
+							end)
+						end
+						ApplyChatState()
+					else
+						ApplyChatState()
+					end
+				else
+					ApplyChatState()
+				end
+			end)
+
+	local MovementTab = Window:CreateTab("Movement", "move")
+		MovementTab:CreateSection("WalkSpeed")
+			local walkSpeed = 7
+			local lockSpeed = false
+
+			local function applySpeed()
+				if humanoid and humanoid.Parent and humanoid.Parent:FindFirstChild("IsHunter") then
+					humanoid.WalkSpeed = walkSpeed
+				end
+			end
+
+			player.CharacterAdded:Connect(function(newChar)
+				char = newChar
+				humanoid = newChar:WaitForChild("Humanoid")
+				task.wait(0.3)
+				if lockSpeed then applyWalkSpeed() end
+			end)
+
+			RunService.Heartbeat:Connect(function()
+				if humanoid then
+					if lockSpeed and humanoid.WalkSpeed ~= walkSpeed then
+						humanoid.WalkSpeed = walkSpeed
+					end
+				end
+			end)
+
+			local WalkSpeedToggle = MovementTab:CreateToggle({
+				Name = "WalkSpeed Override",
+				CurrentValue = lockSpeed,
+				Flag = "WalkSpeedToggle",
+				Callback = function(v)
+					lockSpeed = v
+					if v then
+						applySpeed()
+					end
+				end,
+			})
+
+			local WalkSpeedSlider = MovementTab:CreateSlider({
+				Name = "WalkSpeed",
 				Range = {0, 100},
 				Increment = 1,
-				Suffix = "studs",
-				CurrentValue = 2,
-				Flag = "JumpSlider",
+				Suffix = "speed",
+				CurrentValue = walkSpeed,
+				Flag = "WalkSpeedSlider",
 				Callback = function(v)
-					game.Players.LocalPlayer.Character.Humanoid.UseJumpPower = false
-					while true do
-						task.wait()
-						game.Players.LocalPlayer.Character.Humanoid.JumpHeight = v
-					end
+					walkSpeed = v
+					if lockSpeed then applySpeed() end
 				end,
 			})
 
-	local Lighting = Window:CreateTab("Lighting", "zap")
-		local Section = Lighting:CreateSection("Fog")
-			local Button = Lighting:CreateButton({
-				Name = "No fog",
-				Callback = function()
-					while true do
-						task.wait()
-						game.Lighting.FogStart = 1000
-						game.Lighting.FogEnd = 1000
-					end
-				end,
-			})
+		MovementTab:CreateSection("JumpHeight")
+			local jumpHeight = 2
+			local lockJump = false
 
-			local Slider = Lighting:CreateSlider({
-				Name = "Fog start",
-				Range = {0, 1000},
-				Increment = 50,
-				Suffix = "studs",
-				CurrentValue = 0,
-				Flag = "FogStartSlider",
-				Callback = function(v)
-					while true do
-						task.wait()
-						game.Lighting.FogStart = v
-					end
-				end,
-			})
-
-			local FogEndSlider = Lighting:CreateSlider({
-				Name = "Fog end",
-				Range = {0, 1000},
-				Increment = 50,
-				Suffix = "studs",
-				CurrentValue = 0,
-				Flag = "FogEndSlider",
-				Callback = function(v)
-					while true do
-						task.wait()
-						game.Lighting.FogEnd = v
-					end
-				end,
-			})
-
-		local Divider = Lighting:CreateDivider()
-
-		local Section = Lighting:CreateSection("Brightness")
-			local Toggle = Lighting:CreateToggle({
-  				Name = "Fullbright",
-				CurrentValue = false,
-				Flag = "FullbrightToggle",
-				Callback = function(v)
-					if v == false then
-						game.Lighting.Ambient = Color3.fromRGB(0,0,0)
-
-					elseif v == true then
-						game.Lighting.Ambient = Color3.fromRGB(255,255,255)
-					end
-				end,
-			})
-
-			local ColorPicker = Lighting:CreateColorPicker({
-				Name = "Ambient color",
-				Color = Color3.fromRGB(255,255,255),
-				Flag = "AmbientColorPicker",
-				Callback = function(v)
-						wait(5)
-						game.Lighting.Ambient = v
+			local function applyJump()
+				if humanoid and humanoid.Parent then
+					humanoid.JumpHeight = jumpHeight
 				end
-			})
+			end
 
-	local GUI = Window:CreateTab("GUI", "panel-left")
-		local Section = GUI:CreateSection("Death UI")
-			local Toggle = GUI:CreateToggle({
-				Name = "Hide death UI",
-				CurrentValue = false,
-				Flag = "DeathUIToggle",
+			player.CharacterAdded:Connect(function(newChar)
+				char = newChar
+				humanoid = newChar:WaitForChild("Humanoid")
+				task.wait(0.3)
+				if lockJump then applyJump() end
+			end)
+
+			RunService.Heartbeat:Connect(function()
+				if humanoid then
+					if lockJump and humanoid.JumpHeight ~= jumpHeight then
+						humanoid.JumpHeight = jumpHeight
+					end
+				end
+			end)
+
+			local JumpHeightToggle = MovementTab:CreateToggle({
+				Name = "JumpHeight override",
+				CurrentValue = lockJump,
+				Flag = "JumpHeightToggle",
 				Callback = function(v)
-					if v == false then
-						game.Players.LocalPlayer.PlayerGui.Death.Enabled = true
-					elseif v == true then
-						game.Players.LocalPlayer.PlayerGui.Death.Enabled = false
+					lockJump = v
+					if v then
+						applyJump()
 					end
 				end,
 			})
 
-		local Divider = GUI:CreateDivider()
-
-		local Section = GUI:CreateSection("Gasmask UI")
-			local Toggle = GUI:CreateToggle({
-				Name = "Hide gasmask UI",
-				CurrentValue = false,
-				Flag = "GasmaskUIToggle",
+			local JumpHeightSlider = MovementTab:CreateSlider({
+				Name = "JumpHeight",
+				Range = {0, 150},
+				Increment = 1,
+				Suffix = "studs",
+				CurrentValue = jumpHeight,
+				Flag = "JumpHeightSlider",
 				Callback = function(v)
-					if v == false then
-						game.Players.LocalPlayer.PlayerGui.Gasmask.Enabled = true
-					elseif v == true then
-						game.Players.LocalPlayer.PlayerGui.Gasmask.Enabled = false
-					end
+					jumpHeight = v
+					if lockJump then applyJump() end
 				end,
 			})
 
-		local Divider = GUI:CreateDivider()
+			task.defer(function()
+				if Rayfield.Flags then
+					if Rayfield.Flags["WalkSpeedSlider"] then
+						local saved = Rayfield.Flags["WalkSpeedSlider"].Value
+						if saved ~= nil then
+							walkSpeed = saved
+							pcall(function()
+								SpeedSlider:SetValue(saved)
+							end)
+						end
+					end
+					if Rayfield.Flags["WalkSpeedToggle"] then
+						local saved = Rayfield.Flags["WalkSpeedToggle"].Value
+						if saved ~= nil then
+							lockSpeed = saved
+							pcall(function()
+								SpeedToggle:SetValue(saved)
+							end)
+						end
+					end
+					if Rayfield.Flags["JumpHeightSlider"] then
+						local saved = Rayfield.Flags["JumpHeightSlider"].Value
+						if saved ~= nil then
+							jumpHeight = saved
+							pcall(function()
+								JumpSlider:SetValue(saved)
+							end)
+						end
+					end
+					if Rayfield.Flags["JumpHeightToggle"] then
+						local saved = Rayfield.Flags["JumpHeightToggle"].Value
+						if saved ~= nil then
+							lockJump = saved
+							pcall(function()
+								JumpToggle:SetValue(saved)
+							end)
+						end
+					end
+				end
 
-		local InfectionSection = GUI:CreateSection("Infection")
-			local Label = GUI:CreateLabel("You must equip class for correct work of controllable infected UI", "circle-alert")
+				task.wait(0.3)
+				if lockSpeed then applyWalkSpeed() end
+				if lockJump then applyJumpHeight() end
+			end)
 
+			task.defer(function()
+				if Rayfield.Flags then
+					if Rayfield.Flags["WalkSpeedSlider"] then
+						local saved = Rayfield.Flags["WalkSpeedSlider"].Value
+						if saved ~= nil then
+							walkSpeed = saved
+							pcall(function()
+								SpeedSlider:SetValue(saved)
+							end)
+						end
+					end
+					if Rayfield.Flags["WalkSpeedToggle"] then
+						local saved = Rayfield.Flags["WalkSpeedToggle"].Value
+						if saved ~= nil then
+							lockSpeed = saved
+							pcall(function()
+								SpeedToggle:SetValue(saved)
+							end)
+						end
+					end
+					if Rayfield.Flags["JumpHeightSlider"] then
+						local saved = Rayfield.Flags["JumpHeightSlider"].Value
+						if saved ~= nil then
+							jumpHeight = saved
+							pcall(function()
+								JumpSlider:SetValue(saved)
+							end)
+						end
+					end
+					if Rayfield.Flags["JumpHeightToggle"] then
+						local saved = Rayfield.Flags["JumpHeightToggle"].Value
+						if saved ~= nil then
+							lockJump = saved
+							pcall(function()
+								JumpToggle:SetValue(saved)
+							end)
+						end
+					end
+				end
+
+				task.wait(0.3)
+				if lockSpeed then applyWalkSpeed() end
+				if lockJump then applyJumpHeight() end
+			end)
+
+	local LightingTab = Window:CreateTab("Lighting", "lightbulb")
+		local fogFarEnabled = 45
+		local fogFarDisabled = 500
+		local fogEnabled = true
+		local fullbrightEnabled = false
+		local fullbrightColor = Color3.fromRGB(255, 255, 255)
+		local defaultColor = Color3.fromRGB(0, 0, 0)
+		local ambientColor = Color3.fromRGB(0, 0, 0)
+
+		local FogToggle = LightingTab:CreateToggle({
+			Name = "Fog",
+			CurrentValue = true,
+			Flag = "FogToggle",
+			Callback = function(v)
+				fogEnabled = v
+				Lighting.FogEnd = v and fogFarEnabled or fogFarDisabled
+			end,
+		})
+
+		Lighting:GetPropertyChangedSignal("FogEnd"):Connect(function()
+			if fogEnabled and Lighting.FogEnd ~= fogFarEnabled then
+				Lighting.FogEnd = fogFarEnabled
+			elseif not fogEnabled and Lighting.FogEnd ~= fogFarDisabled then
+				Lighting.FogEnd = fogFarDisabled
+			end
+		end)
+
+		player.CharacterAdded:Connect(function()
+			task.wait(0.5)
+			Lighting.FogEnd = fogEnabled and fogFarEnabled or fogFarDisabled
+		end)
+
+		task.defer(function()
+			if Rayfield.Flags and Rayfield.Flags["FogToggle"] then
+				local saved = Rayfield.Flags["FogToggle"].Value
+				if saved ~= nil then
+					fogEnabled = saved
+					if FogToggle and FogToggle.SetValue then
+						pcall(function() FogToggle:SetValue(saved) end)
+					end
+					Lighting.FogEnd = saved and fogFarEnabled or fogFarDisabled
+				end
+			end
+		end)
+
+		local FullbrightToggle = LightingTab:CreateToggle({
+			Name = "Fullbright",
+			CurrentValue = false,
+			Flag = "FullbrightToggle",
+			Callback = function(v)
+				fullbrightEnabled = v
+				Lighting.Ambient = v and fullbrightColor or defaultColor
+			end,
+		})
+
+		Lighting:GetPropertyChangedSignal("Ambient"):Connect(function()
+			if fullbrightEnabled and Lighting.Ambient ~= fullbrightColor then
+				Lighting.Ambient = fullbrightColor
+			elseif not fullbrightEnabled and Lighting.Ambient ~= defaultColor then
+				Lighting.Ambient = defaultColor
+			end
+		end)
+
+		player.CharacterAdded:Connect(function()
+			task.wait(0.5)
+			Lighting.Ambient = fullbrightEnabled and fullbrightColor or defaultColor
+		end)
+
+		task.defer(function()
+			if Rayfield.Flags and Rayfield.Flags["FullbrightToggle"] then
+				local saved = Rayfield.Flags["FullbrightToggle"].Value
+				if saved ~= nil then
+					fullbrightEnabled = saved
+					if FullbrightToggle and FullbrightToggle.SetValue then
+						pcall(function() FullbrightToggle:SetValue(saved) end)
+					end
+					Lighting.Ambient = saved and fullbrightColor or defaultColor
+				end
+			end
+		end)
+
+		local ColorPicker = LightingTab:CreateColorPicker({
+			Name = "Ambient color",
+			Color = ambientColor,
+			Flag = "AmbientColorPicker",
+			Callback = function(v)
+				ambientColor = v
+				Lighting.Ambient = v
+			end
+		})
+
+
+		Lighting:GetPropertyChangedSignal("Ambient"):Connect(function()
+			if Lighting.Ambient ~= ambientColor then
+				Lighting.Ambient = ambientColor
+			end
+		end)
+
+		player.CharacterAdded:Connect(function()
+			task.wait(0.5)
+			Lighting.Ambient = ambientColor
+		end)
+
+		task.defer(function()
+			if Rayfield.Flags and Rayfield.Flags["AmbientColorPicker"] then
+				local saved = Rayfield.Flags["AmbientColorPicker"].Value
+				if saved ~= nil then
+					ambientColor = saved
+					if ColorPicker and ColorPicker.SetColor then
+						pcall(function() ColorPicker:SetColor(saved) end)
+					end
+					Lighting.Ambient = saved
+				end
+			end
+		end)
+
+	local GuiTab = Window:CreateTab("GUI", "panel-left")
+		GuiTab:CreateSection("Infection UI")
+			local Sound = playerGui:WaitForChild("Gasmask"):WaitForChild("MaskHole"):WaitForChild("Infection"):WaitForChild("ACTIVATE")
+			local Music = playerGui.Gasmask.MaskHole.Infection:WaitForChild("HATRED")
 			local Animation = Instance.new("Animation")
 			Animation.AnimationId = "rbxassetid://136775254837264"
-			local Sound = game.Players.LocalPlayer.PlayerGui.Gasmask.MaskHole.Infection.ACTIVATE
-			local Music = game.Players.LocalPlayer.PlayerGui.Gasmask.MaskHole.Infection.HATRED
-			local Red = Instance.new("ColorCorrectionEffect")
+			local AnimationTrack
+			local Red = Lighting:FindFirstChild("InfectionColorCorrection") or Instance.new("ColorCorrectionEffect")
 			Red.Name = "InfectionColorCorrection"
-			Red.Parent = game.Lighting
+			Red.Parent = Lighting
 			Red.Enabled = false
-			Red.TintColor = Color3.fromRGB(255,0,0)
+			Red.TintColor = Color3.fromRGB(255, 0, 0)
 
-			local Toggle = GUI:CreateToggle({
+			local InfectedUIToggle = GuiTab:CreateToggle({
 				Name = "Enable controllable infected UI",
 				CurrentValue = false,
 				Flag = "InfectedUIToggle",
 				Callback = function(v)
-					local AnimationTrack = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Animation)
-					if v == false then
-						Red.Enabled = false
-						Music.Playing = false
-						game.Players.LocalPlayer.Character.Head.InfectedLeft.ParticleEmitter.Enabled = false
-						game.Players.LocalPlayer.Character.Head.InfectedRight.ParticleEmitter.Enabled = false
-						if game.Players.LocalPlayer.Character.Hat_Gear.Handle.Lens then
-							game.Players.LocalPlayer.Character.Hat_Gear.Handle.Lens.Transparency = 0.05
-						end
-					elseif v == true then
-						AnimationTrack:Play()
-						Sound.Playing = true
-						Music.Playing = true
-						Red.Enabled = true
-						game.Players.LocalPlayer.Character.Head.InfectedLeft.ParticleEmitter.Enabled = true
-						game.Players.LocalPlayer.Character.Head.InfectedRight.ParticleEmitter.Enabled = true
-						if game.Players.LocalPlayer.Character.Hat_Gear.Handle.Lens then
-							game.Players.LocalPlayer.Character.Hat_Gear.Handle.Lens.Transparency = 0
-						end
-					end
-				end,
-			})
-
-			local Divider = GUI:CreateDivider()
-
-			local Toggle = GUI:CreateToggle({
-				Name = "Enable ESP",
-				CurrentValue = false,
-				Flag = "ESPToggle",
-				Callback = function(v)
-					local Players = game:GetService("Players")
-					local CharactersContainer = workspace:WaitForChild("Characters")
-					local MenloColor = Color3.fromRGB(80, 109, 84)
-					local HostileColor = Color3.fromRGB(255, 0, 0)
-					local DefaultColor = Color3.fromRGB(255, 255, 255)
-
-					local function GetCharacterTeam(Character)
-						local Player = Players:GetPlayerFromCharacter(Character)
-						if Player then
-							return "Menlo"
-						end
-
-						local TeamValue = Character:FindFirstChild("Team", true) 
-						if TeamValue and TeamValue:IsA("StringValue") then
-							local TeamName = TeamValue.Value
-							if TeamName == "RIF" then
-								return "RIF"
+					character = player.Character or player.CharacterAdded:Wait()
+					local Head = character:FindFirstChild("Head")
+					local HatGear = character:FindFirstChild("Hat_Gear")
+					if v then
+						if not AnimationTrack then
+							local humanoid = character:FindFirstChild("Humanoid")
+							if humanoid then
+								local animator = humanoid:FindFirstChildOfClass("Animator")
+								if not animator then
+									animator = Instance.new("Animator")
+									animator.Parent = humanoid
+								end
+								AnimationTrack = animator:LoadAnimation(Animation)
 							end
 						end
-					return nil
-					end
-
-					local function CreateHighlightForCharacter(Character)
-						local Highlight = Character:FindFirstChildOfClass("Highlight")
-						if not Highlight then
-							Highlight = Instance.new("Highlight")
-							Highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-							Highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-							Highlight.OutlineTransparency = 0
-							Highlight.Enabled = false
-							Highlight.Parent = Character
+						if AnimationTrack then AnimationTrack:Play() end
+						if Sound then Sound.Playing = true end
+						if Music then Music.Playing = true end
+						Red.Enabled = true
+						if Head then
+							local left = Head:FindFirstChild("InfectedLeft")
+							local right = Head:FindFirstChild("InfectedRight")
+							if left and left.ParticleEmitter then left.ParticleEmitter.Enabled = true end
+							if right and right.ParticleEmitter then right.ParticleEmitter.Enabled = true end
 						end
-
-						local Team = GetCharacterTeam(Character)
-						local FillColor = HostileColor
-						if Team == "Menlo" then
-							FillColor = MenloColor
-						elseif team == "RIF" then
-							FillColor = HostileColor
+						if HatGear and HatGear:FindFirstChild("Handle") and HatGear.Handle:FindFirstChild("Lens") then
+							HatGear.Handle.Lens.Transparency = 0
 						end
-
-						Highlight.FillColor = FillColor
-					end
-
-					for _, Character in ipairs(CharactersContainer:GetChildren()) do
-						CreateHighlightForCharacter(Character)
-					end
-
-					CharactersContainer.ChildAdded:Connect(CreateHighlightForCharacter)
-
-					if v == false then
-						local function DisableAllHighlights()
-   							for _, Character in ipairs(CharactersContainer:GetChildren()) do
-       							local Highlight = Character:FindFirstChildOfClass("Highlight")
-      							if Highlight then
-        							Highlight.Enabled = false
-        						end
-    						end
+					else
+						if AnimationTrack then
+							AnimationTrack:Stop()
+							AnimationTrack:Destroy()
+							AnimationTrack = nil
 						end
-
-						DisableAllHighlights()
-
-					elseif v == true then
-						local function EnableAllHighlights()
-   							for _, Character in ipairs(CharactersContainer:GetChildren()) do
-     							local Highlight = Character:FindFirstChildOfClass("Highlight")
-    							if Highlight then
-        							Highlight.Enabled = true
-        						end
-    						end
+						if Sound then Sound.Playing = false end
+						if Music then Music.Playing = false end
+						Red.Enabled = false
+						if Head then
+							local left = Head:FindFirstChild("InfectedLeft")
+							local right = Head:FindFirstChild("InfectedRight")
+							if left and left.ParticleEmitter then left.ParticleEmitter.Enabled = false end
+							if right and right.ParticleEmitter then right.ParticleEmitter.Enabled = false end
 						end
-
-						EnableAllHighlights()
+						if HatGear and HatGear:FindFirstChild("Handle") and HatGear.Handle:FindFirstChild("Lens") then
+							HatGear.Handle.Lens.Transparency = 0.05
+						end
 					end
 				end,
 			})
 
-	local Teleport = Window:CreateTab("Teleports", "square-library")
-		local Section = Teleport:CreateSection("Sector 1")
-			local Button = Teleport:CreateButton({
-				Name = "Generator (1)",
+			GuiTab:CreateSection("ESP UI")
+				local ESPFolder = workspace:WaitForChild("Characters")
+				local ESPEnabled = false
+				local highlights = {}
+
+				local function createHighlight(character)
+					if not character or highlights[character] then return end
+					local highlight = Instance.new("Highlight")
+					highlight.Parent = character
+					highlight.Adornee = character
+					if character:FindFirstChild("Humanoid") then
+						if game.Players:GetPlayerFromCharacter(character) then
+							highlight.FillColor = Color3.fromRGB(80, 109, 84)
+						else
+							highlight.FillColor = Color3.fromRGB(255, 0, 0)
+						end
+						highlight.FillTransparency = 0.25
+						highlight.OutlineTransparency = 0
+					end
+					highlight.Enabled = ESPEnabled
+					highlights[character] = highlight
+				end
+
+				local function setESPEnabled(state)
+					ESPEnabled = state
+					for _, highlight in pairs(highlights) do
+						if highlight then
+							highlight.Enabled = state
+						end
+					end
+				end
+
+				local ESPToggle = GuiTab:CreateToggle({
+					Name = "ESP",
+					CurrentValue = false,
+					Flag = "ESPToggle",
+					Callback = function(value)
+						ESPEnabled = value
+						setESPEnabled(value)
+					end
+				})
+
+				ESPFolder.ChildAdded:Connect(function(character)
+					task.wait(0.1)
+					createHighlight(character)
+				end)
+
+				for _, character in pairs(ESPFolder:GetChildren()) do
+					createHighlight(character)
+				end
+
+			GuiTab:CreateSection("Death UI")
+				local DeathGUI = playerGui:WaitForChild("Death")
+				local DeathHidden = false
+
+				local function updateDeathUI()
+					if DeathGUI then
+						DeathGUI.Enabled = not DeathHidden
+					end
+				end
+
+				local DeathToggle = GuiTab:CreateToggle({
+					Name = "Death UI",
+					CurrentValue = DeathHidden,
+					Flag = "DeathUIToggle",
+					Callback = function(value)
+						DeathHidden = value
+						updateDeathUI()
+					end
+				})
+
+				GuiTab:CreateKeybind({
+					Name = "Death UI (keybind)",
+					CurrentKeybind = "M",
+					HoldToInteract = false,
+					Flag = "DeathUIKeybind",
+					Callback = function()
+						DeathHidden = not DeathHidden
+						if DeathToggle and DeathToggle.SetValue then
+							pcall(function()
+								DeathToggle:SetValue(DeathHidden)
+							end)
+						end
+						updateDeathUI()
+					end
+				})
+
+				player.CharacterAdded:Connect(function()
+					task.wait(0.5)
+					updateDeathUI()
+				end)
+
+				task.defer(function()
+					if Rayfield.Flags and Rayfield.Flags["DeathUIToggle"] then
+						local saved = Rayfield.Flags["DeathUIToggle"].Value
+						if saved ~= nil then
+							DeathHidden = saved
+							if DeathToggle and DeathToggle.SetValue then
+								pcall(function()
+									DeathToggle:SetValue(saved)
+								end)
+							end
+							updateDeathUI()
+						end
+					end
+				end)
+
+				GuiTab:CreateSection("Gasmask UI")
+					GuiTab:CreateButton({
+					Name = "Hide gasmask UI",
+					Callback = function()
+						if playerGui and char:FindFirstChild("Gasmask") then
+							playerGui.Gasmask.Enabled = false
+						end
+					end,
+				})
+
+				GuiTab:CreateKeybind({
+					Name = "Hide gasmask UI (keybind)",
+					CurrentKeybind = "M",
+					HoldToInteract = false,
+					Flag = "GasmaskKeybind",
+					Callback = function()
+						if playerGui and char:FindFirstChild("Gasmask") then
+							playerGui.Gasmask.Enabled = false
+						end
+					end,
+				})
+
+	local TPTab = Window:CreateTab("Teleports", "fast-forward")
+		TPTab:CreateSection("Sector 1")
+			local Button = TPTab:CreateButton({
+				Name = "Generator-1",
 				Callback = function()
 					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(135, -30, -1225)
 				end,
 			})
 
-			local Button = Teleport:CreateButton({
+			local Button = TPTab:CreateButton({
 				Name = "Backup reactor",
 				Callback = function()
 					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-230, -30, -1428)
 				end,
 			})
 
-			local Button = Teleport:CreateButton({
+			local Button = TPTab:CreateButton({
 				Name = "Basement valve",
 				Callback = function()
 					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-225, -35, -1635)
 				end,
 			})
 
-			local Button = Teleport:CreateButton({
-				Name = "Generator (2)",
+			local Button = TPTab:CreateButton({
+				Name = "Generator-2",
 				Callback = function()
 					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-140, -30, -1145)
 				end,
 			})
 
-		local Divider = GUI:CreateDivider()
-
-		local Section = Teleport:CreateSection("Sector 2")
-			local Button = Teleport:CreateButton({
+		local Section = TPTab:CreateSection("Sector 2")
+			local Button = TPTab:CreateButton({
 				Name = "Sector entrance",
 				Callback = function()
 					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-110, -10, -825)
 				end,
 			})
 
-			local Button = Teleport:CreateButton({
+			local Button = TPTab:CreateButton({
 				Name = "Russman's office",
 				Callback = function()
 					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(38, -10, -895)
 				end,
 			})
 
-			local Button = Teleport:CreateButton({
+			local Button = TPTab:CreateButton({
 				Name = "Armory",
 				Callback = function()
 					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-45, -10, -890)
 				end,
 			})
 
-			local Button = Teleport:CreateButton({
+			local Button = TPTab:CreateButton({
 				Name = "Logistics area",
 				Callback = function()
 					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(15, -10, -1040)
 				end,
 			})
 
-			local Button = Teleport:CreateButton({
+			local Button = TPTab:CreateButton({
 				Name = "Steve Remington's body",
 				Callback = function()
 					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-30, 0, -1058)
 				end,
 			})
 
-	local Fun = Window:CreateTab("Fun", "smile")
-		local Section = Fun:CreateSection("Animations")
-			local Toggle = Fun:CreateToggle({
-				Name = "Chimera's execution animation",
-				CurrentValue = false,
-				Flag = "ExecutionAnimation",
-				Callback = function(v)
-					local Animator = game.Players.LocalPlayer.Character.Humanoid.Animator
-					local AnimationTrack
-					local Condition = v
-					local function PlayOrStopAnimation(Condition)
-						if Condition then
-        					if not AnimationTrack then
-            					local Animation = Instance.new("Animation")
-        						Animation.AnimationId = "rbxassetid://97305733594978"
-								ExecutionTrack = Animator:LoadAnimation(Animation)
-								ExecutionTrack.Looped = true
-    						end
+	local FunTab = Window:CreateTab("Fun", "smile")
+		FunTab:CreateSection("Animation toggles")
+			local toggleanimations = {
+				["Chimera's walk animation"] = "rbxassetid://97147187591899",
+				["Chimera's run animation"] = "rbxassetid://95054120636955",
+				["Gilbert's walk animation"] = "rbxassetid://74514118757125",
+				["Gilbert's idle animation"] = "rbxassetid://93686257760742",
+				["Raged Slasher's run animation"] = "rbxassetid://94555617501510",
+				["Kamikaze's walk animation"] = "rbxassetid:87989829896123",
+				["Kamikaze's run animation"] = "rbxassetid://78355773495995",
+				["Mikhail William's walk animation"] = "rbxassetid://100407162198079",
+				["Mikhail William's run animation"] = "rbxassetid://126189604062142",
+				["Head shake animation"] = "rbxassetid://118621065272904",
+				["Unstable animation"] = "rbxassetid://9146103628"
+			}
 
-    						ExecutionTrack:Play()
+			local animationTracks = {}
 
+			for name, id in pairs(toggleanimations) do
+				FunTab:CreateToggle({
+					Name = name,
+					CurrentValue = false,
+					Flag = name:gsub("%s", "").."Toggle", -- уникальный флаг
+					Callback = function(v)
+						local character = player.Character
+						if not character or not character:FindFirstChild("Humanoid") then return end
+						local Animator = character.Humanoid:FindFirstChildOfClass("Animator")
+						if not Animator then
+							Animator = Instance.new("Animator")
+							Animator.Parent = character.Humanoid
+						end
+
+						if v then
+							if not animationTracks[name] then
+								local anim = Instance.new("Animation")
+								anim.AnimationId = id
+								local track = Animator:LoadAnimation(anim)
+								track.Looped = true
+								track:Play()
+								animationTracks[name] = track
+							else
+								animationTracks[name]:Play()
+							end
 						else
-   							if ExecutionTrack then
-								ExecutionTrack:Stop()
-        						ExecutionTrack:Destroy()
-    						end
+							if animationTracks[name] then
+								animationTracks[name]:Stop()
+								animationTracks[name]:Destroy()
+								animationTracks[name] = nil
+							end
 						end
 					end
-					PlayOrStopAnimation(Condition)
-				end,
-			})
+				})
+			end
 
-			local Toggle = Fun:CreateToggle({
-				Name = "Chimera's victim animation",
-				CurrentValue = false,
-				Flag = "VictimAnimation",
-				Callback = function(v)
-					local Animator = game.Players.LocalPlayer.Character.Humanoid.Animator
-					local AnimationTrack
-					local Condition = v
-					local function PlayOrStopAnimation(Condition)
-						if Condition then
-        					if not AnimationTrack then
-            					local Animation = Instance.new("Animation")
-        						Animation.AnimationId = "rbxassetid://83991914102646"
-								VictimTrack = Animator:LoadAnimation(Animation)
-								VictimTrack.Looped = true
-    						end
+		FunTab:CreateSection("Animation buttons")
+			local buttonanimations = {
+				["Chimera's punch animation"] = "rbxassetid://84314656273153",
+				["Chimera's execution animation"] = "rbxassetid://97305733594978",
+				["Chimera's victim animation"] = "rbxassetid://83991914102646",
+				["Chimera's teleport animation"] = "rbxassetid://126809285460597",
+				["Chimera's exposed animation"] = "rbxassetid://75151963392982",
+				["Gilbert's kick animation"] = "rbxassetid://86079982232120",
+				["Gilbert's rage animation"] = "rbxassetid://93590784469036",
+				["Infection fall animation (1)"] = "rbxassetid://99985127815659",
+				["Infection fall animation (2)"] = "rbxassetid://139465334169627",
+				["Cough animation"] = "rbxassetid://111615919261340"
+			}
 
-    						VictimTrack:Play()
-
-						else
-   							if VictimTrack then
-								VictimTrack:Stop()
-        						VictimTrack:Destroy()
-    						end
+			for name, id in pairs(buttonanimations) do
+				FunTab:CreateButton({
+					Name = name,
+					Callback = function()
+						local character = player.Character
+						if not character or not character:FindFirstChild("Humanoid") then return end
+						local Humanoid = character.Humanoid
+						local Animator = Humanoid:FindFirstChildOfClass("Animator")
+						if not Animator then
+							Animator = Instance.new("Animator")
+							Animator.Parent = Humanoid
 						end
+
+						local anim = Instance.new("Animation")
+						anim.AnimationId = id
+						local track = Animator:LoadAnimation(anim)
+						track:Play()
+						track.Stopped:Connect(function()
+							track:Destroy()
+						end)
 					end
-					PlayOrStopAnimation(Condition)
-				end,
-			})
+				})
+			end
 
-			local Toggle = Fun:CreateToggle({
-				Name = "Chimera's teleport animation",
-				CurrentValue = false,
-				Flag = "TeleportAnimation",
-				Callback = function(v)
-					local Animator = game.Players.LocalPlayer.Character.Humanoid.Animator
-					local AnimationTrack
-					local Condition = v
-					local function PlayOrStopAnimation(Condition)
-						if Condition then
-        					if not AnimationTrack then
-            					local Animation = Instance.new("Animation")
-        						Animation.AnimationId = "rbxassetid://126809285460597"
-								TeleportTrack = Animator:LoadAnimation(Animation)
-								TeleportTrack.Looped = true
-    						end
+	local InfoTab = Window:CreateTab("Information", "users")
+		InfoTab:CreateLabel("Thank you so much for using Examination hub! If you want to suggest idea or report bug — please, tell in DM!")
+		InfoTab:CreateSection("Credits")
 
-    						TeleportTrack:Play()
+			InfoTab:CreateLabel("mktlvu — creator", 89731341681675)
+			InfoTab:CreateLabel("ChatGPT — assistant", 81220310187689)
 
-						else
-   							if TeleportTrack then
-								TeleportTrack:Stop()
-        						TeleportTrack:Destroy()
-    						end
-						end
+		InfoTab:CreateDivider()
+
+		InfoTab:CreateSection("Profiles")
+
+			InfoTab:CreateLabel("Github: HappinessAlive", "github")
+			InfoTab:CreateLabel("Discord: mehappiness", "smile")
+
+	local SettingsTab = Window:CreateTab("Settings", "settings")
+		SettingsTab:CreateSection("Themes")
+			local themes = {
+				["Default theme"] = "Default",
+				["Amber glow theme"] = "AmberGlow",
+				["Amethyst theme"] = "Amethyst",
+				["Bloom theme"] = "Bloom",
+				["Dark blue theme"] = "DarkBlue",
+				["Green theme"] = "Green",
+				["Light theme"] = "Light",
+				["Ocean theme"] = "Ocean",
+				["Serenity"] = "Serenity"
+			}
+
+			for displayName, themeName in pairs(themes) do
+				SettingsTab:CreateButton({
+					Name = displayName,
+					Callback = function()
+						Window.ModifyTheme(themeName)
 					end
-					PlayOrStopAnimation(Condition)
-				end,
-			})
+				})
+			end
 
-			local Toggle = Fun:CreateToggle({
-				Name = "Chimera's exposed animation",
-				CurrentValue = false,
-				Flag = "ChimeraRageAnimation",
-				Callback = function(v)
-					local Animator = game.Players.LocalPlayer.Character.Humanoid.Animator
-					local AnimationTrack
-					local Condition = v
-					local function PlayOrStopAnimation(Condition)
-						if Condition then
-        					if not AnimationTrack then
-            					local Animation = Instance.new("Animation")
-        						Animation.AnimationId = "rbxassetid://75151963392982"
-								ExposedTrack = Animator:LoadAnimation(Animation)
-								ExposedTrack.Looped = true
-    						end
-
-    						ExposedTrack:Play()
-
-						else
-   							if ExposedTrack then
-								ExposedTrack:Stop()
-        						ExposedTrack:Destroy()
-    						end
-						end
-					end
-					PlayOrStopAnimation(Condition)
-				end,
-			})
-
-			local Toggle = Fun:CreateToggle({
-				Name = "Gilbert's idle animation",
-				CurrentValue = false,
-				Flag = "IdleAnimation",
-				Callback = function(v)
-					local Animator = game.Players.LocalPlayer.Character.Humanoid.Animator
-					local AnimationTrack
-					local Condition = v
-					local function PlayOrStopAnimation(Condition)
-						if Condition then
-        					if not AnimationTrack then
-            					local Animation = Instance.new("Animation")
-        						Animation.AnimationId = "rbxassetid://93686257760742"
-								IdleTrack = Animator:LoadAnimation(Animation)
-								IdleTrack.Looped = true
-    						end
-
-    						IdleTrack:Play()
-
-						else
-   							if IdleTrack then
-								IdleTrack:Stop()
-        						IdleTrack:Destroy()
-    						end
-						end
-					end
-					PlayOrStopAnimation(Condition)
-				end,
-			})
-
-			local Toggle = Fun:CreateToggle({
-				Name = "Gilbert's rage animation",
-				CurrentValue = false,
-				Flag = "GilbertRageAnimation",
-				Callback = function(v)
-					local Animator = game.Players.LocalPlayer.Character.Humanoid.Animator
-					local AnimationTrack
-					local Condition = v
-					local function PlayOrStopAnimation(Condition)
-						if Condition then
-        					if not AnimationTrack then
-            					local Animation = Instance.new("Animation")
-        						Animation.AnimationId = "rbxassetid://93590784469036"
-								RageTrack = Animator:LoadAnimation(Animation)
-								RageTrack.Looped = true
-    						end
-
-    						RageTrack:Play()
-
-						else
-   							if RageTrack then
-								RageTrack:Stop()
-        						RageTrack:Destroy()
-    						end
-						end
-					end
-					PlayOrStopAnimation(Condition)
-				end,
-			})
-
-			local Toggle = Fun:CreateToggle({
-				Name = "Kamikaze's run animation",
-				CurrentValue = false,
-				Flag = "KamikazeAnimation",
-				Callback = function(v)
-					local Animator = game.Players.LocalPlayer.Character.Humanoid.Animator
-					local AnimationTrack
-					local Condition = v
-					local function PlayOrStopAnimation(Condition)
-						if Condition then
-        					if not AnimationTrack then
-            					local Animation = Instance.new("Animation")
-        						Animation.AnimationId = "rbxassetid://78355773495995"
-								RunTrack = Animator:LoadAnimation(Animation)
-								RunTrack.Looped = true
-    						end
-
-    						RunTrack:Play()
-
-						else
-   							if RunTrack then
-								RunTrack:Stop()
-        						RunTrack:Destroy()
-    						end
-						end
-					end
-					PlayOrStopAnimation(Condition)
-				end,
-			})
-
-			local Toggle = Fun:CreateToggle({
-				Name = "Infection fall animation (1)",
-				CurrentValue = false,
-				Flag = "InfectionAnimation1",
-				Callback = function(v)
-					local Animator = game.Players.LocalPlayer.Character.Humanoid.Animator
-					local AnimationTrack
-					local Condition = v
-					local function PlayOrStopAnimation(Condition)
-						if Condition then
-        					if not AnimationTrack then
-            					local Animation = Instance.new("Animation")
-        						Animation.AnimationId = "rbxassetid://99985127815659"
-								PainTrack = Animator:LoadAnimation(Animation)
-								PainTrack.Looped = true
-    						end
-
-    						RunTrack:Play()
-
-						else
-   							if PainTrack then
-								PainTrack:Stop()
-        						PainTrack:Destroy()
-    						end
-						end
-					end
-					PlayOrStopAnimation(Condition)
-				end,
-			})
-
-			local Toggle = Fun:CreateToggle({
-				Name = "Infection fall animation (2)",
-				CurrentValue = false,
-				Flag = "InfectionAnimation2",
-				Callback = function(v)
-					local Animator = game.Players.LocalPlayer.Character.Humanoid.Animator
-					local AnimationTrack
-					local Condition = v
-					local function PlayOrStopAnimation(Condition)
-						if Condition then
-        					if not AnimationTrack then
-            					local Animation = Instance.new("Animation")
-        						Animation.AnimationId = "rbxassetid://139465334169627"
-								HatredTrack = Animator:LoadAnimation(Animation)
-								HatredTrack.Looped = true
-    						end
-
-    						HatredTrack:Play()
-
-						else
-   							if HatredTrack then
-								HatredTrack:Stop()
-        						HatredTrack:Destroy()
-    						end
-						end
-					end
-					PlayOrStopAnimation(Condition)
-				end,
-			})
-
-			local Toggle = Fun:CreateToggle({
-				Name = "Head shake animation",
-				CurrentValue = false,
-				Flag = "HeadShakeAnimation",
-				Callback = function(v)
-					local Animator = game.Players.LocalPlayer.Character.Humanoid.Animator
-					local AnimationTrack
-					local Condition = v
-					local function PlayOrStopAnimation(Condition)
-						if Condition then
-        					if not AnimationTrack then
-            					local Animation = Instance.new("Animation")
-        						Animation.AnimationId = "rbxassetid://111615919261340"
-								InfectionTrack = Animator:LoadAnimation(Animation)
-								InfectionTrack.Looped = true
-    						end
-
-    						InfectionTrack:Play()
-
-						else
-   							if InfectionTrack then
-								InfectionTrack:Stop()
-        						InfectionTrack:Destroy()
-    						end
-						end
-					end
-					PlayOrStopAnimation(Condition)
-				end,
-			})
-
-			local Toggle = Fun:CreateToggle({
-				Name = "Unstable animation",
-				CurrentValue = false,
-				Flag = "UnstableAnimation",
-				Callback = function(v)
-					local Animator = game.Players.LocalPlayer.Character.Humanoid.Animator
-					local AnimationTrack
-					local Condition = v
-					local function PlayOrStopAnimation(Condition)
-						if Condition then
-        					if not AnimationTrack then
-            					local Animation = Instance.new("Animation")
-        						Animation.AnimationId = "rbxassetid://9146103628"
-								UnstableTrack = Animator:LoadAnimation(Animation)
-								UnstableTrack.Looped = true
-    						end
-
-    						UnstableTrack:Play()
-
-						else
-   							if UnstableTrack then
-								UnstableTrack:Stop()
-        						UnstableTrack:Destroy()
-    						end
-						end
-					end
-					PlayOrStopAnimation(Condition)
-				end,
-			})
-
-			local Toggle = Fun:CreateToggle({
-				Name = "Cought animation",
-				CurrentValue = false,
-				Flag = "CoughAnimation",
-				Callback = function(v)
-					local Animator = game.Players.LocalPlayer.Character.Humanoid.Animator
-					local AnimationTrack
-					local Condition = v
-					local function PlayOrStopAnimation(Condition)
-						if Condition then
-        					if not AnimationTrack then
-            					local Animation = Instance.new("Animation")
-        						Animation.AnimationId = "rbxassetid://111615919261340"
-								CoughTrack = Animator:LoadAnimation(Animation)
-								CoughTrack.Looped = true
-    						end
-
-    						CoughTrack:Play()
-
-						else
-   							if CoughTrack then
-								CoughTrack:Stop()
-        						CoughTrack:Destroy()
-    						end
-						end
-					end
-					PlayOrStopAnimation(Condition)
-				end,
-			})
-
-	local Keybinds = Window:CreateTab("Keybinds", "keyboard")
-		local Keybind = Keybinds:CreateKeybind({
-			Name = "Burn yourself",
-			CurrentKeybind = "B",
-			HoldToInteract = false,
-			Flag = "BurnKeybind",
-			Callback = function()
-				game.Players.LocalPlayer.Character.IsHunter.Value = true
-				game.Players.LocalPlayer.Character.Humanoid.Health = 20
-			end,
-		})
-
-		local Keybind = Keybinds:CreateKeybind({
-			Name = "Reset (keybind)",
-			CurrentKeybind = "V",
-			HoldToInteract = false,
-			Flag = "ResetKeybind",
-			Callback = function()
-				game.Players.LocalPlayer.Character.Humanoid.Health = 0
-			end,
-		})
-
-		local Keybind = Keybinds:CreateKeybind({
-			Name = "Third person (keybind)",
-			CurrentKeybind = "T",
-			HoldToInteract = false,
-			Flag = "ThirdPersonKeybind",
-			Callback = function()
-				game.Players.LocalPlayer.CameraMode = Enum.CameraMode.Classic
-				game.Players.LocalPlayer.CameraMaxZoomDistance = 15
-			end,
-		})
-
-	local Settings = Window:CreateTab("Settings", "settings")
-		local Section = Settings:CreateSection("Themes")
-			local Button = Settings:CreateButton({
-				Name = "Default theme",
-				Callback = function()
-					Window.ModifyTheme('Default')
-				end,
-			})
-
-			local Button = Settings:CreateButton({
-				Name = "Amber glow theme",
-				Callback = function()
-					Window.ModifyTheme('AmberGlow')
-				end,
-			})
-
-			local Button = Settings:CreateButton({
-				Name = "Amethyst theme",
-				Callback = function()
-					Window.ModifyTheme('Amethyst')
-				end,
-			})
-
-			local Button = Settings:CreateButton({
-				Name = "Bloom theme",
-				Callback = function()
-					Window.ModifyTheme('Bloom')
-				end,
-			})
-
-			local Button = Settings:CreateButton({
-				Name = "Dark blue theme",
-				Callback = function()
-					Window.ModifyTheme('DarkBlue')
-				end,
-			})
-
-			local Button = Settings:CreateButton({
-				Name = "Green theme",
-				Callback = function()
-					Window.ModifyTheme('Green')
-				end,
-			})
-
-			local Button = Settings:CreateButton({
-				Name = "Light theme",
-				Callback = function()
-					Window.ModifyTheme('Light')
-				end,
-			})
-
-			local Button = Settings:CreateButton({
-				Name = "Ocean theme",
-				Callback = function()
-					Window.ModifyTheme('Ocean')
-				end,
-			})
-
-			local Button = Settings:CreateButton({
-				Name = "Serenity",
-				Callback = function()
-					Window.ModifyTheme('Serenity')
-				end,
-			})
-
-			local Button = Settings:CreateButton({
+		SettingsTab:CreateSection("Rayfield UI")
+			SettingsTab:CreateButton({
 				Name = "Destroy Rayfield",
 				Callback = function()
 					Rayfield:Destroy()
 				end,
 			})
-	local Info = Window:CreateTab("Information", "square-library")
-		local Section = Info:CreateSection("Credits")
-			local Label = Info:CreateLabel("mktlvu — creator | Discord: mehappiness", 103527901139150, Color3.fromRGB(128, 121, 103))
-			local Label = Info:CreateLabel("Google Gemini — assistant | Helped me alot :D", 135347394446477, Color3.fromRGB(128, 121, 103))
-		local Divider = Info:CreateDivider()
-
-		local Label = Info:CreateLabel("If you want to suggest idea or report bug — please, tell in DM!")
-
-		local Divider = Info:CreateDivider()
-
-		local Paragraph = Info:CreateParagraph({Title = "Upcoming content", Content = "Turn into Gilbert • Turn into Chimera • More fun things"})
