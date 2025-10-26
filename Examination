@@ -421,9 +421,9 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 		local fogFarEnabled = 45
 		local fogFarDisabled = 500
 		local fogEnabled = true
-		local fullbrightEnabled = false
 		local fullbrightColor = Color3.fromRGB(255, 255, 255)
 		local defaultColor = Color3.fromRGB(0, 0, 0)
+		local fullbrightEnabled = false
 		local ambientColor = Color3.fromRGB(0, 0, 0)
 
 		local FogToggle = LightingTab:CreateToggle({
@@ -507,7 +507,6 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 				Lighting.Ambient = v
 			end
 		})
-
 
 		Lighting:GetPropertyChangedSignal("Ambient"):Connect(function()
 			if Lighting.Ambient ~= ambientColor then
@@ -891,14 +890,11 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 	local InfoTab = Window:CreateTab("Information", "users")
 		InfoTab:CreateLabel("Thank you so much for using Examination hub! If you want to suggest idea or report bug — please, tell in DM!")
 		InfoTab:CreateSection("Credits")
-
 			InfoTab:CreateLabel("mktlvu — creator", 89731341681675)
 			InfoTab:CreateLabel("ChatGPT — assistant", 81220310187689)
-
 		InfoTab:CreateDivider()
 
 		InfoTab:CreateSection("Profiles")
-
 			InfoTab:CreateLabel("Github: HappinessAlive", "github")
 			InfoTab:CreateLabel("Discord: mehappiness", "smile")
 
