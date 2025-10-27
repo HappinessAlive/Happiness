@@ -1,5 +1,4 @@
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
-
 	local Players = game:GetService("Players")
 	local RunService = game:GetService("RunService")
 	local ChatService = game:GetService("TextChatService")
@@ -29,6 +28,49 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 	local MainTab = Window:CreateTab("Main", "home")
 		MainTab:CreateSection("Hide & Seek")
+			local HunterModeEnabled = false
+			local HunterModeToggle = MainTab:CreateToggle({
+				Name = "Hunter mode",
+				CurrentValue = false,
+				Flag = "HunterModeToggle",
+				Callback = function(v)
+					HunterModeEnabled = v
+					local char = player.Character or player.CharacterAdded:Wait()
+					local isHunter = char:FindFirstChild("IsHunter")
+
+					if isHunter then
+						isHunter.Value = v
+					end
+				end,
+			})
+
+			player.CharacterAdded:Connect(function(char)
+				task.wait(0.3)
+				local isHunter = char:WaitForChild("IsHunter", 2)
+				if isHunter then
+					isHunter.Value = HunterModeEnabled
+				end
+			end)
+
+			task.defer(function()
+				if Rayfield.Flags and Rayfield.Flags["HunterModeToggle"] then
+					local saved = Rayfield.Flags["HunterModeToggle"].Value
+					if saved ~= nil then
+						HunterModeEnabled = saved
+						if HunterModeToggle and HunterModeToggle.SetValue then
+							pcall(function()
+								HunterModeToggle:SetValue(saved)
+							end)
+						end
+						local char = player.Character or player.CharacterAdded:Wait()
+						local isHunter = char:FindFirstChild("IsHunter")
+						if isHunter then
+							isHunter.Value = saved
+						end
+					end
+				end
+			end)
+
 			MainTab:CreateButton({
 				Name = "Burn yourself",
 				Callback = function()
@@ -283,6 +325,7 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 			local function applyJump()
 				if humanoid and humanoid.Parent then
+					humanoid.UseJumpPower = false
 					humanoid.JumpHeight = jumpHeight
 				end
 			end
