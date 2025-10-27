@@ -774,64 +774,78 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 	local TPTab = Window:CreateTab("Teleports", "fast-forward")
 		TPTab:CreateSection("Sector 1")
-			local Button = TPTab:CreateButton({
+			TPTab:CreateButton({
+				Name = "Spawn",
+				Callback = function()
+					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-55, -33, -1410)
+				end,
+			})
+
+			TPTab:CreateButton({
 				Name = "Generator-1",
 				Callback = function()
 					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(135, -30, -1225)
 				end,
 			})
 
-			local Button = TPTab:CreateButton({
+			TPTab:CreateButton({
 				Name = "Backup reactor",
 				Callback = function()
 					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-230, -30, -1428)
 				end,
 			})
 
-			local Button = TPTab:CreateButton({
+			TPTab:CreateButton({
+				Name = "Mutant crawler",
+				Callback = function()
+					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-155, -33, -1565)
+				end,
+			})
+
+			TPTab:CreateButton({
 				Name = "Basement valve",
 				Callback = function()
 					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-225, -35, -1635)
 				end,
 			})
 
-			local Button = TPTab:CreateButton({
+			TPTab:CreateButton({
 				Name = "Generator-2",
 				Callback = function()
 					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-140, -30, -1145)
 				end,
 			})
 
-		local Section = TPTab:CreateSection("Sector 2")
-			local Button = TPTab:CreateButton({
+		TPTab:CreateSection("Sector 2")
+			TPTab:CreateButton({
 				Name = "Sector entrance",
 				Callback = function()
 					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-110, -10, -825)
 				end,
 			})
 
-			local Button = TPTab:CreateButton({
+			TPTab:CreateButton({
 				Name = "Russman's office",
 				Callback = function()
 					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(38, -10, -895)
 				end,
 			})
 
-			local Button = TPTab:CreateButton({
+			TPTab:CreateButton({
 				Name = "Armory",
 				Callback = function()
 					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-45, -10, -890)
 				end,
 			})
 
-			local Button = TPTab:CreateButton({
+			TPTab:CreateButton({
 				Name = "Logistics area",
 				Callback = function()
 					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(15, -10, -1040)
 				end,
 			})
 
-			local Button = TPTab:CreateButton({
+			TPTab:CreateButton({
 				Name = "Steve Remington's body",
 				Callback = function()
 					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-30, 0, -1058)
