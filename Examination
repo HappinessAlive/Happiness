@@ -126,24 +126,10 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 						player.CameraMode = Enum.CameraMode.Classic
 						player.CameraMaxZoomDistance = 15
 					end)
-
-					Rayfield:Notify({
-						Title = "Camera mode changed",
-						Content = "Third person enabled",
-						Duration = 2,
-						Image = "camera",
-					})
 				else
 					pcall(function()
 						player.CameraMode = Enum.CameraMode.LockFirstPerson
 					end)
-
-					Rayfield:Notify({
-						Title = "Camera mode changed",
-						Content = "Third person disabled",
-							Duration = 2,
-						Image = "camera-off",
-					})
 				end
 			end
 
@@ -230,22 +216,6 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 				Callback = function(v)
 					chatEnabled = v
 					ApplyChatState()
-
-					if v then
-						Rayfield:Notify({
-							Title = "Chat configuration changed",
-							Content = "Chat history enabled",
-							Duration = 2,
-							Image = "message-circle",
-						})
-					else
-							Rayfield:Notify({
-							Title = "Chat configuration changed",
-							Content = "Chat history disabled",
-							Duration = 2,
-								Image = "message-circle-off",
-						})
-					end
 				end,
 			})
 
@@ -350,6 +320,7 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 				CurrentValue = lockJump,
 				Flag = "JumpHeightToggle",
 				Callback = function(v)
+					
 					lockJump = v
 					if v then
 						applyJump()
@@ -695,39 +666,23 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 				end
 
 			GuiTab:CreateSection("Death UI")
-				local DeathGUI = playerGui:WaitForChild("Death")
 				local DeathHidden = false
 
 				local function updateDeathUI()
-					if DeathGUI then
-						DeathGUI.Enabled = not DeathHidden
+					local deathGui = player:FindFirstChild("PlayerGui") and player.PlayerGui:FindFirstChild("Death")
+					if deathGui then
+						deathGui.Enabled = not DeathHidden
 					end
 				end
 
-				local DeathToggle = GuiTab:CreateToggle({
+				local DeathUIToggle = GuiTab:CreateToggle({
 					Name = "Death UI",
-					CurrentValue = DeathHidden,
+					CurrentValue = not DeathHidden,
 					Flag = "DeathUIToggle",
 					Callback = function(value)
-						DeathHidden = value
+						DeathHidden = not value
 						updateDeathUI()
-					end
-				})
-
-				GuiTab:CreateKeybind({
-					Name = "Death UI (keybind)",
-					CurrentKeybind = "M",
-					HoldToInteract = false,
-					Flag = "DeathUIKeybind",
-					Callback = function()
-						DeathHidden = not DeathHidden
-						if DeathToggle and DeathToggle.SetValue then
-							pcall(function()
-								DeathToggle:SetValue(DeathHidden)
-							end)
-						end
-						updateDeathUI()
-					end
+					end,
 				})
 
 				player.CharacterAdded:Connect(function()
@@ -739,118 +694,92 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 					if Rayfield.Flags and Rayfield.Flags["DeathUIToggle"] then
 						local saved = Rayfield.Flags["DeathUIToggle"].Value
 						if saved ~= nil then
-							DeathHidden = saved
-							if DeathToggle and DeathToggle.SetValue then
+							DeathHidden = not saved
+							if DeathUIToggle and DeathUIToggle.SetValue then
 								pcall(function()
-									DeathToggle:SetValue(saved)
+									DeathUIToggle:SetValue(saved)
 								end)
 							end
 							updateDeathUI()
 						end
 					end
 				end)
+				
+			GuiTab:CreateSection("Death UI")
+				local GasmaskHidden = false
+				local function updateGasmaskUI()
+					local gasmaskGui = player:FindFirstChild("PlayerGui") and player.PlayerGui:FindFirstChild("Gasmask")
+					if gasmaskGui then
+						gasmaskGui.Enabled = not GasmaskHidden
+					end
+				end
 
-				GuiTab:CreateSection("Gasmask UI")
-					GuiTab:CreateButton({
-					Name = "Hide gasmask UI",
-					Callback = function()
-						if playerGui and char:FindFirstChild("Gasmask") then
-							playerGui.Gasmask.Enabled = false
-						end
+				local GasmaskUIToggle = GuiTab:CreateToggle({
+					Name = "Gasmask UI",
+					CurrentValue = not GasmaskHidden,
+					Flag = "GasmaskUIToggle",
+					Callback = function(value)
+						GasmaskHidden = not value
+						updateGasmaskUI()
 					end,
 				})
 
-				GuiTab:CreateKeybind({
-					Name = "Hide gasmask UI (keybind)",
-					CurrentKeybind = "M",
-					HoldToInteract = false,
-					Flag = "GasmaskKeybind",
-					Callback = function()
-						if playerGui and char:FindFirstChild("Gasmask") then
-							playerGui.Gasmask.Enabled = false
+				player.CharacterAdded:Connect(function()
+					task.wait(0.5)
+					updateGasmaskUI()
+				end)
+
+				task.defer(function()
+					if Rayfield.Flags and Rayfield.Flags["GasmaskUIToggle"] then
+						local saved = Rayfield.Flags["GasmaskUIToggle"].Value
+						if saved ~= nil then
+							GasmaskHidden = not saved
+							if GasmaskUIToggle and GasmaskUIToggle.SetValue then
+								pcall(function()
+									GasmaskUIToggle:SetValue(saved)
+								end)
+							end
+							updateGasmaskUI()
 						end
-					end,
-				})
+					end
+				end)
 
 	local TPTab = Window:CreateTab("Teleports", "fast-forward")
-		TPTab:CreateSection("Sector 1")
-			TPTab:CreateButton({
-				Name = "Spawn",
-				Callback = function()
-					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-55, -33, -1410)
-				end,
-			})
+		local teleportPoints = {
+			["Sector 1"] = {
+				{"Spawn", Vector3.new(-55, -33, -1410)},
+				{"Generator-1", Vector3.new(135, -30, -1225)},
+				{"Backup reactor", Vector3.new(-230, -30, -1428)},
+				{"Mutant crawler", Vector3.new(-155, -33, -1565)},
+				{"Basement valve", Vector3.new(-225, -35, -1635)},
+				{"Generator-2", Vector3.new(-140, -30, -1145)},
+			},
+			["Sector 2"] = {
+				{"Sector entrance", Vector3.new(-110, -10, -825)},
+				{"Russman's office", Vector3.new(38, -10, -895)},
+				{"Armory", Vector3.new(-45, -10, -890)},
+				{"Logistics area", Vector3.new(15, -10, -1040)},
+				{"Steve Remington's body", Vector3.new(-30, 0, -1058)},
+			},
+		}
 
-			TPTab:CreateButton({
-				Name = "Generator-1",
-				Callback = function()
-					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(135, -30, -1225)
-				end,
-			})
+		local function teleportTo(position)
+			local player = game.Players.LocalPlayer
+			player.Character.HumanoidRootPart.CFrame = CFrame.new(position)
+		end
 
-			TPTab:CreateButton({
-				Name = "Backup reactor",
-				Callback = function()
-					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-230, -30, -1428)
-				end,
-			})
-
-			TPTab:CreateButton({
-				Name = "Mutant crawler",
-				Callback = function()
-					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-155, -33, -1565)
-				end,
-			})
-
-			TPTab:CreateButton({
-				Name = "Basement valve",
-				Callback = function()
-					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-225, -35, -1635)
-				end,
-			})
-
-			TPTab:CreateButton({
-				Name = "Generator-2",
-				Callback = function()
-					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-140, -30, -1145)
-				end,
-			})
-
-		TPTab:CreateSection("Sector 2")
-			TPTab:CreateButton({
-				Name = "Sector entrance",
-				Callback = function()
-					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-110, -10, -825)
-				end,
-			})
-
-			TPTab:CreateButton({
-				Name = "Russman's office",
-				Callback = function()
-					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(38, -10, -895)
-				end,
-			})
-
-			TPTab:CreateButton({
-				Name = "Armory",
-				Callback = function()
-					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-45, -10, -890)
-				end,
-			})
-
-			TPTab:CreateButton({
-				Name = "Logistics area",
-				Callback = function()
-					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(15, -10, -1040)
-				end,
-			})
-
-			TPTab:CreateButton({
-				Name = "Steve Remington's body",
-				Callback = function()
-					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-30, 0, -1058)
-				end,
-			})
+		for sectorName, points in pairs(teleportPoints) do
+			TPTab:CreateSection(sectorName)
+			for _, data in ipairs(points) do
+				local name, pos = unpack(data)
+				TPTab:CreateButton({
+					Name = name,
+					Callback = function()
+						teleportTo(pos)
+					end,
+				})
+			end
+		end
 
 	local FunTab = Window:CreateTab("Fun", "smile")
 		FunTab:CreateSection("Animation toggles")
@@ -860,89 +789,127 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 				["Gilbert's walk animation"] = "rbxassetid://74514118757125",
 				["Gilbert's idle animation"] = "rbxassetid://93686257760742",
 				["Raged Slasher's run animation"] = "rbxassetid://94555617501510",
-				["Kamikaze's walk animation"] = "rbxassetid:87989829896123",
+				["Kamikaze's walk animation"] = "rbxassetid://87989829896123",
 				["Kamikaze's run animation"] = "rbxassetid://78355773495995",
 				["Mikhail William's walk animation"] = "rbxassetid://100407162198079",
 				["Mikhail William's run animation"] = "rbxassetid://126189604062142",
-				["Head shake animation"] = "rbxassetid://118621065272904",
-				["Unstable animation"] = "rbxassetid://9146103628"
+				["Head shake animation"] = "rbxassetid://118621065272904",					
+				["Unstable animation"] = "rbxassetid://9146103628",
+				["MGF scared animation"] = "rbxassetid://86398576306953",
+				["MGF patrol animation"] = "rbxassetid://131603010936163",
+				["MGF musician animation"] = "rbxassetid://138827413895574",
+				["MGF dying animation"] = "rbxassetid://128467654154071",
+				["MGF injured animation"] = "rbxassetid://94302036679429",
+				["Manhattan Ristretto animation"] = "rbxassetid://113036130862238"
 			}
 
 			local animationTracks = {}
+			local function playToggleAnimation(name, id, state)
+				local character = player.Character
+				if not character or not character:FindFirstChild("Humanoid") then return end
+				local humanoid = character.Humanoid
+				local animator = humanoid:FindFirstChildOfClass("Animator")
+				if not animator then
+					animator = Instance.new("Animator")
+					animator.Parent = humanoid
+				end
+
+				if state then
+					if not animationTracks[name] then
+						local anim = Instance.new("Animation")
+						anim.AnimationId = id
+						local track = animator:LoadAnimation(anim)
+						track.Looped = true
+						track:Play()
+						animationTracks[name] = track
+					else
+						animationTracks[name]:Play()
+					end
+				else
+					if animationTracks[name] then
+						animationTracks[name]:Stop()
+						animationTracks[name]:Destroy()
+						animationTracks[name] = nil
+					end
+				end
+			end
 
 			for name, id in pairs(toggleanimations) do
+				local flagName = name:gsub("%s+", "") .. "Toggle"
+
 				FunTab:CreateToggle({
 					Name = name,
 					CurrentValue = false,
-					Flag = name:gsub("%s", "").."Toggle", -- уникальный флаг
+					Flag = flagName,
 					Callback = function(v)
-						local character = player.Character
-						if not character or not character:FindFirstChild("Humanoid") then return end
-						local Animator = character.Humanoid:FindFirstChildOfClass("Animator")
-						if not Animator then
-							Animator = Instance.new("Animator")
-							Animator.Parent = character.Humanoid
-						end
-
-						if v then
-							if not animationTracks[name] then
-								local anim = Instance.new("Animation")
-								anim.AnimationId = id
-								local track = Animator:LoadAnimation(anim)
-								track.Looped = true
-								track:Play()
-								animationTracks[name] = track
-							else
-								animationTracks[name]:Play()
-							end
-						else
-							if animationTracks[name] then
-								animationTracks[name]:Stop()
-								animationTracks[name]:Destroy()
-								animationTracks[name] = nil
-							end
-						end
+						playToggleAnimation(name, id, v)
 					end
 				})
-			end
 
-		FunTab:CreateSection("Animation buttons")
-			local buttonanimations = {
-				["Chimera's punch animation"] = "rbxassetid://84314656273153",
-				["Chimera's execution animation"] = "rbxassetid://97305733594978",
-				["Chimera's victim animation"] = "rbxassetid://83991914102646",
-				["Chimera's teleport animation"] = "rbxassetid://126809285460597",
-				["Chimera's exposed animation"] = "rbxassetid://75151963392982",
-				["Gilbert's kick animation"] = "rbxassetid://86079982232120",
-				["Gilbert's rage animation"] = "rbxassetid://93590784469036",
-				["Infection fall animation (1)"] = "rbxassetid://99985127815659",
-				["Infection fall animation (2)"] = "rbxassetid://139465334169627",
-				["Cough animation"] = "rbxassetid://111615919261340"
-			}
-
-			for name, id in pairs(buttonanimations) do
-				FunTab:CreateButton({
-					Name = name,
+				FunTab:CreateKeybind({
+					Name = name .. " (keybind)",
+					CurrentKeybind = "",
+					HoldToInteract = false,
+					Flag = name:gsub("%s+", "") .. "Keybind",
 					Callback = function()
-						local character = player.Character
-						if not character or not character:FindFirstChild("Humanoid") then return end
-						local Humanoid = character.Humanoid
-						local Animator = Humanoid:FindFirstChildOfClass("Animator")
-						if not Animator then
-							Animator = Instance.new("Animator")
-							Animator.Parent = Humanoid
-						end
-
-						local anim = Instance.new("Animation")
-						anim.AnimationId = id
-						local track = Animator:LoadAnimation(anim)
-						track:Play()
-						track.Stopped:Connect(function()
-							track:Destroy()
-						end)
+						local current = not Rayfield.Flags[flagName].CurrentValue
+						Rayfield.Flags[flagName]:Set(current)
+						playToggleAnimation(name, id, current)
 					end
 				})
 			end
+
+			FunTab:CreateSection("Animation buttons")
+				local animations = {
+					["Chimera's punch animation"] = "rbxassetid://84314656273153",
+					["Chimera's execution animation"] = "rbxassetid://97305733594978",
+					["Chimera's victim animation"] = "rbxassetid://83991914102646",
+					["Chimera's teleport animation"] = "rbxassetid://126809285460597",
+					["Chimera's exposed animation"] = "rbxassetid://75151963392982",
+					["Gilbert's kick animation"] = "rbxassetid://86079982232120",
+					["Gilbert's rage animation"] = "rbxassetid://93590784469036",
+					["Infection fall animation (1)"] = "rbxassetid://99985127815659",
+					["Infection fall animation (2)"] = "rbxassetid://139465334169627",
+					["Cough animation"] = "rbxassetid://111615919261340"
+				}
+
+				local function playAnimation(id)
+					local character = player.Character
+					if not character or not character:FindFirstChild("Humanoid") then return end
+					local humanoid = character.Humanoid
+					local animator = humanoid:FindFirstChildOfClass("Animator")
+					if not animator then
+						animator = Instance.new("Animator")
+						animator.Parent = humanoid
+					end
+
+					local anim = Instance.new("Animation")
+					anim.AnimationId = id
+					local track = animator:LoadAnimation(anim)
+					track:Play()
+					track.Stopped:Connect(function()
+						track:Destroy()
+					end)
+				end
+
+				for name, id in pairs(animations) do
+					FunTab:CreateButton({
+						Name = name,
+						Callback = function()
+							playAnimation(id)
+						end,
+					})
+
+					FunTab:CreateKeybind({
+						Name = name .. " (keybind)",
+						CurrentKeybind = "",
+						HoldToInteract = false,
+						Flag = name:gsub("%s+", "") .. "Keybind",
+						Callback = function()
+							playAnimation(id)
+						end,
+					})
+				end
 
 	local InfoTab = Window:CreateTab("Information", "users")
 		InfoTab:CreateLabel("Thank you so much for using Examination hub! If you want to suggest idea or report bug — please, tell in DM!")
