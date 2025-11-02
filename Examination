@@ -8,7 +8,6 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 	local playerGui = player:WaitForChild("PlayerGui")
 	local char = player.Character
 	local humanoid = char:WaitForChild("Humanoid")
-
 	local Window = Rayfield:CreateWindow({
 		Name = "Examination hub",
 		Icon = 0,
@@ -70,29 +69,6 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 					end
 				end
 			end)
-
-			MainTab:CreateButton({
-				Name = "Burn yourself",
-				Callback = function()
-					if char and humanoid and char:FindFirstChild("IsHunter") then
-						char.IsHunter.Value = true
-						humanoid.Health = 20
-					end
-				end,
-			})
-
-			MainTab:CreateKeybind({
-				Name = "Burn yourself (keybind)",
-				CurrentKeybind = "B",
-				HoldToInteract = false,
-				Flag = "BurnoutKeybind",
-				Callback = function()
-					if char and humanoid and char:FindFirstChild("IsHunter") then
-						char.IsHunter.Value = true
-						humanoid.Health = 20
-					end
-				end,
-			})
 
 		MainTab:CreateSection("Health")
 			MainTab:CreateButton({
@@ -704,9 +680,9 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 						end
 					end
 				end)
-				
-			GuiTab:CreateSection("Death UI")
+
 				local GasmaskHidden = false
+
 				local function updateGasmaskUI()
 					local gasmaskGui = player:FindFirstChild("PlayerGui") and player.PlayerGui:FindFirstChild("Gasmask")
 					if gasmaskGui then
@@ -714,7 +690,7 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 					end
 				end
 
-				local GasmaskUIToggle = GuiTab:CreateToggle({
+				local GasmaskUIToggle = MainTab:CreateToggle({
 					Name = "Gasmask UI",
 					CurrentValue = not GasmaskHidden,
 					Flag = "GasmaskUIToggle",
@@ -765,6 +741,11 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 		local function teleportTo(position)
 			local player = game.Players.LocalPlayer
+			if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
+				warn("[Teleport] Character not loaded yet.")
+				return
+			end
+
 			player.Character.HumanoidRootPart.CFrame = CFrame.new(position)
 		end
 
