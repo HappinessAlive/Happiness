@@ -590,135 +590,136 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 				end,
 			})
 
-			GuiTab:CreateSection("ESP UI")
-				local ESPFolder = workspace:WaitForChild("Characters")
-				local ESPEnabled = false
-				local highlights = {}
+		GuiTab:CreateSection("ESP UI")
+			local ESPFolder = workspace:WaitForChild("Characters")
+			local ESPEnabled = false
+			local highlights = {}
 
-				local function createHighlight(character)
-					if not character or highlights[character] then return end
-					local highlight = Instance.new("Highlight")
-					highlight.Parent = character
-					highlight.Adornee = character
-					if character:FindFirstChild("Humanoid") then
-						if game.Players:GetPlayerFromCharacter(character) then
-							highlight.FillColor = Color3.fromRGB(80, 109, 84)
-						else
-							highlight.FillColor = Color3.fromRGB(255, 0, 0)
-						end
-						highlight.FillTransparency = 0.25
-						highlight.OutlineTransparency = 0
+			local function createHighlight(character)
+				if not character or highlights[character] then return end
+				local highlight = Instance.new("Highlight")
+				highlight.Parent = character
+				highlight.Adornee = character
+				if character:FindFirstChild("Humanoid") then
+					if game.Players:GetPlayerFromCharacter(character) then
+						highlight.FillColor = Color3.fromRGB(80, 109, 84)
+					else
+						highlight.FillColor = Color3.fromRGB(255, 0, 0)
 					end
+					highlight.FillTransparency = 0.25
+					highlight.OutlineTransparency = 0
+				end
 					highlight.Enabled = ESPEnabled
 					highlights[character] = highlight
-				end
+			end
 
-				local function setESPEnabled(state)
-					ESPEnabled = state
-					for _, highlight in pairs(highlights) do
-						if highlight then
-							highlight.Enabled = state
-						end
+			local function setESPEnabled(state)
+				ESPEnabled = state
+				for _, highlight in pairs(highlights) do
+					if highlight then
+						highlight.Enabled = state
 					end
 				end
+			end
 
-				local ESPToggle = GuiTab:CreateToggle({
-					Name = "ESP",
-					CurrentValue = false,
-					Flag = "ESPToggle",
-					Callback = function(value)
-						ESPEnabled = value
-						setESPEnabled(value)
-					end
-				})
-
-				ESPFolder.ChildAdded:Connect(function(character)
-					task.wait(0.1)
-					createHighlight(character)
-				end)
-
-				for _, character in pairs(ESPFolder:GetChildren()) do
-					createHighlight(character)
+			local ESPToggle = GuiTab:CreateToggle({
+				Name = "ESP",
+				CurrentValue = false,
+				Flag = "ESPToggle",
+				Callback = function(value)
+					ESPEnabled = value
+					setESPEnabled(value)
 				end
+			})
 
-			GuiTab:CreateSection("Death UI")
-				local DeathHidden = false
+			ESPFolder.ChildAdded:Connect(function(character)
+				task.wait(0.1)
+				createHighlight(character)
+			end)
 
-				local function updateDeathUI()
-					local deathGui = player:FindFirstChild("PlayerGui") and player.PlayerGui:FindFirstChild("Death")
-					if deathGui then
-						deathGui.Enabled = not DeathHidden
-					end
+			for _, character in pairs(ESPFolder:GetChildren()) do
+				createHighlight(character)
+			end
+
+		GuiTab:CreateSection("Death UI")
+			local DeathHidden = false
+
+			local function updateDeathUI()
+				local deathGui = player:FindFirstChild("PlayerGui") and player.PlayerGui:FindFirstChild("Death")
+				if deathGui then
+					deathGui.Enabled = not DeathHidden
 				end
+			end
 
-				local DeathUIToggle = GuiTab:CreateToggle({
-					Name = "Death UI",
-					CurrentValue = not DeathHidden,
-					Flag = "DeathUIToggle",
-					Callback = function(value)
-						DeathHidden = not value
-						updateDeathUI()
-					end,
-				})
-
-				player.CharacterAdded:Connect(function()
-					task.wait(0.5)
+			local DeathUIToggle = GuiTab:CreateToggle({
+				Name = "Death UI",
+				CurrentValue = not DeathHidden,
+				Flag = "DeathUIToggle",
+				Callback = function(value)
+					DeathHidden = not value
 					updateDeathUI()
-				end)
+				end,
+			})
 
-				task.defer(function()
-					if Rayfield.Flags and Rayfield.Flags["DeathUIToggle"] then
-						local saved = Rayfield.Flags["DeathUIToggle"].Value
-						if saved ~= nil then
-							DeathHidden = not saved
-							if DeathUIToggle and DeathUIToggle.SetValue then
-								pcall(function()
-									DeathUIToggle:SetValue(saved)
-								end)
-							end
-							updateDeathUI()
+			player.CharacterAdded:Connect(function()
+				task.wait(0.5)
+				updateDeathUI()
+			end)
+
+			task.defer(function()
+				if Rayfield.Flags and Rayfield.Flags["DeathUIToggle"] then
+					local saved = Rayfield.Flags["DeathUIToggle"].Value
+					if saved ~= nil then
+						DeathHidden = not saved
+						if DeathUIToggle and DeathUIToggle.SetValue then
+							pcall(function()
+								DeathUIToggle:SetValue(saved)
+							end)
 						end
-					end
-				end)
-
-				local GasmaskHidden = false
-
-				local function updateGasmaskUI()
-					local gasmaskGui = player:FindFirstChild("PlayerGui") and player.PlayerGui:FindFirstChild("Gasmask")
-					if gasmaskGui then
-						gasmaskGui.Enabled = not GasmaskHidden
+						updateDeathUI()
 					end
 				end
+			end)
 
-				local GasmaskUIToggle = MainTab:CreateToggle({
-					Name = "Gasmask UI",
-					CurrentValue = not GasmaskHidden,
-					Flag = "GasmaskUIToggle",
-					Callback = function(value)
-						GasmaskHidden = not value
-						updateGasmaskUI()
-					end,
-				})
+		GuiTab:CreateSection("Gasmask UI")
+			local GasmaskHidden = false
 
-				player.CharacterAdded:Connect(function()
-					task.wait(0.5)
+			local function updateGasmaskUI()
+				local gasmaskGui = player:FindFirstChild("PlayerGui") and player.PlayerGui:FindFirstChild("Gasmask")
+				if gasmaskGui then
+					gasmaskGui.Enabled = not GasmaskHidden
+				end
+			end
+
+			local GasmaskUIToggle = GuiTab:CreateToggle({
+				Name = "Gasmask UI",
+				CurrentValue = not GasmaskHidden,
+				Flag = "GasmaskUIToggle",
+				Callback = function(value)
+					GasmaskHidden = not value
 					updateGasmaskUI()
-				end)
+				end,
+			})
 
-				task.defer(function()
-					if Rayfield.Flags and Rayfield.Flags["GasmaskUIToggle"] then
-						local saved = Rayfield.Flags["GasmaskUIToggle"].Value
-						if saved ~= nil then
-							GasmaskHidden = not saved
-							if GasmaskUIToggle and GasmaskUIToggle.SetValue then
-								pcall(function()
-									GasmaskUIToggle:SetValue(saved)
-								end)
-							end
-							updateGasmaskUI()
+			player.CharacterAdded:Connect(function()
+				task.wait(0.5)
+				updateGasmaskUI()
+			end)
+
+			task.defer(function()
+				if Rayfield.Flags and Rayfield.Flags["GasmaskUIToggle"] then
+					local saved = Rayfield.Flags["GasmaskUIToggle"].Value
+					if saved ~= nil then
+						GasmaskHidden = not saved
+						if GasmaskUIToggle and GasmaskUIToggle.SetValue then
+							pcall(function()
+								GasmaskUIToggle:SetValue(saved)
+							end)
 						end
+						updateGasmaskUI()
 					end
-				end)
+				end
+			end)
 
 	local TPTab = Window:CreateTab("Teleports", "fast-forward")
 		local teleportPoints = {
