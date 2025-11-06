@@ -26,6 +26,9 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 	})
 
 	local MainTab = Window:CreateTab("Main", "home")
+		MainTab:CreateSection("Change log")
+			MainTab:CreateParagraph({Title = "NOVEMBER 6", Content = "Added map manipulation buttons · Added D-Zero's animations · Added Adam Dice's animations"})
+
 		MainTab:CreateSection("Hide & Seek")
 			local HunterModeEnabled = false
 			local HunterModeToggle = MainTab:CreateToggle({
@@ -94,7 +97,6 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 		MainTab:CreateSection("Camera")
 			local cameraToggleState = false
-
 			local function ApplyCameraSettings()
 				if not player then return end
 				if cameraToggleState == true then
@@ -134,7 +136,6 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 				Flag = "CameraKeybind",
 				Callback = function()
 					cameraToggleState = not cameraToggleState
-
 					if ThirdPersonToggle and ThirdPersonToggle.SetValue then
 						pcall(function()
 							Toggle:SetValue(cameraToggleState)
@@ -213,6 +214,33 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 					ApplyChatState()
 				end
 			end)
+		MainTab:CreateSection("Map")
+			MainTab:CreateButton({
+				Name = "Remove Elephant Foot",
+				Callback = function()
+					local foot = game.workspace:FindFirstChild("LookAtMe")
+					if foot then foot:Destroy() end
+					if not foot then return end
+				end,
+			})
+
+			MainTab:CreateButton({
+				Name = "Remove console teleport",
+				Callback = function()
+					local teleport = game.workspace:FindFirstChild("ConsoleTeleport")
+					if teleport then teleport:Destroy() end
+					if not teleport then return end
+				end,
+			})
+
+			MainTab:CreateButton({
+				Name = "Remove radiation",
+				Callback = function()
+					local radiation = game.workspace:FindFirstChild("Radiation")
+					if radiation then radiation:Destroy() end
+					if not radiation then return end
+				end,
+			})
 
 	local MovementTab = Window:CreateTab("Movement", "move")
 		MovementTab:CreateSection("WalkSpeed")
@@ -268,7 +296,6 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 		MovementTab:CreateSection("JumpHeight")
 			local jumpHeight = 2
 			local lockJump = false
-
 			local function applyJump()
 				if humanoid and humanoid.Parent then
 					humanoid.UseJumpPower = false
@@ -296,7 +323,6 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 				CurrentValue = lockJump,
 				Flag = "JumpHeightToggle",
 				Callback = function(v)
-					
 					lockJump = v
 					if v then
 						applyJump()
@@ -594,7 +620,6 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 			local ESPFolder = workspace:WaitForChild("Characters")
 			local ESPEnabled = false
 			local highlights = {}
-
 			local function createHighlight(character)
 				if not character or highlights[character] then return end
 				local highlight = Instance.new("Highlight")
@@ -643,7 +668,6 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 		GuiTab:CreateSection("Death UI")
 			local DeathHidden = false
-
 			local function updateDeathUI()
 				local deathGui = player:FindFirstChild("PlayerGui") and player.PlayerGui:FindFirstChild("Death")
 				if deathGui then
@@ -683,7 +707,6 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 		GuiTab:CreateSection("Gasmask UI")
 			local GasmaskHidden = false
-
 			local function updateGasmaskUI()
 				local gasmaskGui = player:FindFirstChild("PlayerGui") and player.PlayerGui:FindFirstChild("Gasmask")
 				if gasmaskGui then
@@ -731,6 +754,7 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 				{"Basement valve", Vector3.new(-225, -35, -1635)},
 				{"Generator-2", Vector3.new(-140, -30, -1145)},
 			},
+
 			["Sector 2"] = {
 				{"Sector entrance", Vector3.new(-110, -10, -825)},
 				{"Russman's office", Vector3.new(38, -10, -895)},
@@ -742,11 +766,6 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 		local function teleportTo(position)
 			local player = game.Players.LocalPlayer
-			if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
-				warn("[Teleport] Character not loaded yet.")
-				return
-			end
-
 			player.Character.HumanoidRootPart.CFrame = CFrame.new(position)
 		end
 
@@ -782,7 +801,8 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 				["MGF musician animation"] = "rbxassetid://138827413895574",
 				["MGF dying animation"] = "rbxassetid://128467654154071",
 				["MGF injured animation"] = "rbxassetid://94302036679429",
-				["Manhattan Ristretto animation"] = "rbxassetid://113036130862238"
+				["Manhattan Ristretto animation"] = "rbxassetid://113036130862238",
+				["Adam Dice animation (died)"] = "rbxassetid://114023816208972"
 			}
 
 			local animationTracks = {}
@@ -852,7 +872,10 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 					["Gilbert's rage animation"] = "rbxassetid://93590784469036",
 					["Infection fall animation (1)"] = "rbxassetid://99985127815659",
 					["Infection fall animation (2)"] = "rbxassetid://139465334169627",
-					["Cough animation"] = "rbxassetid://111615919261340"
+					["Cough animation"] = "rbxassetid://111615919261340",
+					["Adam Dice's death"] = "rbxassetid://102514666836619",
+					["D-Zero's vent animation"] = "rbxassetid://116242805691656",
+					["D-Zero's punch animation"] = "rbxassetid://83700864626681"
 				}
 
 				local function playAnimation(id)
@@ -894,11 +917,9 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 				end
 
 	local InfoTab = Window:CreateTab("Information", "users")
-		InfoTab:CreateLabel("Thank you so much for using Examination hub! If you want to suggest idea or report bug — please, tell in DM!")
 		InfoTab:CreateSection("Credits")
 			InfoTab:CreateLabel("mktlvu — creator", 89731341681675)
 			InfoTab:CreateLabel("ChatGPT — assistant", 81220310187689)
-		InfoTab:CreateDivider()
 
 		InfoTab:CreateSection("Profiles")
 			InfoTab:CreateLabel("Github: HappinessAlive", "github")
@@ -907,14 +928,14 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 	local SettingsTab = Window:CreateTab("Settings", "settings")
 		SettingsTab:CreateSection("Themes")
 			local themes = {
-				["Default theme"] = "Default",
-				["Amber glow theme"] = "AmberGlow",
-				["Amethyst theme"] = "Amethyst",
-				["Bloom theme"] = "Bloom",
-				["Dark blue theme"] = "DarkBlue",
-				["Green theme"] = "Green",
-				["Light theme"] = "Light",
-				["Ocean theme"] = "Ocean",
+				["Default"] = "Default",
+				["Amber glow"] = "AmberGlow",
+				["Amethyst"] = "Amethyst",
+				["Bloom"] = "Bloom",
+				["Dark blue"] = "DarkBlue",
+				["Green"] = "Green",
+				["Light"] = "Light",
+				["Ocean"] = "Ocean",
 				["Serenity"] = "Serenity"
 			}
 
