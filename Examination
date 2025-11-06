@@ -27,7 +27,7 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 	local MainTab = Window:CreateTab("Main", "home")
 		MainTab:CreateSection("Change log")
-			MainTab:CreateParagraph({Title = "NOVEMBER 6", Content = "Added map manipulation buttons · Added D-Zero's animations · Added Adam Dice's animations"})
+			MainTab:CreateParagraph({Title = "NOVEMBER 6", Content = "Added map manipulation buttons · Added D-Zero's animations · Added Adam Dice's animations · Added sus animation"})
 
 		MainTab:CreateSection("Hide & Seek")
 			local HunterModeEnabled = false
@@ -802,7 +802,8 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 				["MGF dying animation"] = "rbxassetid://128467654154071",
 				["MGF injured animation"] = "rbxassetid://94302036679429",
 				["Manhattan Ristretto animation"] = "rbxassetid://113036130862238",
-				["Adam Dice animation (died)"] = "rbxassetid://114023816208972"
+				["Adam Dice animation (died)"] = "rbxassetid://114023816208972",
+				["Masterbait"] = "rbxassetid://72042024"
 			}
 
 			local animationTracks = {}
