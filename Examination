@@ -550,8 +550,8 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 	local GuiTab = Window:CreateTab("GUI", "panel-left")
 		GuiTab:CreateSection("Infection UI")
-			local Sound = playerGui:WaitForChild("Gasmask"):WaitForChild("MaskHole"):WaitForChild("Infection"):WaitForChild("ACTIVATE")
-			local Music = playerGui.Gasmask.MaskHole.Infection:WaitForChild("HATRED")
+			local Sound = playerGui:WaitForChild("Gasmask"):WaitForChild("MaskHole"):WaitForChild("ACTIVATE")
+			local Music = playerGui.Gasmask.MaskHole:WaitForChild("HATRED_OSTS"):WaitForChild("HATRED")
 			local Animation = Instance.new("Animation")
 			Animation.AnimationId = "rbxassetid://136775254837264"
 			local AnimationTrack
