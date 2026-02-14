@@ -19,7 +19,7 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 		DisableRayfieldPrompts = false,
 		DisableBuildWarnings = false,
 		ConfigurationSaving = {
-	    	Enabled = true,
+			Enabled = true,
 			FolderName = "Examination",
 			FileName = "Hub"
 		},
@@ -956,3 +956,5 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 					Rayfield:Destroy()
 				end,
 			})
+
+Rayfield:LoadConfiguration()
