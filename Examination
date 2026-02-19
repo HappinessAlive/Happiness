@@ -86,7 +86,7 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 			MainTab:CreateKeybind({
 				Name = "Reset (keybind)",
 				CurrentKeybind = "V",
-				HoldToInteract = false,
+				HoldToInteract = true,
 				Flag = "ResetKeybind",
 				Callback = function()
 					if char and humanoid then
@@ -785,22 +785,26 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 	local FunTab = Window:CreateTab("Fun", "smile")
 		FunTab:CreateSection("Animation toggles")
 			local toggleanimations = {
-				["Chimera's walk animation"] = "rbxassetid://97147187591899",
-				["Chimera's run animation"] = "rbxassetid://95054120636955",
-				["Gilbert's walk animation"] = "rbxassetid://74514118757125",
+				["Legacy Chimera's walk animation"] = "rbxassetid://97147187591899",
+				["Legacy Chimera's run animation"] = "rbxassetid://95054120636955",
 				["Gilbert's idle animation"] = "rbxassetid://93686257760742",
 				["Raged Slasher's run animation"] = "rbxassetid://94555617501510",
 				["Kamikaze's walk animation"] = "rbxassetid://87989829896123",
 				["Kamikaze's run animation"] = "rbxassetid://78355773495995",
 				["Mikhail William's walk animation"] = "rbxassetid://100407162198079",
 				["Mikhail William's run animation"] = "rbxassetid://126189604062142",
-				["Head shake animation"] = "rbxassetid://118621065272904",					
+				["Dave's walk animation"] = "rbxassetid://102796637818967",
+				["Head shake animation"] = "rbxassetid://118621065272904",
 				["Unstable animation"] = "rbxassetid://9146103628",
 				["MGF scared animation"] = "rbxassetid://86398576306953",
 				["MGF patrol animation"] = "rbxassetid://131603010936163",
 				["MGF musician animation"] = "rbxassetid://138827413895574",
 				["MGF dying animation"] = "rbxassetid://128467654154071",
 				["MGF injured animation"] = "rbxassetid://94302036679429",
+				["Viral Executioner's idle animation"] = "rbxassetid://97492866706742",
+				["Viral Executioner's walk animation"] = "rbxassetid://103392791669526",
+				["Viral Commander's walk animation"] = "rbxassetid://17621267464",
+				["Viral Commander's run animation"] = "rbxassetid://111821553591135",
 				["Manhattan Ristretto animation"] = "rbxassetid://113036130862238",
 				["Adam Dice animation (died)"] = "rbxassetid://114023816208972",
 				["Masterbait"] = "rbxassetid://72042024"
@@ -851,7 +855,7 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 				FunTab:CreateKeybind({
 					Name = name .. " (keybind)",
-					CurrentKeybind = "",
+					CurrentKeybind = "Slash",
 					HoldToInteract = false,
 					Flag = name:gsub("%s+", "") .. "Keybind",
 					Callback = function()
@@ -864,19 +868,22 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 			FunTab:CreateSection("Animation buttons")
 				local animations = {
-					["Chimera's punch animation"] = "rbxassetid://84314656273153",
-					["Chimera's execution animation"] = "rbxassetid://97305733594978",
-					["Chimera's victim animation"] = "rbxassetid://83991914102646",
-					["Chimera's teleport animation"] = "rbxassetid://126809285460597",
-					["Chimera's exposed animation"] = "rbxassetid://75151963392982",
-					["Gilbert's kick animation"] = "rbxassetid://86079982232120",
-					["Gilbert's rage animation"] = "rbxassetid://93590784469036",
+					["Chimera's death animation"] = "rbxassetid://72189339897414",
+					["Chimera's exposed animation"] = "rbxassetid://99134420474156",
+					["Taunt animation"] = "rbxassetid://80378935722704",
+					["Legacy Chimera's punch animation"] = "rbxassetid://84314656273153",
+					["Legacy Chimera's execution animation"] = "rbxassetid://97305733594978",
+					["Legacy Chimera's victim animation"] = "rbxassetid://83991914102646",
+					["Legacy Chimera's teleport animation"] = "rbxassetid://126809285460597",
+					["Legacy Chimera's exposed animation"] = "rbxassetid://75151963392982",
+					["Kick animation"] = "rbxassetid://86079982232120",
 					["Infection fall animation (1)"] = "rbxassetid://99985127815659",
 					["Infection fall animation (2)"] = "rbxassetid://139465334169627",
 					["Cough animation"] = "rbxassetid://111615919261340",
 					["Adam Dice's death"] = "rbxassetid://102514666836619",
 					["D-Zero's vent animation"] = "rbxassetid://116242805691656",
-					["D-Zero's punch animation"] = "rbxassetid://83700864626681"
+					["Sinitzyn's swing animation"] = "rbxassetid://109639053938974",
+					["Punch animation"] = "rbxassetid://83700864626681"
 				}
 
 				local function playAnimation(id)
@@ -908,7 +915,7 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 					FunTab:CreateKeybind({
 						Name = name .. " (keybind)",
-						CurrentKeybind = "",
+						CurrentKeybind = "Slash",
 						HoldToInteract = false,
 						Flag = name:gsub("%s+", "") .. "Keybind",
 						Callback = function()
