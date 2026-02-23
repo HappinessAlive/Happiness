@@ -1,0 +1,872 @@
+-- wind ui initialization
+local windUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+
+-- localization
+windUI:Localization({
+	Enabled = true,
+	Prefix = "l:",
+	DefaultLanguage = "en",
+	Translations = {
+		["en"] = {
+			["openButton"] = "Open UI",
+			["mainTab"] = "Main",
+			["movementTab"] = "Movement",
+			["teleportTab"] = "Teleports",
+			["lightingTab"] = "Lighting",
+			["guiTab"] = "Interface",
+			["funTab"] = "Fun",
+			["aboutTab"] = "About",
+			["loadSuccess_title"] = "Examination hub loaded successfully!",
+			["loadSuccess_desc"] = "Thanks for using Examination hub, please leave a feedback on script's page if you want it to be improved in future!",
+			["lang_title"] = "Choose your language",
+			["lang_desc"] = "This will set the UI language.",
+			["lang_english"] = "🏴󠁧󠁢󠁥󠁮󠁧󠁿 English",
+			["lang_russian"] = "🇷🇺 Russian",
+			["buttons_title"] = "Buttons",
+			["values_title"] = "Values",
+			["map_title"] = "Map",
+            ["changelog"] = "Change-log",
+            ["settings"] = "Settings",
+            ["lang_switch"] = "Switch language",
+			["suicideButton_title"] = "Suicide",
+			["suicideButton_desc"] = "Kill yourself.",
+			["suicideBind_title"] = "Suicide (keybind)",
+			["suicideBind_desc"] = "Keybind to kill yourself.",
+			["hunter_title"] = "Hunter mode",
+			["hunter_desc"] = "Toggles the hunter mode that is speeding you up.",
+			["thirdperson_title"] = "Third person",
+			["thirdperson_desc"] = "Toggles the camera third person mode.",
+			["chat_title"] = "Chat history",
+			["chat_desc"] = "Toggles the chat history.",
+			["elephant_foot"] = "Remove elephant's foot",
+			["arabic_man"] = "Remove arabic dude",
+			["console_tp"] = "Remove console teleport",
+			["radiation"] = "Remove radiation",
+			["speed_title"] = "Speed",
+			["speed_desc"] = "Speed multiplier.",
+			["jump_title"] = "Jump",
+			["jump_desc"] = "Jump multiplier.",
+			["sector1"] = "Sector 1",
+			["sector2"] = "Sector 2",
+			["sector3"] = "Sector 3",
+			["out-of-map"] = "Out of map",
+			["sectorEntrance"] = "Sector entrance",
+			["keycard"] = "Keycard",
+			["spawn"] = "Spawn",
+			["gen1"] = "Generator 1",
+			["reactor4"] = "Reactor 4",
+			["mutant"] = "Mutant-crawler",
+			["valve"] = "Valve",
+			["gen2"] = "Generator 2",
+			["russmanOffice"] = "Russman's office",
+			["armory"] = "Armory",
+			["steve"] = "Steve Remington",
+			["crate_1-3"] = "Weapon crates 1-3",
+			["crate_4"] = "Weapon crate 4",
+			["crate_5"] = "Weapon crate 5",
+			["crate_6"] = "Weapon crate 6",
+			["c4_1"] = "C4 crate 1",
+			["c4_2"] = "C4 crate 2",
+			["c4_3"] = "C4 crate 3",
+			["c4_4"] = "C4 crate 4",
+			["baseplate"] = "Baseplate",
+			["esp_desc"] = "Toggles the ESP.",
+			["infection_title"] = "Controllable infected UI",
+			["infection_desc"] = "Toggles the controllable infected UI.",
+			["gasmask_title"] = "Remove gasmask UI",
+			["death_title"] = "Remove death UI",
+			["chimera_title"] = "Remove Chimera's terror UI",
+			["gilbert_title"] = "Remove Gilbert's terror UI",
+			["anim_toggles"] = "Animation toggles",
+			["anim_buttons"] = "Animation buttons",
+            ["changelog_date"] = "February 23",
+            ["changelog_text"] = "Script got completely rewritten: added more optimization, more animations, moved to WindUI. Lighting is temporary unavailable",
+            ["windKeybind_title"] = "WindUI keybind",
+			["windKeybind_desc"] = "Keybind to open/close WindUI.",
+			["windDestroy_title"] = "Destroy WindUI",
+			["windDestroy_desc"] = "Destroys UI and its connections."
+		},
+		["ru"] = {
+			["openButton"] = "Открыть UI",
+			["mainTab"] = "Основное",
+			["movementTab"] = "Передвижение",
+			["teleportTab"] = "Телепорты",
+			["lightingTab"] = "Освещение",
+			["guiTab"] = "Интерфейс",
+			["funTab"] = "Развлечения",
+			["aboutTab"] = "Информация",
+			["loadSuccess_title"] = "Examination hub успешно загружен!",
+			["loadSuccess_desc"] = "Спасибо за использование Examination hub, пожалуйста оставь обратную связь на странице скрипта если вы хотите его улучшения!",
+			["lang_title"] = "Язык",
+			["lang_desc"] = "Выбери свой язык.",
+			["lang_english"] = "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Английский",
+			["lang_russian"] = "🇷🇺 Русский",
+			["buttons_title"] = "Кнопки",
+			["values_title"] = "Значения",
+			["map_title"] = "Карта",
+            ["changelog"] = "Журнал изменений",
+            ["settings"] = "Настройки",
+            ["lang_switch"] = "Сменить язык",
+			["suicideButton_title"] = "Суицид",
+			["suicideButton_desc"] = "Убей себя.",
+			["suicideBind_title"] = "Суицид (клавиша)",
+			["suicideBind_desc"] = "Клавиша для самоубийства.",
+			["hunter_title"] = "Режим охотника",
+			["hunter_desc"] = "Переключает режим охотника что ускоряет тебя.",
+			["thirdperson_title"] = "Третье лицо",
+			["thirdperson_desc"] = "Переключает третье лицо камеры.",
+			["chat_title"] = "История чата",
+			["chat_desc"] = "Переключает историю чата.",
+			["elephant_foot"] = "Удалить слоновью ногу",
+			["arabic_man"] = "Удалить арабского человека",
+			["console_tp"] = "Удалить консольный телепорт",
+			["radiation"] = "Удалить радиацию",
+			["speed_title"] = "Скорость",
+			["speed_desc"] = "Умножает скорость передвижения.",
+			["jump_title"] = "Прыгучесть",
+			["jump_desc"] = "Умножает высоту прыжка.",
+			["sector1"] = "Сектор 1",
+			["sector2"] = "Сектор 2",
+			["sector3"] = "Сектор 3",
+			["out-of-map"] = "За картой",
+			["sectorEntrance"] = "Вход в сектор",
+			["keycard"] = "Карта доступа",
+			["spawn"] = "Спавн",
+			["gen1"] = "Генератор 1",
+			["reactor4"] = "Реактор 4",
+			["mutant"] = "Мутант-ползун",
+			["valve"] = "Клапан",
+			["gen2"] = "Генератор 2",
+			["russmanOffice"] = "Офис Руссмана",
+			["armory"] = "Оружейная",
+			["steve"] = "Стив Ремингтон",
+			["crate_1-3"] = "Ящики с оружием 1-3",
+			["crate_4"] = "Ящик с оружием 4",
+			["crate_5"] = "Ящик с оружием 5",
+			["crate_6"] = "Ящик с оружием 6",
+			["c4_1"] = "Ящик для подрыва 1",
+			["c4_2"] = "Ящик для подрыва 2",
+			["c4_3"] = "Ящик для подрыва 3",
+			["c4_4"] = "Ящик для подрыва 4",
+			["baseplate"] = "Платформа",
+			["esp_desc"] = "Переключает видимость ESP.",
+			["infection_title"] = "Интерфейс контролируемой инфекции",
+			["infection_desc"] = "Переключает интерфейс контролируемой инфекции.",
+			["gasmask_title"] = "Удалить интерфейс газовой маски",
+			["death_title"] = "Удалить экран смерти",
+			["chimera_title"] = "Удалить интерфейс террора Химеры",
+			["chimera_title"] = "Удалить интерфейс террора Гилберта",
+			["anim_toggles"] = "Переключатели анимаций",
+			["anim_buttons"] = "Кнопки для анимаций",
+            ["changelog_date"] = "23 февраля",
+            ["changelog_text"] = "Скрипт был полностью переписан: добавлено больше оптимизации, анимаций, переехали на WindUI. Освещение временно недоступно.",
+            ["windKeybind_title"] = "Клавиша WindUI",
+			["windKeybind_desc"] = "Клавиша для открытия/закрытия WindUI.",
+			["windDestroy_title"] = "Уничтожить WindUI",
+			["windDestroy_desc"] = "Уничтожает интерфейс и его файлы."
+		}
+	}
+})
+
+-- window
+local window = windUI:CreateWindow({
+	Title = "Examination Hub",
+	Author = "by Happiness",
+	Folder = "Examination",
+	ScrollBarEnabled = true,
+	User = {
+		Enabled = true,
+		Anonymous = false,
+		Callback = nil
+	}
+})
+
+window:Tag({
+	Title = "v2.0",
+	Icon = "badge-check",
+	Color = Color3.fromHex("#30ff6a"),
+	Radius = 13
+})
+
+window:Dialog({
+	Icon = "languages",
+	Title = "l:lang_title",
+	Content = "l:lang_desc",
+	Buttons = {
+		{
+			Title = "l:lang_english",
+			Callback = function()
+				windUI:SetLanguage("en")
+			end
+		},
+		{
+			Title = "l:lang_russian",
+			Callback = function()
+				windUI:SetLanguage("ru")
+			end
+		}
+	}
+})
+
+window:EditOpenButton({
+	Title = "l:openButton",
+	CornerRadius = UDim.new(0,16),
+	StrokeThickness = 1,
+	Enabled = true,
+	Draggable = true
+})
+
+-- configuration manager
+local cfgManager = window.ConfigManager
+local examCfg = cfgManager:CreateConfig("examCfg")
+
+-- tabs
+local mainTab = window:Tab({Title = "l:mainTab", Icon = "house"})
+local movementTab = window:Tab({Title = "l:movementTab", Icon = "footprints"})
+local teleportTab = window:Tab({Title = "l:teleportTab", Icon = "fast-forward"})
+local lightingTab = window:Tab({Title = "l:lightingTab", Icon = "lightbulb", Locked = true})
+local guiTab = window:Tab({Title = "l:guiTab", Icon = "gamepad-2"})
+local funTab = window:Tab({Title = "l:funTab", Icon = "smile"})
+local aboutTab = window:Tab({Title = "l:aboutTab", Icon = "badge-info"})
+
+-- optimization
+local chatService = game:GetService("TextChatService")
+local runService = game:GetService("RunService")
+local lighting = game:GetService("Lighting")
+local players = game:GetService("Players")
+local plr = players.LocalPlayer
+local plrGui = plr.PlayerGui
+
+-- default values
+local thirdPersonEnabled = false
+local chatEnabled = false
+local baseSpeed = 8
+local speedMultiplier = 1
+local speedEnabled = false
+local jumpMultiplier = 1
+local jumpEnabled = false
+local charsFolder = workspace.Characters
+local espEnabled = false
+local plrColor = Color3.fromHex("#506d54")
+local npcColor = Color3.fromHex("#750000")
+local animationTracks = {}
+local activeToggles = {}
+
+-- tables
+local espObjects = {}
+
+-- functions
+local function applyCam()
+	if thirdPersonEnabled then
+		plr.CameraMode = Enum.CameraMode.Classic
+		plr.CameraMaxZoomDistance = 15
+	else
+		plr.CameraMode = Enum.CameraMode.LockFirstPerson
+	end
+end
+
+local function apply(cfg)
+	if not cfg then return end
+	cfg.Enabled = chatEnabled
+	cfg:GetPropertyChangedSignal("Enabled"):Connect(function()
+		if chatEnabled and not cfg.Enabled then
+			cfg.Enabled = true
+		end
+	end)
+end
+
+local function init()
+	apply(chatService:FindFirstChild("ChatWindowConfiguration"))
+end
+
+chatService.ChildAdded:Connect(function(c)
+	if c.Name == "ChatWindowConfiguration" then apply(c) end
+end)
+
+local function removeObject(name)
+	local obj = workspace:FindFirstChild(name, true)
+	if obj then
+		pcall(function()
+			obj:Destroy()
+		end)
+	end
+end
+
+runService.RenderStepped:Connect(function()
+	local char = plr.Character
+	if not char then return end
+	local hum = char:FindFirstChildOfClass("Humanoid")
+	if not hum then return end
+	local current = hum.WalkSpeed
+	local expected = baseSpeed * speedMultiplier
+	if math.abs(current - expected) > 0.05 then
+		baseSpeed = current
+	end
+	if speedEnabled then
+		hum.WalkSpeed = baseSpeed * speedMultiplier
+	end
+end)
+
+runService.RenderStepped:Connect(function()
+	if not jumpEnabled then return end
+	local char = plr.Character
+	if not char then return end
+	local hum = char:FindFirstChildOfClass("Humanoid")
+	if not hum then return end
+	hum.UseJumpPower = false
+	hum.JumpHeight = 1 * jumpMultiplier
+end)
+
+local function teleportTo(position)
+	plr.Character.HumanoidRootPart.CFrame = CFrame.new(position)
+end
+
+local function createHealth(character)
+	local hum = character:FindFirstChildOfClass("Humanoid")
+	local head = character:FindFirstChild("Head")
+	if not hum or not head then return end
+	if head:FindFirstChild("espHealth") then return end
+	local bb = Instance.new("BillboardGui")
+	bb.Name = "espHealth"
+	bb.Size = UDim2.new(4, 0, 0.6, 0)
+	bb.StudsOffset = Vector3.new(0, 2.5, 0)
+	bb.AlwaysOnTop = false
+	bb.Parent = head
+	local bg = Instance.new("Frame")
+	bg.Size = UDim2.new(1, 0, 1, 0)
+	bg.BackgroundColor3 = Color3.new(0, 0, 0)
+	bg.BorderSizePixel = 0
+	bg.Parent = bb
+	local bar = Instance.new("Frame")
+	bar.Name = "Bar"
+	bar.BorderSizePixel = 0
+	bar.Parent = bg
+
+	local function update()
+		local ratio = math.clamp(hum.Health / hum.MaxHealth, 0, 1)
+		bar.Size = UDim2.new(ratio, 0, 1, 0)
+		local r = 1 - ratio
+		local g = ratio
+		bar.BackgroundColor3 = Color3.new(r, g, 0)
+	end
+
+	update()
+	hum.HealthChanged:Connect(update)
+end
+
+local function createESP(character)
+	if espObjects[character] or not espEnabled then return end
+	if not character:FindFirstChildOfClass("Humanoid") then return end
+	local hl = Instance.new("Highlight")
+	hl.Name = "espHighlight"
+	hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+	hl.FillTransparency = 0.5
+	hl.OutlineTransparency = 0.1
+	hl.Parent = character
+	local playerOwner = players:GetPlayerFromCharacter(character)
+	if playerOwner then
+		hl.FillColor = plrColor
+		hl.OutlineColor = plrColor
+	else
+		hl.FillColor = npcColor
+		hl.OutlineColor = npcColor
+	end
+	createHealth(character)
+	espObjects[character] = hl
+end
+
+local function removeESP(character)
+	local esp = espObjects[character]
+	if esp then
+		esp:Destroy()
+		espObjects[character] = nil
+	end
+	local head = character:FindFirstChild("Head")
+	if head then
+		local gui = head:FindFirstChild("espHealth")
+		if gui then gui:Destroy() end
+	end
+end
+
+charsFolder.ChildAdded:Connect(function(character)
+	if character:IsA("Model") then
+		createESP(character)
+	end
+end)
+
+charsFolder.ChildRemoved:Connect(function(character)
+	removeESP(character)
+end)
+
+local function getAnimator()
+	local animator = plr.Character:FindFirstChildOfClass("Animator")
+	if not animator then
+		animator = Instance.new("Animator")
+		animator.Parent = plr.Character:FindFirstChildOfClass("Humanoid") or Instance.new("Humanoid", plr.Character)
+	end
+	return animator
+end
+
+local function playToggleAnim(name, id, state)
+	local animator = getAnimator()
+	if state then
+		if not animationTracks[name] then
+			local anim = Instance.new("Animation")
+			anim.AnimationId = id
+			local track = animator:LoadAnimation(anim)
+			track.Looped = true
+			track:Play()
+			animationTracks[name] = track
+		else
+			animationTracks[name]:Play()
+		end
+		activeToggles[name] = true
+	else
+		if animationTracks[name] then
+			animationTracks[name]:Stop()
+			animationTracks[name]:Destroy()
+			animationTracks[name] = nil
+		end
+		activeToggles[name] = nil
+	end
+end
+
+local function playButtonAnim(id)
+	local animator = getAnimator()
+	local anim = Instance.new("Animation")
+	anim.AnimationId = id
+	local track = animator:LoadAnimation(anim)
+	track.Looped = false
+	track:Play()
+	track.Stopped:Connect(function()
+		track:Destroy()
+	end)
+end
+
+-- main tab
+mainTab:Section({Title = "l:buttons_title"})
+
+mainTab:Button({
+	Title = "l:suicideButton_title",
+	Desc = "l:suicideButton_desc",
+	Locked = false,
+	Icon = "smile",
+	Callback = function()
+		plr.Character.Humanoid.Health = 0
+	end
+})
+
+mainTab:Keybind({
+	Title = "l:suicideBind_title",
+	Desc = "l:suicideBind_desc",
+	Value = "Period",
+	Callback = function()
+		plr.Character.Humanoid.Health = 0
+	end
+})
+
+mainTab:Section({Title = "l:values_title"})
+
+mainTab:Toggle({
+	Title = "l:thirdperson_title",
+	Desc = "l:thirdperson_desc",
+	Type = "Checkbox",
+	Value = false,
+	Callback = function(v)
+		thirdPersonEnabled = v
+		applyCam()
+	end
+})
+
+runService.RenderStepped:Connect(function()
+	if thirdPersonEnabled then
+		if plr.CameraMode ~= Enum.CameraMode.Classic then
+			plr.CameraMode = Enum.CameraMode.Classic
+		end
+		if plr.CameraMaxZoomDistance < 15 then
+			plr.CameraMaxZoomDistance = 15
+		end
+	end
+end)
+
+plr.CharacterAdded:Connect(function()
+	task.wait(0.1)
+	applyCam()
+end)
+
+mainTab:Toggle({
+	Title = "l:chat_title",
+	Desc = "l:chat_desc",
+	Type = "Checkbox",
+	Value = false,
+	Callback = function(v)
+		chatEnabled = v
+		init()
+	end
+})
+
+mainTab:Section({Title = "l:map_title"})
+
+mainTab:Button({
+	Title = "l:elephant_foot",
+	Callback = function()
+		removeObject("LookAtMe")
+	end
+})
+
+mainTab:Button({
+	Title = "l:arabic_man",
+	Callback = function()
+		removeObject("LookAtHim")
+	end
+})
+
+mainTab:Button({
+	Title = "l:console_tp",
+	Callback = function()
+		removeObject("ConsoleTeleport")
+	end
+})
+
+mainTab:Button({
+	Title = "l:radiation",
+	Callback = function()
+		removeObject("Radiation")
+	end
+})
+
+-- movement tab
+movementTab:Slider({
+	Title = "l:speed_title",
+	Desc = "l:speed_desc",
+	Step = 0.05,
+	Value = {Min = 1, Max = 2, Default = 1},
+	Callback = function(v)
+		speedMultiplier = v
+		speedEnabled = (v ~= 1)
+	end
+})
+
+movementTab:Slider({
+	Title = "l:jump_title",
+	Desc = "l:jump_desc",
+	Step = 0.1,
+	Value = {Min = 1, Max = 50, Default = 1},
+	Callback = function(v)
+		jumpMultiplier = v
+		jumpEnabled = (v ~= 1)
+	end
+})
+
+-- teleports tab
+local teleportPoints = {
+	["l:sector1"] = {
+		{"l:spawn", Vector3.new(-55, -33, -1410)},
+		{"l:gen1", Vector3.new(135, -30, -1225)},
+		{"l:reactor4", Vector3.new(-230, -30, -1428)},
+		{"l:mutant", Vector3.new(-155, -33, -1565)},
+		{"l:valve", Vector3.new(-225, -35, -1635)},
+		{"l:gen2", Vector3.new(-140, -30, -1145)},
+	},
+	["l:sector2"] = {
+		{"l:sectorEntrance", Vector3.new(-110, -10, -825)},
+		{"l:russmanOffice", Vector3.new(38, -10, -917)},
+		{"l:armory", Vector3.new(-45, -10, -894)},
+		{"l:keycard", Vector3.new(50, -10, -1054)},
+		{"l:steve", Vector3.new(-30, 0, -1058)},
+	},
+	["l:sector3"] = {
+		{"l:sectorEntrance", Vector3.new(208, -31, -1171)},
+		{"l:crate_1-3", Vector3.new(289, -31, -1216)},
+		{"l:crate_4", Vector3.new(676, -31, -1342)},
+		{"l:crate_5", Vector3.new(597, -49, -1395)},
+		{"l:crate_6", Vector3.new(471, -50, -1293)},
+		{"l:c4_1", Vector3.new(462, -31, -1004)},
+		{"l:c4_2", Vector3.new(349, -31, -817)},
+		{"l:c4_3", Vector3.new(636, -31, -754)},
+		{"l:c4_4", Vector3.new(843, -18, -1060)},
+		{"l:keycard", Vector3.new(774, -31, -857)},
+	},
+	["l:out-of-map"] = {
+		{"l:baseplate", Vector3.new(-200, -2, -75)}
+	},
+}
+
+for sectorName, points in pairs(teleportPoints) do
+	teleportTab:Section({Title = sectorName})
+	for _, data in ipairs(points) do
+		local name, pos = unpack(data)
+		teleportTab:Button({Title = name, Callback = function() teleportTo(pos) end})
+	end
+end
+
+-- gui tab
+guiTab:Toggle({
+	Title = "ESP",
+	Desc = "l:esp_desc",
+	Type = "Checkbox",
+	Value = false,
+	Callback = function(v)
+		espEnabled = v
+		if v then
+			for _, character in ipairs(charsFolder:GetChildren()) do
+				if character:IsA("Model") then
+					createESP(character)
+				end
+			end
+		else
+			for character, _ in pairs(espObjects) do
+				removeESP(character)
+			end
+		end
+	end
+})
+
+local infSound = plrGui.Gasmask.MaskHole.ACTIVATE
+local infMusic = plrGui.Gasmask.MaskHole.HATRED_OSTS.HATRED
+local infAnim = Instance.new("Animation")
+infAnim.AnimationId = "rbxassetid://136775254837264"
+local infTrack
+local infCC = lighting:FindFirstChild("InfectionColorCorrection") or Instance.new("ColorCorrectionEffect")
+infCC.Name = "InfectionColorCorrection"
+infCC.Parent = lighting
+infCC.Enabled = false
+infCC.TintColor = Color3.fromRGB(255, 0, 0)
+
+guiTab:Toggle({
+	Title = "l:infection_title",
+	Desc = "l:infection_desc",
+	Value = false,
+	Callback = function(enabled)
+		local char = plr.Character or plr.CharacterAdded:Wait()
+		local hum = char:FindFirstChildOfClass("Humanoid")
+		local head = char:FindFirstChild("Head")
+
+		if hum then
+			local animator = hum:FindFirstChildOfClass("Animator") or Instance.new("Animator", hum)
+			if enabled then
+				if not infTrack then
+					infTrack = animator:LoadAnimation(infAnim)
+				end
+				infTrack:Play()
+			else
+				if infTrack then
+					infTrack:Stop()
+					infTrack:Destroy()
+					infTrack = nil
+				end
+			end
+		end
+
+		infSound.Playing = enabled
+		infMusic.Playing = enabled
+		infCC.Enabled = enabled
+
+		if head then
+			for _, side in ipairs({"InfectedLeft", "InfectedRight"}) do
+				local emitterObj = head:FindFirstChild(side)
+				if emitterObj and emitterObj:FindFirstChildOfClass("ParticleEmitter") then
+					emitterObj.ParticleEmitter.Enabled = enabled
+				end
+			end
+		end
+	end
+})
+
+guiTab:Button({
+	Title = "l:gasmask_title",
+	Locked = false,
+	Callback = function()
+		local ui = plrGui.Gasmask
+		if ui then ui:Destroy() end
+	end
+})
+
+guiTab:Button({
+	Title = "l:death_title",
+	Locked = false,
+	Callback = function()
+		local ui = plrGui.Death
+		if ui then ui:Destroy() end
+	end
+})
+
+guiTab:Button({
+	Title = "l:chimera_title",
+	Locked = false,
+	Callback = function()
+		local ui = plrGui.ChimeraRad
+		if ui then ui:Destroy() end
+	end
+})
+
+guiTab:Button({
+	Title = "l:gilbert_title",
+	Locked = false,
+	Callback = function()
+		local ui = plrGui.GilbertRad
+		if ui then ui:Destroy() end
+	end
+})
+
+-- fun tab
+funTab:Section({Title = "l:anim_toggles"})
+
+local toggleAnims = {
+	["Legacy Chimera's walk animation"] = "rbxassetid://97147187591899",
+	["Legacy Chimera's run animation"] = "rbxassetid://95054120636955",
+	["Gilbert's idle animation"] = "rbxassetid://93686257760742",
+	["Sinitzyn's idle animation"] = "rbxassetid://110122744601596",
+	["Sinitzyn's stun animation"] = "rbxassetid://111159713841127",
+	["Kamikaze's walk animation"] = "rbxassetid://87989829896123",
+	["Kamikaze's run animation"] = "rbxassetid://78355773495995",
+	["Mikhail William's walk animation"] = "rbxassetid://100407162198079",
+	["Mikhail William's run animation"] = "rbxassetid://126189604062142",
+	["Dave's walk animation"] = "rbxassetid://102796637818967",
+	["Lurker's idle animation"] = "rbxassetid://86501473853720",
+	["Sleeping Lurker's animation"] = "rbxassetid://115201807246648",
+	["Mikhail's idle animation"] = "rbxassetid://88875709567990",
+	["Slasher's idle animation"] = "rbxassetid://95464797704887",
+	["Slasher's walk animation"] = "rbxassetid://139858886667310",
+	["Raged Slasher's run animation"] = "rbxassetid://94555617501510",
+	["Manhattan Ristretto's idle animation"] = "rbxassetid://137802244588968",
+	["Elsher Tachyon's idle animation"] = "rbxassetid://77191557762002",
+	["Artur Novas's idle animation"] = "rbxassetid://105747901312742",
+	["Gabriel Campos's idle animation"] = "rbxassetid://90243612758647",
+	["Adam Dice animation (died)"] = "rbxassetid://114023816208972",
+	["MGF scared animation"] = "rbxassetid://86398576306953",
+	["MGF patrol animation"] = "rbxassetid://131603010936163",
+	["MGF musician animation"] = "rbxassetid://138827413895574",
+	["MGF dying animation"] = "rbxassetid://128467654154071",
+	["MGF medic animation"] = "rbxassetid://129366509916255",
+	["MGF injured animation"] = "rbxassetid://94302036679429",
+	["Viral Executioner's idle animation"] = "rbxassetid://97492866706742",
+	["Viral Executioner's walk animation"] = "rbxassetid://103392791669526",
+	["Viral Commander's walk animation"] = "rbxassetid://17621267464",
+	["Viral Commander's run animation"] = "rbxassetid://111821553591135",
+	["Masterbait"] = "rbxassetid://72042024",
+	["Head shake animation"] = "rbxassetid://118621065272904",
+	["Unstable animation"] = "rbxassetid://9146103628",
+}
+
+for name, id in pairs(toggleAnims) do
+	funTab:Toggle({
+		Title = name,
+		Type = "Checkbox",
+		Value = false,
+		Callback = function(v)
+			playToggleAnim(name, id, v)
+		end
+	})
+
+	funTab:Keybind({
+		Title = name .. " (keybind)",
+		Value = "Slash",
+		Callback = function()
+			local current = activeToggles[name]
+			playToggleAnim(name, id, not current)
+		end
+	})
+end
+
+funTab:Section({Title = "l:anim_buttons"})
+
+local buttonAnims = {
+	["Chimera's death animation"] = "rbxassetid://72189339897414",
+	["Chimera's exposed animation"] = "rbxassetid://99134420474156",
+	["Legacy Chimera's punch animation"] = "rbxassetid://84314656273153",
+	["Legacy Chimera's execution animation"] = "rbxassetid://97305733594978",
+	["Legacy Chimera's victim animation"] = "rbxassetid://83991914102646",
+	["Legacy Chimera's teleport animation"] = "rbxassetid://126809285460597",
+	["Legacy Chimera's exposed animation"] = "rbxassetid://75151963392982",
+	["Gilbert's kill animation"] = "rbxassetid://125655523925085",
+	["D-Zero's vent animation"] = "rbxassetid://116242805691656",
+	["D-Zero's kill animation"] = "rbxassetid://127050736497150",
+	["Sinitzyn's swing animation"] = "rbxassetid://109639053938974",
+	["Sinitzyn's kick animation"] = "rbxassetid://139352596916392",
+	["Sinitzyn's exposed animation"] = "rbxassetid://98239206283649",
+	["Sinitzyn's explosion animation"] = "rbxassetid://99615889025883",
+	["Slasher's swing animation"] = "rbxassetid://103822882233361",
+	["Infection fall animation (1)"] = "rbxassetid://99985127815659",
+	["Infection fall animation (2)"] = "rbxassetid://139465334169627",
+	["Cough animation"] = "rbxassetid://111615919261340",
+	["Kick animation"] = "rbxassetid://86079982232120",
+	["Punch animation"] = "rbxassetid://83700864626681",
+	["Taunt animation"] = "rbxassetid://80378935722704",
+	["Legacy controllable infected's turn animation"] = "rbxassetid://136775254837264",
+	["Adam Dice's death"] = "rbxassetid://102514666836619",
+}
+
+for name, id in pairs(buttonAnims) do
+	funTab:Button({
+		Title = name,
+		Callback = function()
+			playButtonAnim(id)
+		end
+	})
+
+	funTab:Keybind({
+		Title = name .. " (keybind)",
+		Value = "Slash",
+		Callback = function()
+			playButtonAnim(id)
+		end
+	})
+end
+
+-- about tab
+aboutTab:Section({Title = "l:changelog"})
+
+aboutTab:Paragraph({
+	Title = "l:changelog_date",
+	Desc = "l:changelog_text",
+})
+
+aboutTab:Section({Title = "l:settings"})
+
+aboutTab:Keybind({
+	Title = "l:windKeybind_title",
+	Desc = "l:windKeybind_desc",
+	Value = "K",
+	Callback = function(v)
+		window:SetToggleKey(Enum.KeyCode[v])
+	end
+})
+
+aboutTab:Button({
+	Title = "l:windDestroy_title",
+	Desc = "l:windDestroy_desc",
+	Icon = "heart-crack",
+	Callback = function()
+		window:Destroy()
+	end
+})
+
+aboutTab:Section({Title = "l:lang_switch"})
+
+aboutTab:Button({
+	Title = "l:lang_english",
+	Icon = "languages",
+	Callback = function()
+		windUI:SetLanguage("en")
+	end
+})
+
+aboutTab:Button({
+	Title = "l:lang_russian",
+	Icon = "languages",
+	Callback = function()
+		windUI:SetLanguage("ru")
+	end
+})
+
+windUI:Notify({
+	Title = "l:loadSuccess_title",
+	Content = "l:loadSuccess_desc",
+	Duration = 5,
+	Icon = "smile"
+})
+
+-- load configuration
+examCfg:Save()
+examCfg:Load()
