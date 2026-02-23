@@ -398,27 +398,27 @@ charsFolder.ChildRemoved:Connect(function(character)
 	removeESP(character)
 end)
 
-local function getAnimator()
-	local animator = plr.Character:FindFirstChildOfClass("Animator")
-	if not animator then
-		animator = Instance.new("Animator")
-		animator.Parent = plr.Character:FindFirstChildOfClass("Humanoid") or Instance.new("Humanoid", plr.Character)
-	end
-	return animator
+local function getHumanoid()
+	local char = plr.Character
+	if not char then return end
+	return char:FindFirstChildOfClass("Humanoid")
 end
 
 local function playToggleAnim(name, id, state)
-	local animator = getAnimator()
+	local hum = getHumanoid()
+	if not hum then return end
+
 	if state then
 		if not animationTracks[name] then
 			local anim = Instance.new("Animation")
 			anim.AnimationId = id
-			local track = animator:LoadAnimation(anim)
+
+			local track = hum:LoadAnimation(anim)
+			track.Priority = Enum.AnimationPriority.Action
 			track.Looped = true
 			track:Play()
+
 			animationTracks[name] = track
-		else
-			animationTracks[name]:Play()
 		end
 		activeToggles[name] = true
 	else
@@ -432,16 +432,23 @@ local function playToggleAnim(name, id, state)
 end
 
 local function playButtonAnim(id)
-	local animator = getAnimator()
+	local hum = getHumanoid()
+	if not hum then return end
 	local anim = Instance.new("Animation")
 	anim.AnimationId = id
-	local track = animator:LoadAnimation(anim)
+	local track = hum:LoadAnimation(anim)
+	track.Priority = Enum.AnimationPriority.Action
 	track.Looped = false
 	track:Play()
 	track.Stopped:Connect(function()
 		track:Destroy()
 	end)
 end
+
+plr.CharacterAdded:Connect(function()
+	animationTracks = {}
+	activeToggles = {}
+end)
 
 -- main tab
 mainTab:Section({Title = "l:buttons_title"})
@@ -725,7 +732,7 @@ local toggleAnims = {
 	["Dave's walk animation"] = "rbxassetid://102796637818967",
 	["Lurker's idle animation"] = "rbxassetid://86501473853720",
 	["Sleeping Lurker's animation"] = "rbxassetid://115201807246648",
-	["Mikhail's idle animation"] = "rbxassetid://88875709567990",
+	["Mikhail Willaim's idle animation"] = "rbxassetid://88875709567990",
 	["Slasher's idle animation"] = "rbxassetid://95464797704887",
 	["Slasher's walk animation"] = "rbxassetid://139858886667310",
 	["Raged Slasher's run animation"] = "rbxassetid://94555617501510",
