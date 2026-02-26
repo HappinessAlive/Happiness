@@ -20,7 +20,7 @@ windUI:Localization({
 			["loadSuccess_desc"] = "Thanks for using Examination hub, please leave a feedback on script's page if you want it to be improved in future!",
 			["lang_title"] = "Choose your language",
 			["lang_desc"] = "This will set the UI language.",
-			["lang_english"] = "🏴󠁧󠁢󠁥󠁮󠁧󠁿 English",
+			["lang_english"] = "🇬🇧 English",
 			["lang_russian"] = "🇷🇺 Russian",
 			["buttons_title"] = "Buttons",
 			["values_title"] = "Values",
@@ -79,8 +79,10 @@ windUI:Localization({
 			["gilbert_title"] = "Remove Gilbert's terror UI",
 			["anim_toggles"] = "Animation toggles",
 			["anim_buttons"] = "Animation buttons",
-            ["changelog_date"] = "February 26",
-            ["changelog_text"] = "Script got completely rewritten: added more optimization, more animations, moved to WindUI. Lighting is temporary unavailable",
+			["changelog_date_1"] = "v2.1 February 26",
+			["changelog_text_1"] = "Fixed a bug that could cause the new characters being respawned without ESP even when it's turned on.",
+            ["changelog_date_2"] = "v2.0 February 24",
+            ["changelog_text_2"] = "Script got completely rewritten: added more optimization, more animations, moved to WindUI. Lighting is temporary unavailable",
             ["windKeybind_title"] = "WindUI keybind",
 			["windKeybind_desc"] = "Keybind to open/close WindUI.",
 			["windDestroy_title"] = "Destroy WindUI",
@@ -99,7 +101,7 @@ windUI:Localization({
 			["loadSuccess_desc"] = "Спасибо за использование Examination hub, пожалуйста оставь обратную связь на странице скрипта если вы хотите его улучшения!",
 			["lang_title"] = "Язык",
 			["lang_desc"] = "Выбери свой язык.",
-			["lang_english"] = "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Английский",
+			["lang_english"] = "🇬🇧 Английский",
 			["lang_russian"] = "🇷🇺 Русский",
 			["buttons_title"] = "Кнопки",
 			["values_title"] = "Значения",
@@ -158,8 +160,10 @@ windUI:Localization({
 			["gilbert_title"] = "Удалить интерфейс террора Гилберта",
 			["anim_toggles"] = "Переключатели анимаций",
 			["anim_buttons"] = "Кнопки для анимаций",
-            ["changelog_date"] = "26 февраля",
-            ["changelog_text"] = "Скрипт был полностью переписан: добавлено больше оптимизации, анимаций, переехали на WindUI. Освещение временно недоступно.",
+			["changelog_date_1"] = "v2.1 26 февраля",
+			["changelog_text_1"] = "Исправлена ошибка из-за которой после респавна могла пропадать подсветка ESP",
+			["changelog_date_2"] = "v2.0 24 февраля",
+            ["changelog_text_2"] = "Скрипт был полностью переписан: добавлено больше оптимизации, анимаций, переехали на WindUI. Освещение временно недоступно.",
             ["windKeybind_title"] = "Клавиша WindUI",
 			["windKeybind_desc"] = "Клавиша для открытия/закрытия WindUI.",
 			["windDestroy_title"] = "Уничтожить WindUI",
@@ -182,7 +186,7 @@ local window = windUI:CreateWindow({
 })
 
 window:Tag({
-	Title = "v2.0",
+	Title = "v2.1",
 	Icon = "badge-check",
 	Color = Color3.fromHex("#30ff6a"),
 	Radius = 13
@@ -376,30 +380,12 @@ local function createESP(character)
 	highlights[character] = hl
 end
 
-local function removeESP(character)
-	local esp = highlights[character]
-	if esp then
-		esp:Destroy()
-		highlights[character] = nil
-	end
-	local head = character:FindFirstChild("Head")
-	if head then
-		local gui = head:FindFirstChild("espHealth")
-		if gui then gui:Destroy() end
-	end
-end
-
 charsFolder.ChildAdded:Connect(function(character)
 	if character:IsA("Model") then
         wait(0.5)
 		createESP(character)
 	end
 end)
-
-charsFolder.ChildRemoved:Connect(function(character)
-	removeESP(character)
-end)
-
 
 local function getHumanoid()
 	local char = plr.Character
@@ -829,8 +815,13 @@ end
 aboutTab:Section({Title = "l:changelog"})
 
 aboutTab:Paragraph({
-	Title = "l:changelog_date",
-	Desc = "l:changelog_text",
+	Title = "l:changelog_date_1",
+	Desc = "l:changelog_text_1",
+})
+
+aboutTab:Paragraph({
+	Title = "l:changelog_date_2",
+	Desc = "l:changelog_text_2",
 })
 
 aboutTab:Section({Title = "l:settings"})
