@@ -79,7 +79,7 @@ windUI:Localization({
 			["gilbert_title"] = "Remove Gilbert's terror UI",
 			["anim_toggles"] = "Animation toggles",
 			["anim_buttons"] = "Animation buttons",
-            ["changelog_date"] = "February 23",
+            ["changelog_date"] = "February 26",
             ["changelog_text"] = "Script got completely rewritten: added more optimization, more animations, moved to WindUI. Lighting is temporary unavailable",
             ["windKeybind_title"] = "WindUI keybind",
 			["windKeybind_desc"] = "Keybind to open/close WindUI.",
@@ -158,7 +158,7 @@ windUI:Localization({
 			["gilbert_title"] = "Удалить интерфейс террора Гилберта",
 			["anim_toggles"] = "Переключатели анимаций",
 			["anim_buttons"] = "Кнопки для анимаций",
-            ["changelog_date"] = "23 февраля",
+            ["changelog_date"] = "26 февраля",
             ["changelog_text"] = "Скрипт был полностью переписан: добавлено больше оптимизации, анимаций, переехали на WindUI. Освещение временно недоступно.",
             ["windKeybind_title"] = "Клавиша WindUI",
 			["windKeybind_desc"] = "Клавиша для открытия/закрытия WindUI.",
@@ -249,11 +249,11 @@ local charsFolder = workspace.Characters
 local espEnabled = false
 local plrColor = Color3.fromHex("#506d54")
 local npcColor = Color3.fromHex("#750000")
-local animationTracks = {}
-local activeToggles = {}
 
 -- tables
-local espObjects = {}
+local highlights = {}
+local animationTracks = {}
+local activeToggles = {}
 
 -- functions
 local function applyCam()
@@ -355,7 +355,7 @@ local function createHealth(character)
 end
 
 local function createESP(character)
-	if espObjects[character] or not espEnabled then return end
+	if highlights[character] or not espEnabled then return end
 	if not character:FindFirstChildOfClass("Humanoid") then return end
 	local hl = Instance.new("Highlight")
 	hl.Name = "espHighlight"
@@ -363,23 +363,24 @@ local function createESP(character)
 	hl.FillTransparency = 0.5
 	hl.OutlineTransparency = 0.1
 	hl.Parent = character
-	local playerOwner = players:GetPlayerFromCharacter(character)
-	if playerOwner then
-		hl.FillColor = plrColor
-		hl.OutlineColor = plrColor
-	else
-		hl.FillColor = npcColor
-		hl.OutlineColor = npcColor
-	end
+	if character:FindFirstChild("Humanoid") then
+        if game.Players:GetPlayerFromCharacter(character) then
+		    hl.FillColor = plrColor
+		    hl.OutlineColor = plrColor
+	    else
+		    hl.FillColor = npcColor
+		    hl.OutlineColor = npcColor
+	    end
+    end
 	createHealth(character)
-	espObjects[character] = hl
+	highlights[character] = hl
 end
 
 local function removeESP(character)
-	local esp = espObjects[character]
+	local esp = highlights[character]
 	if esp then
 		esp:Destroy()
-		espObjects[character] = nil
+		highlights[character] = nil
 	end
 	local head = character:FindFirstChild("Head")
 	if head then
@@ -390,6 +391,7 @@ end
 
 charsFolder.ChildAdded:Connect(function(character)
 	if character:IsA("Model") then
+        wait(0.5)
 		createESP(character)
 	end
 end)
@@ -397,6 +399,7 @@ end)
 charsFolder.ChildRemoved:Connect(function(character)
 	removeESP(character)
 end)
+
 
 local function getHumanoid()
 	local char = plr.Character
@@ -622,7 +625,7 @@ guiTab:Toggle({
 				end
 			end
 		else
-			for character, _ in pairs(espObjects) do
+			for character, _ in pairs(highlights) do
 				removeESP(character)
 			end
 		end
@@ -802,6 +805,7 @@ local buttonAnims = {
 	["Taunt animation"] = "rbxassetid://80378935722704",
 	["Legacy controllable infected's turn animation"] = "rbxassetid://136775254837264",
 	["Adam Dice's death"] = "rbxassetid://102514666836619",
+	["Slit Neck animation"] = "rbxassetid://130568157355000",
 }
 
 for name, id in pairs(buttonAnims) do
