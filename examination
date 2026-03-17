@@ -174,7 +174,7 @@ windUI:Localization({
 
 -- window
 local window = windUI:CreateWindow({
-	Title = "Examination Hub",
+	Title = "Examination UI",
 	Author = "by Happiness",
 	Folder = "Examination",
 	ScrollBarEnabled = true,
@@ -186,7 +186,7 @@ local window = windUI:CreateWindow({
 })
 
 window:Tag({
-	Title = "v2.1",
+	Title = "v2.2",
 	Icon = "badge-check",
 	Color = Color3.fromHex("#30ff6a"),
 	Radius = 13
@@ -757,7 +757,7 @@ for name, id in pairs(toggleAnims) do
 
 	funTab:Keybind({
 		Title = name .. " (keybind)",
-		Value = "Slash",
+		Value = "Quote",
 		Callback = function()
 			local current = activeToggles[name]
 			playToggleAnim(name, id, not current)
@@ -804,7 +804,7 @@ for name, id in pairs(buttonAnims) do
 
 	funTab:Keybind({
 		Title = name .. " (keybind)",
-		Value = "Slash",
+		Value = "Quote",
 		Callback = function()
 			playButtonAnim(id)
 		end
