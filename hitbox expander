@@ -1,0 +1,47 @@
+local Workspace = game:GetService("Workspace")
+local Players = game:GetService("Players")
+
+local function isPlayerCharacter(model)
+    if not model or not model:IsA("Model") then return false end
+    return Players:GetPlayerFromCharacter(model) ~= nil
+end
+
+local function isHumanoidModel(model)
+    if not model or not model:IsA("Model") then return false end
+    return model:FindFirstChildWhichIsA("Humanoid") ~= nil
+end
+
+local function applyToPart(part)
+    if not part or not part:IsA("BasePart") then return end
+    if part.Name ~= "Head" then return end
+
+    local model = part.Parent
+    if isHumanoidModel(model) and not isPlayerCharacter(model) then
+        pcall(function()
+            part.Size = Vector3.new(4, 4, 4)
+            part.CanCollide = false
+            part.Transparency = 0.5
+        end)
+    end
+end
+
+local function watchNameChanges(part)
+    if not part or not part:IsA("BasePart") then return end
+    part:GetPropertyChangedSignal("Name"):Connect(function()
+        applyToPart(part)
+    end)
+end
+
+for _, desc in ipairs(Workspace:GetDescendants()) do
+    applyToPart(desc)
+    if desc:IsA("BasePart") then
+        watchNameChanges(desc)
+    end
+end
+
+Workspace.DescendantAdded:Connect(function(desc)
+    applyToPart(desc)
+    if desc:IsA("BasePart") then
+        watchNameChanges(desc)
+    end
+end)
