@@ -29,14 +29,17 @@ local config = {
     defaultClockTime = Lighting.ClockTime,
     defaultFogStart = Lighting.FogStart,
     defaultFogEnd = Lighting.FogEnd,
+    selectedToggle = nil,
+    selectedButton = nil
 }
 
 -- window
 local Window = Library:CreateWindow({
     Title = "Examination UI",
-    Footer = "v2.3",
+    Footer = "v26.3-snapshot2",
     Icon = 91844559586957,
-    NotifySide = "Right"
+    NotifySide = "Right",
+    Size = UDim2.fromOffset(1400, 850),
 })
 
 -- tabs
@@ -142,7 +145,6 @@ playerGroupbox:AddButton({
 })
 
 playerGroupbox:AddLabel("Suicide keybind"):AddKeyPicker("ResetKey", {
-    Default = "Period",
     Mode = "Press",
     Callback = function()
         if plr.Character and plr.Character:FindFirstChild("Humanoid") then
@@ -156,10 +158,10 @@ playerGroupbox:AddLabel("Suicide keybind"):AddKeyPicker("ResetKey", {
     end
 })
 
-serverGroupbox:AddDivider("Map")
+serverGroupbox:AddDivider("Map remover")
 
 serverGroupbox:AddButton({
-    Text = "Remove elephant foot",
+    Text = "Elephant foot",
     Tooltip = "Removes elephant foot",
     Func = function()
         local target = workspace:FindFirstChild("LookAtMe")
@@ -181,10 +183,8 @@ serverGroupbox:AddButton({
             })
         end
     end
-})
-
-serverGroupbox:AddButton({
-    Text = "Remove game teleporters",
+}):AddButton({
+    Text = "Teleporters",
     Tooltip = "Removes teleporters to console edition and tunnels",
     Func = function()
         local target1 = workspace:FindFirstChild("Game Teleporter")
@@ -331,48 +331,162 @@ lightingGroupbox:AddToggle("fbEnabled", {
 })
 
 -- fun
+---- default interface
+local animationsBox = Tabs.Fun:AddRightTabbox() 
+local tBox = animationsBox:AddTab("Toggles") 
+local bBox = animationsBox:AddTab("Buttons")
+
+---- data tables
+local toggleAnims = {
+    ["Legacy Chimera's walk animation"] = "rbxassetid://97147187591899",
+    ["Legacy Chimera's run animation"] = "rbxassetid://95054120636955",
+    ["Gilbert's idle animation"] = "rbxassetid://93686257760742",
+    ["Sinitzyn's idle animation"] = "rbxassetid://110122744601596",
+    ["Sinitzyn's stun animation"] = "rbxassetid://111159713841127",
+    ["Kamikaze's walk animation"] = "rbxassetid://87989829896123",
+    ["Kamikaze's run animation"] = "rbxassetid://78355773495995",
+    ["Mikhail William's walk animation"] = "rbxassetid://100407162198079",
+    ["Mikhail William's run animation"] = "rbxassetid://126189604062142",
+    ["Dave's walk animation"] = "rbxassetid://102796637818967",
+    ["Lurker's idle animation"] = "rbxassetid://86501473853720",
+    ["Sleeping Lurker's animation"] = "rbxassetid://115201807246648",
+    ["Mikhail Willaim's idle animation"] = "rbxassetid://88875709567990",
+    ["Slasher's idle animation"] = "rbxassetid://95464797704887",
+    ["Slasher's walk animation"] = "rbxassetid://139858886667310",
+    ["Raged Slasher's run animation"] = "rbxassetid://94555617501510",
+    ["Manhattan Ristretto's idle animation"] = "rbxassetid://137802244588968",
+    ["Elsher Tachyon's idle animation"] = "rbxassetid://77191557762002",
+    ["Artur Novas's idle animation"] = "rbxassetid://105747901312742",
+    ["Gabriel Campos's idle animation"] = "rbxassetid://90243612758647",
+    ["Adam Dice animation (died)"] = "rbxassetid://114023816208972",
+    ["MGF scared animation"] = "rbxassetid://86398576306953",
+    ["MGF patrol animation"] = "rbxassetid://131603010936163",
+    ["MGF musician animation"] = "rbxassetid://138827413895574",
+    ["MGF dying animation"] = "rbxassetid://128467654154071",
+    ["MGF medic animation"] = "rbxassetid://129366509916255",
+    ["MGF injured animation"] = "rbxassetid://94302036679429",
+    ["Viral Executioner's idle animation"] = "rbxassetid://97492866706742",
+    ["Viral Executioner's walk animation"] = "rbxassetid://103392791669526",
+    ["Viral Commander's walk animation"] = "rbxassetid://17621267464",
+    ["Viral Commander's run animation"] = "rbxassetid://111821553591135",
+    ["Masterbait"] = "rbxassetid://72042024",
+    ["Head shake animation"] = "rbxassetid://118621065272904",
+    ["Unstable animation"] = "rbxassetid://9146103628",
+}
+
+local buttonAnims = {
+    ["Chimera's death animation"] = "rbxassetid://72189339897414",
+    ["Chimera's exposed animation"] = "rbxassetid://99134420474156",
+    ["Legacy Chimera's punch animation"] = "rbxassetid://84314656273153",
+    ["Legacy Chimera's execution animation"] = "rbxassetid://97305733594978",
+    ["Legacy Chimera's victim animation"] = "rbxassetid://83991914102646",
+    ["Legacy Chimera's teleport animation"] = "rbxassetid://126809285460597",
+    ["Legacy Chimera's exposed animation"] = "rbxassetid://75151963392982",
+    ["Gilbert's kill animation"] = "rbxassetid://125655523925085",
+    ["D-Zero's vent animation"] = "rbxassetid://116242805691656",
+    ["D-Zero's kill animation"] = "rbxassetid://127050736497150",
+    ["Sinitzyn's swing animation"] = "rbxassetid://109639053938974",
+    ["Sinitzyn's kick animation"] = "rbxassetid://139352596916392",
+    ["Sinitzyn's exposed animation"] = "rbxassetid://98239206283649",
+    ["Sinitzyn's explosion animation"] = "rbxassetid://99615889025883",
+    ["Slasher's swing animation"] = "rbxassetid://103822882233361",
+    ["Infection fall animation (1)"] = "rbxassetid://99985127815659",
+    ["Infection fall animation (2)"] = "rbxassetid://139465334169627",
+    ["Cough animation"] = "rbxassetid://111615919261340",
+    ["Kick animation"] = "rbxassetid://86079982232120",
+    ["Punch animation"] = "rbxassetid://83700864626681",
+    ["Taunt animation"] = "rbxassetid://80378935722704",
+    ["Legacy controllable infected's turn animation"] = "rbxassetid://136775254837264",
+    ["Adam Dice's death"] = "rbxassetid://102514666836619",
+    ["Slit Neck animation"] = "rbxassetid://130568157355000",
+}
+
+local sortedToggles = {}
+local sortedButtons = {}
+
+for name in pairs(toggleAnims) do table.insert(sortedToggles, name) end
+for name in pairs(buttonAnims) do table.insert(sortedButtons, name) end
+
+table.sort(sortedToggles)
+table.sort(sortedButtons)
+
 ---- functions
-local function applyInfection(char)
-    if not char then return end
-    local head = char:WaitForChild("Head", 10)
-    if not head then return end
+local activeTrack = nil
+
+local function playToggleAnim(name, id, state)
+    if not plr.Character or not plr.Character:FindFirstChild("Humanoid") then return end
+    local animator = plr.Character.Humanoid:FindFirstChild("Animator") or plr.Character.Humanoid
     
-    local leftEye = head:WaitForChild("InfectedLeft", 5)
-    local rightEye = head:WaitForChild("InfectedRight", 5)
-
-    local isEnabled = Toggles.infectionToggle and Toggles.infectionToggle.Value or false
-
-    if leftEye and leftEye:FindFirstChild("ParticleEmitter") then
-        leftEye.ParticleEmitter.Enabled = isEnabled
-        leftEye.ParticleEmitter.Color = ColorSequence.new(config.eyesColor)
-    end
-
-    if rightEye and rightEye:FindFirstChild("ParticleEmitter") then
-        rightEye.ParticleEmitter.Enabled = isEnabled
-        rightEye.ParticleEmitter.Color = ColorSequence.new(config.eyesColor)
+    if state then
+        if activeTrack then activeTrack:Stop() end
+        local anim = Instance.new("Animation")
+        anim.AnimationId = id
+        activeTrack = animator:LoadAnimation(anim)
+        activeTrack.Looped = true
+        activeTrack:Play()
+    else
+        if activeTrack then
+            activeTrack:Stop()
+            activeTrack = nil
+        end
     end
 end
 
----- interface
-local infectionGroupbox = Tabs.Fun:AddLeftGroupbox("Infection", "angry")
+local function playButtonAnim(id)
+    if not plr.Character or not plr.Character:FindFirstChild("Humanoid") then return end
+    local animator = plr.Character.Humanoid:FindFirstChild("Animator") or plr.Character.Humanoid
+    
+    local anim = Instance.new("Animation")
+    anim.AnimationId = id
+    local track = animator:LoadAnimation(anim)
+    track:Play()
+end
 
-local infectionToggle = infectionGroupbox:AddToggle("infectionToggle", {
-    Text = "Infection",
-    Tooltip = "Makes your character look like infected",
-    Default = false,
-    Callback = function(Value)
-        applyInfection(plr.Character)
-    end
-})
+---- generated interface
+for _, name in ipairs(sortedToggles) do
+    local id = toggleAnims[name]
+    local configFlag = "Toggle_" .. name:gsub("%s+", ""):gsub("['().]", "")
+    
+    tBox:AddToggle(configFlag, {
+        Text = name,
+        Default = false,
+        Callback = function(v)
+            playToggleAnim(name, id, v)
+        end
+    }):AddKeyPicker("Key_" .. configFlag, {
+        Default = "None",
+        SyncToggleState = true,
+        Mode = "Toggle"
+    })
+end
 
-infectionToggle:AddColorPicker("infectionColor", {
-    Default = config.eyesColor,
-    Title = "Eyes color",
-    Callback = function(Value)
-        config.eyesColor = Value
-        applyInfection(plr.Character)
-    end
-})
+bBox:AddDivider("Buttons")
+
+for _, name in ipairs(sortedButtons) do
+    local id = buttonAnims[name]
+    bBox:AddButton({
+        Text = name,
+        Func = function()
+            playButtonAnim(id)
+        end
+    })
+end
+
+bBox:AddDivider("Keybinds")
+for _, name in ipairs(sortedButtons) do
+    local id = buttonAnims[name]
+    local configFlag = "Button_" .. name:gsub("%s+", ""):gsub("['().]", "")
+    
+    local label = bBox:AddLabel(name)
+    label:AddKeyPicker("Key_" .. configFlag, {
+        Default = "None",
+        SyncToggleState = false,
+        Mode = "Press",
+        Callback = function()
+            playButtonAnim(id)
+        end
+    })
+end
 
 -- settings
 local MenuGroup = Tabs.Settings:AddLeftGroupbox("Menu", "wrench")
@@ -439,6 +553,14 @@ MenuGroup:AddButton("Unload", function()
 	Library:Unload()
 end)
 
+local changelogGroupbox = Tabs.Settings:AddRightGroupbox("Change log", "history")
+changelogGroupbox:AddDivider("26.3")
+
+changelogGroupbox:AddLabel("changelogLabel", {
+	Text = "· Changed UI library to Obsidian\n\· Added fullbright\n\· Added name changer\n\· Added rank changer\n\· Added color changer for rank\n\· Added hitbox expander\n\· Added team changer\n\· Improved map parts remover\n\· Improved animations and sortation for animations",
+	DoesWrap = true,
+})
+
 -- loops and respawns
 RunService.RenderStepped:Connect(function()
     if Toggles.ThirdPerson and Toggles.ThirdPerson.Value then
@@ -471,7 +593,6 @@ Library.ToggleKeybind = Options.MenuKeybind
 ThemeManager:SetLibrary(Library)
 SaveManager:SetLibrary(Library)
 SaveManager:IgnoreThemeSettings()
-SaveManager:SetIgnoreIndexes({'espEnabled', 'plrColor', 'npcColor'})
 ThemeManager:SetFolder('Examination UI/themes')
 SaveManager:SetFolder('Examination UI/configs')
 SaveManager:BuildConfigSection(Tabs.Settings)
