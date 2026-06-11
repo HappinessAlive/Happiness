@@ -16,60 +16,67 @@ local plr = Players.LocalPlayer
 
 -- tables
 local config = {
-    characterName = "",
-    characterRank = "",
-    tagColor = Color3.fromRGB(80, 109, 84),
-    staggerEnabled = true,
-    plrColor = Color3.fromRGB(80, 109, 84),
-    npcColor = Color3.fromRGB(255, 0, 0),
-    eyesColor = Color3.fromRGB(255, 60, 60),
-    defaultAmbient = Lighting.Ambient,
-    defaultOutdoorAmbient = Lighting.OutdoorAmbient,
-    defaultBrightness = Lighting.Brightness,
-    defaultClockTime = Lighting.ClockTime,
-    defaultFogStart = Lighting.FogStart,
-    defaultFogEnd = Lighting.FogEnd,
-    selectedToggle = nil,
-    selectedButton = nil
+	characterName = "",
+	characterRank = "",
+	tagColor = Color3.fromRGB(80, 109, 84),
+	staggerEnabled = true,
+	plrColor = Color3.fromRGB(80, 109, 84),
+	npcColor = Color3.fromRGB(255, 0, 0),
+	eyesColor = Color3.fromRGB(255, 60, 60),
+	defaultAmbient = Lighting.Ambient,
+	defaultOutdoorAmbient = Lighting.OutdoorAmbient,
+	defaultBrightness = Lighting.Brightness,
+	defaultClockTime = Lighting.ClockTime,
+	defaultFogStart = Lighting.FogStart,
+	defaultFogEnd = Lighting.FogEnd,
+	selectedToggle = nil,
+	selectedButton = nil
 }
 
 -- window
 local Window = Library:CreateWindow({
-    Title = "Examination UI",
-    Footer = "v26.3-snapshot2",
-    Icon = 91844559586957,
-    NotifySide = "Right",
-    Size = UDim2.fromOffset(1400, 850),
+	Title = "Examination UI",
+	Footer = "v26.3-snapshot3",
+	Icon = 91844559586957,
+	NotifySide = "Right",
+	Size = UDim2.fromOffset(1400, 850),
 })
 
 -- tabs
 local Tabs = {
-    Main = Window:AddTab("Main", "user"),
-    Visuals = Window:AddTab("Visuals", "zap"),
-    Fun = Window:AddTab("Fun", "smile"),
-    Settings = Window:AddTab("Settings", "settings")
+	Main = Window:AddTab("Main", "user"),
+	Visuals = Window:AddTab("Visuals", "zap"),
+	Fun = Window:AddTab("Fun", "smile"),
+	Settings = Window:AddTab("Settings", "settings")
 }
 
 -- main
 ---- functions
 local function applyNametags(char)
-    local head = char:WaitForChild("Head", 10)
-    local tag = head:WaitForChild("NameTag", 10)
-    tag.CharacterName.TextColor3 = config.tagColor
-    tag.Rank.TextColor3 = config.tagColor
-    tag.Username.TextColor3 = config.tagColor
-    if config.characterName ~= "" then
-        tag.CharacterName.Text = "[" .. config.characterName .. "]"
-    end
-    if config.characterRank ~= "" then
-        tag.Rank.Text = "[" .. config.characterRank .. "]"
-    end
+	local head = char:WaitForChild("Head", 10)
+	local tag = head:WaitForChild("NameTag", 10)
+	tag.CharacterName.TextColor3 = config.tagColor
+	tag.Rank.TextColor3 = config.tagColor
+	tag.Username.TextColor3 = config.tagColor
+	if config.characterName ~= "" then
+		tag.CharacterName.Text = "[" .. config.characterName .. "]"
+	end
+	if config.characterRank ~= "" then
+		tag.Rank.Text = "[" .. config.characterRank .. "]"
+	end
 end
 
+local function teleportTo(position)
+	local character = plr.Character
+	if character and character:FindFirstChild("HumanoidRootPart") then
+		character:PivotTo(CFrame.new(position))
+	end
+end
 
 ---- interface
 local playerGroupbox = Tabs.Main:AddLeftGroupbox("Player", "user")
 local serverGroupbox = Tabs.Main:AddRightGroupbox("Server", "users")
+local teleportGroupbox = Tabs.Main:AddRightGroupbox("Teleport", "move")
 
 playerGroupbox:AddDivider("Customization")
 
@@ -92,174 +99,231 @@ playerGroupbox:AddInput("CharacterRank", {
 })
 
 playerGroupbox:AddLabel("Nametags color"):AddColorPicker("TagColor", {
-    Default = config.tagColor,
-    Callback = function(Value)
-        config.tagColor = Value
-        applyNametags(plr.Character)
-    end
+	Default = config.tagColor,
+	Callback = function(Value)
+		config.tagColor = Value
+		applyNametags(plr.Character)
+	end
 })
 
 playerGroupbox:AddDropdown("Team", {
-    Text = "Team",
-    Tooltip = "Kills you and changes your team. Can be used to switch voicelines",
-    Values = {"Menlo", "RIF", "RSU"},
-    Default = 1,
-    Multi = false,
-    Callback = function(v)
-        plr.Team = Teams[v]
-        plr.Character.Humanoid.Health = 0
-    end
+	Text = "Team",
+	Tooltip = "Kills you and changes your team. Can be used to switch voicelines",
+	Values = {"Menlo", "RIF", "RSU"},
+	Default = 1,
+	Multi = false,
+	Callback = function(v)
+		plr.Team = Teams[v]
+		plr.Character.Humanoid.Health = 0
+	end
 })
 
 playerGroupbox:AddDivider("Toggles")
 
 playerGroupbox:AddToggle("ThirdPerson", {
-    Text = "Third person",
-    Tooltip = "Unlocks first person view",
-    Default = false,
+	Text = "Third person",
+	Tooltip = "Unlocks first person view",
+	Default = false,
 })
 
 playerGroupbox:AddToggle("Stagger", {
-    Text = "Stagger",
-    Tooltip = "Makes your character fall if you got too much damage less than in 3 seconds",
-    Default = true,
-    Callback = function(Value)
-        config.staggerEnabled = Value
-        plr.Character.ClientScripts.Stagger.Disabled = not Value
-    end
+	Text = "Stagger",
+	Tooltip = "Makes your character fall if you got too much damage less than in 3 seconds",
+	Default = true,
+	Callback = function(Value)
+		config.staggerEnabled = Value
+		plr.Character.ClientScripts.Stagger.Disabled = not Value
+	end
 })
 
 playerGroupbox:AddDivider("Buttons")
 
 playerGroupbox:AddButton({
-    Text = "Suicide",
-    Tooltip = "Makes your character commit suicide",
-    Func = function()
-        local anim = Instance.new("Animation")
-        anim.AnimationId = "rbxassetid://82480275101558"
-        local track = plr.Character.Humanoid.Animator:LoadAnimation(anim)
-        track:Play()
-        track.Stopped:Wait()
-        plr.Character.Humanoid.Health = 0
-    end
+	Text = "Suicide",
+	Tooltip = "Makes your character commit suicide",
+	Func = function()
+		local anim = Instance.new("Animation")
+		anim.AnimationId = "rbxassetid://82480275101558"
+		local track = plr.Character.Humanoid.Animator:LoadAnimation(anim)
+		track:Play()
+		track.Stopped:Wait()
+		plr.Character.Humanoid.Health = 0
+	end
 })
 
 playerGroupbox:AddLabel("Suicide keybind"):AddKeyPicker("ResetKey", {
-    Mode = "Press",
-    Callback = function()
-        if plr.Character and plr.Character:FindFirstChild("Humanoid") then
-            local anim = Instance.new("Animation")
-            anim.AnimationId = "rbxassetid://82480275101558"
-            local track = plr.Character.Humanoid.Animator:LoadAnimation(anim)
-            track:Play()
-            track.Stopped:Wait()
-            plr.Character.Humanoid.Health = 0
-        end
-    end
+	Mode = "Press",
+	Callback = function()
+		if plr.Character and plr.Character:FindFirstChild("Humanoid") then
+			local anim = Instance.new("Animation")
+			anim.AnimationId = "rbxassetid://82480275101558"
+			local track = plr.Character.Humanoid.Animator:LoadAnimation(anim)
+			track:Play()
+			track.Stopped:Wait()
+			plr.Character.Humanoid.Health = 0
+		end
+	end
 })
 
 serverGroupbox:AddDivider("Map remover")
 
 serverGroupbox:AddButton({
-    Text = "Elephant foot",
-    Tooltip = "Removes elephant foot",
-    Func = function()
-        local target = workspace:FindFirstChild("LookAtMe")
-        if target then
-            target:Destroy()
+	Text = "Elephant foot",
+	Tooltip = "Removes elephant foot",
+	Func = function()
+		local target = workspace:FindFirstChild("LookAtMe")
+		if target then
+			target:Destroy()
 
-            Library:Notify({
-                Title = "Success",
-                Icon = "circle-check",
-                Description = "Elephant foot was removed",
-                Time = 1
-            })
-        else
-            Library:Notify({
-                Title = "Failed",
-                Icon = "circle-x",
-                Description = "Elephant foot is already removed",
-                Time = 1
-            })
-        end
-    end
+			Library:Notify({
+				Title = "Success",
+				Icon = "circle-check",
+				Description = "Elephant foot was removed",
+				Time = 1
+			})
+		else
+			Library:Notify({
+				Title = "Failed",
+				Icon = "circle-x",
+				Description = "Elephant foot is already removed",
+				Time = 1
+			})
+		end
+	end
 }):AddButton({
-    Text = "Teleporters",
-    Tooltip = "Removes teleporters to console edition and tunnels",
-    Func = function()
-        local target1 = workspace:FindFirstChild("Game Teleporter")
-        local target2 = workspace:FindFirstChild("ConsoleTeleport")
-        if target1 or target2 then
-            target1:Destroy()
-            target2:Destroy()
+	Text = "Teleporters",
+	Tooltip = "Removes teleporters to console edition and tunnels",
+	Func = function()
+		local target1 = workspace:FindFirstChild("Game Teleporter")
+		local target2 = workspace:FindFirstChild("ConsoleTeleport")
+		if target1 or target2 then
+			target1:Destroy()
+			target2:Destroy()
 
-            Library:Notify({
-                Title = "Success",
-                Icon = "circle-check",
-                Description = "Teleporters were removed",
-                Time = 1
-            })
-        else
-            Library:Notify({
-                Title = "Failed",
-                Icon = "circle-x",
-                Description = "Teleporters are already removed",
-                Time = 1
-            })
-        end
-    end
+			Library:Notify({
+				Title = "Success",
+				Icon = "circle-check",
+				Description = "Teleporters were removed",
+				Time = 1
+			})
+		else
+			Library:Notify({
+				Title = "Failed",
+				Icon = "circle-x",
+				Description = "Teleporters are already removed",
+				Time = 1
+			})
+		end
+	end
 })
 
 serverGroupbox:AddDivider("Utils")
 
 serverGroupbox:AddButton({
-    Text = "Expand hitboxes",
-    Tooltip = "Expands hitboxes for every entity",
-    Func = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/HappinessAlive/Happiness/refs/heads/releases/hitbox_expander"))()
-    end
+	Text = "Expand hitboxes",
+	Tooltip = "Expands hitboxes for every entity",
+	Func = function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/HappinessAlive/Happiness/refs/heads/releases/hitbox_expander"))()
+	end
 })
+
+local teleportPoints = { 
+	["Sector 1"] = { 
+		{"Spawn", Vector3.new(-55, -33, -1410)}, 
+		{"Generator 1", Vector3.new(135, -30, -1225)}, 
+		{"Reactor 4", Vector3.new(-230, -30, -1428)}, 
+		{"Mutant", Vector3.new(-155, -33, -1565)}, 
+		{"Valve", Vector3.new(-225, -35, -1635)}, 
+		{"Generator 2", Vector3.new(-145, -30, -1149)}, 
+	}, 
+	["Sector 2"] = { 
+		{"Sector entrance", Vector3.new(-110, -10, -825)}, 
+		{"Russman's office", Vector3.new(38, -10, -917)}, 
+		{"Armory", Vector3.new(-45, -10, -894)}, 
+		{"Keycard", Vector3.new(50, -10, -1054)}, 
+		{"Steve Remington", Vector3.new(-30, 0, -1058)}, 
+	}, 
+	["Sector 3"] = { 
+		{"Sector entrance", Vector3.new(208, -31, -1171)}, 
+		{"Crates 1-3", Vector3.new(289, -31, -1216)}, 
+		{"Crate 4", Vector3.new(676, -31, -1342)}, 
+		{"Crate 5", Vector3.new(597, -49, -1395)}, 
+		{"Crate 6", Vector3.new(471, -50, -1293)}, 
+		{"C4 crate 1", Vector3.new(462, -31, -1004)}, 
+		{"C4 crate 2", Vector3.new(349, -31, -817)}, 
+		{"C4 crate 3", Vector3.new(636, -31, -754)}, 
+		{"C4 crate 4", Vector3.new(843, -18, -1060)}, 
+		{"Keycard", Vector3.new(774, -31, -857)}, 
+	}, 
+	["Out-of-map"] = { 
+		{"Baseplate", Vector3.new(-200, -2, -75)} 
+	}, 
+}
+
+for sectorName, points in pairs(teleportPoints) do
+	local optionNames = {}
+	local positionMapping = {}
+	
+	for _, data in ipairs(points) do
+		local locationName, coords = unpack(data)
+		table.insert(optionNames, locationName)
+		positionMapping[locationName] = coords
+	end
+
+	local dropdownId = string.gsub(sectorName, "%s+", "") .. "Dropdown"
+	local Dropdown = teleportGroupbox:AddDropdown(dropdownId, {
+		Text = sectorName,
+		Values = optionNames,
+		AllowNull = true,
+		Callback = function(selectedValue)
+			local targetPosition = positionMapping[selectedValue]
+			if targetPosition then
+				teleportTo(targetPosition)
+			end
+		end
+	})
+end
 
 -- visuals
 ---- functions
 local function createESP(char)
-    local hum = char:WaitForChild("Humanoid", 5)
-    if not hum then return end
-    local highlight = Instance.new("Highlight", char)
-    highlight.DepthMode = "AlwaysOnTop"
-    highlight.FillTransparency = 0.75
-    highlight.OutlineTransparency = 1
-    local billboard = Instance.new("BillboardGui", char)
-    billboard.Size = UDim2.new(0, 200, 0, 50)
-    billboard.StudsOffset = Vector3.new(0, 5, 0)
-    billboard.AlwaysOnTop = true
-    local label = Instance.new("TextLabel", billboard)
-    label.Size = UDim2.new(1, 0, 1, 0)
-    label.BackgroundTransparency = 1
-    label.TextStrokeTransparency = 0
-    label.TextColor3 = Color3.new(1, 1, 1)
-    RunService.RenderStepped:Connect(function()
-        if not char.Parent then return end
-        local isEnabled = Toggles.espEnabled and Toggles.espEnabled.Value
-        highlight.Enabled = isEnabled or false
-        billboard.Enabled = isEnabled or false
-        if isEnabled then
-            highlight.FillColor = Players:GetPlayerFromCharacter(char) and config.plrColor or config.npcColor
-            label.Text = char.Name .. " [HP: " .. math.floor(hum.Health) .. "]"
-        end
-    end)
+	local hum = char:WaitForChild("Humanoid", 5)
+	if not hum then return end
+	local highlight = Instance.new("Highlight", char)
+	highlight.DepthMode = "AlwaysOnTop"
+	highlight.FillTransparency = 0.75
+	highlight.OutlineTransparency = 1
+	local billboard = Instance.new("BillboardGui", char)
+	billboard.Size = UDim2.new(0, 200, 0, 50)
+	billboard.StudsOffset = Vector3.new(0, 5, 0)
+	billboard.AlwaysOnTop = true
+	local label = Instance.new("TextLabel", billboard)
+	label.Size = UDim2.new(1, 0, 1, 0)
+	label.BackgroundTransparency = 1
+	label.TextStrokeTransparency = 0
+	label.TextColor3 = Color3.new(1, 1, 1)
+	RunService.RenderStepped:Connect(function()
+		if not char.Parent then return end
+		local isEnabled = Toggles.espEnabled and Toggles.espEnabled.Value
+		highlight.Enabled = isEnabled or false
+		billboard.Enabled = isEnabled or false
+		if isEnabled then
+			highlight.FillColor = Players:GetPlayerFromCharacter(char) and config.plrColor or config.npcColor
+			label.Text = char.Name .. " [HP: " .. math.floor(hum.Health) .. "]"
+		end
+	end)
 end
 
 workspace.Characters.ChildAdded:Connect(createESP)
 for _, v in ipairs(workspace.Characters:GetChildren()) do task.spawn(createESP, v) end
 
 local function applyFullbright()
-    Lighting.Ambient = Color3.fromRGB(255, 255, 255)
-    Lighting.OutdoorAmbient = Color3.fromRGB(255, 255, 255)
-    Lighting.Brightness = 2
-    Lighting.ClockTime = 14
-    Lighting.FogStart = 999999
-    Lighting.FogEnd = 999999
+	Lighting.Ambient = Color3.fromRGB(255, 255, 255)
+	Lighting.OutdoorAmbient = Color3.fromRGB(255, 255, 255)
+	Lighting.Brightness = 2
+	Lighting.ClockTime = 14
+	Lighting.FogStart = 999999
+	Lighting.FogEnd = 999999
 end
 
 local lightingConnection = nil
@@ -268,66 +332,66 @@ local lightingConnection = nil
 local espGroupbox = Tabs.Visuals:AddLeftGroupbox("ESP", "ghost")
 
 espGroupbox:AddToggle("espEnabled", {
-    Text = "ESP",
-    Tooltip = "Toggles visibility of ESP",
-    Default = false,
+	Text = "ESP",
+	Tooltip = "Toggles visibility of ESP",
+	Default = false,
 })
 
 espGroupbox:AddLabel("Player color"):AddColorPicker("plrColor", {
-    Default = config.plrColor,
-    Callback = function(v) config.plrColor = v end
+	Default = config.plrColor,
+	Callback = function(v) config.plrColor = v end
 })
 
 espGroupbox:AddLabel("NPC color"):AddColorPicker("npcColor", {
-    Default = config.npcColor,
-    Callback = function(v) config.npcColor = v end
+	Default = config.npcColor,
+	Callback = function(v) config.npcColor = v end
 })
 
 local lightingGroupbox = Tabs.Visuals:AddRightGroupbox("Lighting", "flashlight")
 
 lightingGroupbox:AddToggle("fbEnabled", {
-    Text = "Fullbright",
-    Tooltip = "Toggles fullbright",
-    Default = false,
-    Callback = function(Value)
-        if Value then
-            config.defaultAmbient = Lighting.Ambient
-            config.defaultOutdoorAmbient = Lighting.OutdoorAmbient
-            config.defaultBrightness = Lighting.Brightness
-            config.defaultClockTime = Lighting.ClockTime
-            config.defaultFogStart = Lighting.FogStart
-            config.defaultFogEnd = Lighting.FogEnd
+	Text = "Fullbright",
+	Tooltip = "Toggles fullbright",
+	Default = false,
+	Callback = function(Value)
+		if Value then
+			config.defaultAmbient = Lighting.Ambient
+			config.defaultOutdoorAmbient = Lighting.OutdoorAmbient
+			config.defaultBrightness = Lighting.Brightness
+			config.defaultClockTime = Lighting.ClockTime
+			config.defaultFogStart = Lighting.FogStart
+			config.defaultFogEnd = Lighting.FogEnd
 
-            applyFullbright()
+			applyFullbright()
 
-            local function connectLighting()
-                lightingConnection = Lighting.Changed:Connect(function(property)
-                    if Toggles.fbEnabled and Toggles.fbEnabled.Value then
-                        if property == "Ambient" or property == "OutdoorAmbient" or property == "Brightness" or property == "ClockTime" or property == "FogEnd" or property == "FogStart" then
-                            lightingConnection:Disconnect()
-                            applyFullbright()
-                            connectLighting()
-                        end
-                    end
-                end)
-            end
-            
-            connectLighting()
-        else
+			local function connectLighting()
+				lightingConnection = Lighting.Changed:Connect(function(property)
+					if Toggles.fbEnabled and Toggles.fbEnabled.Value then
+						if property == "Ambient" or property == "OutdoorAmbient" or property == "Brightness" or property == "ClockTime" or property == "FogEnd" or property == "FogStart" then
+							lightingConnection:Disconnect()
+							applyFullbright()
+							connectLighting()
+						end
+					end
+				end)
+			end
+			
+			connectLighting()
+		else
 
-            if lightingConnection then
-                lightingConnection:Disconnect()
-                lightingConnection = nil
-            end
+			if lightingConnection then
+				lightingConnection:Disconnect()
+				lightingConnection = nil
+			end
 
-            Lighting.Ambient = config.defaultAmbient
-            Lighting.OutdoorAmbient = config.defaultOutdoorAmbient
-            Lighting.Brightness = config.defaultBrightness
-            Lighting.ClockTime = config.defaultClockTime
-            Lighting.FogStart = config.defaultFogStart
-            Lighting.FogEnd = config.defaultFogEnd
-        end
-    end
+			Lighting.Ambient = config.defaultAmbient
+			Lighting.OutdoorAmbient = config.defaultOutdoorAmbient
+			Lighting.Brightness = config.defaultBrightness
+			Lighting.ClockTime = config.defaultClockTime
+			Lighting.FogStart = config.defaultFogStart
+			Lighting.FogEnd = config.defaultFogEnd
+		end
+	end
 })
 
 -- fun
@@ -338,67 +402,100 @@ local bBox = animationsBox:AddTab("Buttons")
 
 ---- data tables
 local toggleAnims = {
-    ["Legacy Chimera's walk animation"] = "rbxassetid://97147187591899",
-    ["Legacy Chimera's run animation"] = "rbxassetid://95054120636955",
-    ["Gilbert's idle animation"] = "rbxassetid://93686257760742",
-    ["Sinitzyn's idle animation"] = "rbxassetid://110122744601596",
-    ["Sinitzyn's stun animation"] = "rbxassetid://111159713841127",
-    ["Kamikaze's walk animation"] = "rbxassetid://87989829896123",
-    ["Kamikaze's run animation"] = "rbxassetid://78355773495995",
-    ["Mikhail William's walk animation"] = "rbxassetid://100407162198079",
-    ["Mikhail William's run animation"] = "rbxassetid://126189604062142",
-    ["Dave's walk animation"] = "rbxassetid://102796637818967",
-    ["Lurker's idle animation"] = "rbxassetid://86501473853720",
-    ["Sleeping Lurker's animation"] = "rbxassetid://115201807246648",
-    ["Mikhail Willaim's idle animation"] = "rbxassetid://88875709567990",
-    ["Slasher's idle animation"] = "rbxassetid://95464797704887",
-    ["Slasher's walk animation"] = "rbxassetid://139858886667310",
-    ["Raged Slasher's run animation"] = "rbxassetid://94555617501510",
-    ["Manhattan Ristretto's idle animation"] = "rbxassetid://137802244588968",
-    ["Elsher Tachyon's idle animation"] = "rbxassetid://77191557762002",
-    ["Artur Novas's idle animation"] = "rbxassetid://105747901312742",
-    ["Gabriel Campos's idle animation"] = "rbxassetid://90243612758647",
-    ["Adam Dice animation (died)"] = "rbxassetid://114023816208972",
-    ["MGF scared animation"] = "rbxassetid://86398576306953",
-    ["MGF patrol animation"] = "rbxassetid://131603010936163",
-    ["MGF musician animation"] = "rbxassetid://138827413895574",
-    ["MGF dying animation"] = "rbxassetid://128467654154071",
-    ["MGF medic animation"] = "rbxassetid://129366509916255",
-    ["MGF injured animation"] = "rbxassetid://94302036679429",
-    ["Viral Executioner's idle animation"] = "rbxassetid://97492866706742",
-    ["Viral Executioner's walk animation"] = "rbxassetid://103392791669526",
-    ["Viral Commander's walk animation"] = "rbxassetid://17621267464",
-    ["Viral Commander's run animation"] = "rbxassetid://111821553591135",
-    ["Masterbait"] = "rbxassetid://72042024",
-    ["Head shake animation"] = "rbxassetid://118621065272904",
-    ["Unstable animation"] = "rbxassetid://9146103628",
+	["Legacy Chimera's walk"] = "rbxassetid://97147187591899",
+	["Legacy Chimera's run"] = "rbxassetid://95054120636955",
+	["Gilbert's idle"] = "rbxassetid://93686257760742",
+	["Sinitzyn's idle"] = "rbxassetid://110122744601596",
+	["Sinitzyn's stun"] = "rbxassetid://111159713841127",
+	["Kamikaze's walk"] = "rbxassetid://87989829896123",
+	["Kamikaze's run"] = "rbxassetid://78355773495995",
+	["Mikhail William's walk"] = "rbxassetid://100407162198079",
+	["Mikhail William's run"] = "rbxassetid://126189604062142",
+	["Dave's walk"] = "rbxassetid://102796637818967",
+	["Dave's idle"] = "rbxassetid://114416822114803",
+	["Dave's run"] = "rbxassetid://117962541964796",
+	["Lurker's idle"] = "rbxassetid://86501473853720",
+	["Lurker's sleeping"] = "rbxassetid://115201807246648",
+	["Mikhail Willaim's idle"] = "rbxassetid://88875709567990",
+	["Slasher's idle"] = "rbxassetid://95464797704887",
+	["Slasher's walk"] = "rbxassetid://139858886667310",
+	["Slasher's stun"] = "rbxassetid://137568989278456",
+	["Legacy Slasher's idle"] = "rbxassetid://91056825760026",
+	["Raged Slasher's run"] = "rbxassetid://94555617501510",
+	["Manhattan Ristretto's idle"] = "rbxassetid://137802244588968",
+	["Elsher Tachyon's idle"] = "rbxassetid://77191557762002",
+	["Artur Novas's idle"] = "rbxassetid://105747901312742",
+	["Gabriel Campos's idle"] = "rbxassetid://90243612758647",
+	["Adam Dice (died)"] = "rbxassetid://114023816208972",
+	["MGF scared"] = "rbxassetid://86398576306953",
+	["MGF patrol"] = "rbxassetid://131603010936163",
+	["MGF musician"] = "rbxassetid://138827413895574",
+	["MGF dying"] = "rbxassetid://128467654154071",
+	["MGF medic"] = "rbxassetid://129366509916255",
+	["MGF injured"] = "rbxassetid://94302036679429",
+	["MGF idle (1)"] = "rbxassetid://113537404842453",
+	["MGF idle (2)"] = "rbxassetid://102193570284695",
+	["Viral Executioner's idle"] = "rbxassetid://97492866706742",
+	["Viral Executioner's walk"] = "rbxassetid://103392791669526",
+	["Viral Commander's walk"] = "rbxassetid://17621267464",
+	["Viral Commander's run"] = "rbxassetid://111821553591135",
+	["Masterbait"] = "rbxassetid://72042024",
+	["Head shake"] = "rbxassetid://118621065272904",
+	["Unstable"] = "rbxassetid://9146103628",
+	["Josh Katzmann idle"] = "rbxassetid://131498119560497",
+	["Josh Katzmann healed idle"] = "rbxassetid://139426604018597",
+	["Mutant crawler idle"] = "rbxassetid://81279098398635",
+	["Stan's idle"] = "rbxassetid://108552997989260",
 }
 
 local buttonAnims = {
-    ["Chimera's death animation"] = "rbxassetid://72189339897414",
-    ["Chimera's exposed animation"] = "rbxassetid://99134420474156",
-    ["Legacy Chimera's punch animation"] = "rbxassetid://84314656273153",
-    ["Legacy Chimera's execution animation"] = "rbxassetid://97305733594978",
-    ["Legacy Chimera's victim animation"] = "rbxassetid://83991914102646",
-    ["Legacy Chimera's teleport animation"] = "rbxassetid://126809285460597",
-    ["Legacy Chimera's exposed animation"] = "rbxassetid://75151963392982",
-    ["Gilbert's kill animation"] = "rbxassetid://125655523925085",
-    ["D-Zero's vent animation"] = "rbxassetid://116242805691656",
-    ["D-Zero's kill animation"] = "rbxassetid://127050736497150",
-    ["Sinitzyn's swing animation"] = "rbxassetid://109639053938974",
-    ["Sinitzyn's kick animation"] = "rbxassetid://139352596916392",
-    ["Sinitzyn's exposed animation"] = "rbxassetid://98239206283649",
-    ["Sinitzyn's explosion animation"] = "rbxassetid://99615889025883",
-    ["Slasher's swing animation"] = "rbxassetid://103822882233361",
-    ["Infection fall animation (1)"] = "rbxassetid://99985127815659",
-    ["Infection fall animation (2)"] = "rbxassetid://139465334169627",
-    ["Cough animation"] = "rbxassetid://111615919261340",
-    ["Kick animation"] = "rbxassetid://86079982232120",
-    ["Punch animation"] = "rbxassetid://83700864626681",
-    ["Taunt animation"] = "rbxassetid://80378935722704",
-    ["Legacy controllable infected's turn animation"] = "rbxassetid://136775254837264",
-    ["Adam Dice's death"] = "rbxassetid://102514666836619",
-    ["Slit Neck animation"] = "rbxassetid://130568157355000",
+	["Chimera's death"] = "rbxassetid://72189339897414",
+	["Chimera's execution"] = "rbxassetid://128010889227844",
+	["Chimera's enrage"] = "rbxassetid://99134420474156",
+	["Chimera's teleport (1)"] = "rbxassetid://112732398453305",
+	["Chimera's teleport (2)"] = "rbxassetid://136368566634578",
+	["Chimera's teleport execution (1)"] = "rbxassetid://112634711476303",
+	["Chimera's teleport execution (2)"] = "rbxassetid://135404812014332",
+	["Chimera's last stand"] = "rbxassetid://110849469223486",
+	["Legacy Chimera's punch"] = "rbxassetid://84314656273153",
+	["Legacy Chimera's execution"] = "rbxassetid://97305733594978",
+	["Legacy Chimera's victim"] = "rbxassetid://83991914102646",
+	["Legacy Chimera's teleport"] = "rbxassetid://126809285460597",
+	["Legacy Chimera's enrage"] = "rbxassetid://75151963392982",
+	["Gilbert's execution"] = "rbxassetid://125655523925085",
+	["D-Zero's vent"] = "rbxassetid://116242805691656",
+	["D-Zero's execution"] = "rbxassetid://127050736497150",
+	["Sinitzyn's swing"] = "rbxassetid://109639053938974",
+	["Sinitzyn's kick"] = "rbxassetid://139352596916392",
+	["Sinitzyn's enrage"] = "rbxassetid://98239206283649",
+	["Sinitzyn's execution (RPD)"] = "rbxassetid://136147569002553",
+	["Sinitzyn's execution (melee)"] = "rbxassetid://81984907411347",
+	["Sinitzyn's explosion"] = "rbxassetid://99615889025883",
+	["Slasher's swing"] = "rbxassetid://103822882233361",
+	["Infection fall (1)"] = "rbxassetid://99985127815659",
+	["Infection fall (2)"] = "rbxassetid://139465334169627",
+	["Cough"] = "rbxassetid://111615919261340",
+	["Kick"] = "rbxassetid://86079982232120",
+	["Punch"] = "rbxassetid://83700864626681",
+	["Taunt"] = "rbxassetid://80378935722704",
+	["Legacy controllable infected's turn"] = "rbxassetid://136775254837264",
+	["Adam Dice's death"] = "rbxassetid://102514666836619",
+	["Slit Neck"] = "rbxassetid://130568157355000",
+	["Josh Katzmann healed"] = "rbxassetid://85697630315285",
+	["Lurker awaking"] = "rbxassetid://138937044212276",
+	["Mutant stun"] = "rbxassetid://111539044506405",
+	["Elephant foot"] = "rbxassetid://139981313122152",
+	["Riser's resurrection"] = "rbxassetid://116866937096686",
+	["Hatred kill (1)"] = "rbxassetid://138691140561523",
+	["Hatred kill (2)"] = "rbxassetid://91463196236370",
+	["Hatred kill (3)"] = "rbxassetid://83632013221100",
+	["Hatred kill (4)"] = "rbxassetid://91849031357031",
+	["Viral MGF kill"] = "rbxassetid://84530831648572",
+	["MGF's last stand"] = "rbxassetid://117105602056649",
+	["Cultist's dropkick"] = "rbxassetid://103266367846238",
+	["Cultist's miss"] = "rbxassetid://120641479913190",
+	["Iris's rage"] = "rbxassetid://102771532479094",
+	["Cloaker's run"] = "rbxassetid://131730874916280",
 }
 
 local sortedToggles = {}
@@ -414,78 +511,78 @@ table.sort(sortedButtons)
 local activeTrack = nil
 
 local function playToggleAnim(name, id, state)
-    if not plr.Character or not plr.Character:FindFirstChild("Humanoid") then return end
-    local animator = plr.Character.Humanoid:FindFirstChild("Animator") or plr.Character.Humanoid
-    
-    if state then
-        if activeTrack then activeTrack:Stop() end
-        local anim = Instance.new("Animation")
-        anim.AnimationId = id
-        activeTrack = animator:LoadAnimation(anim)
-        activeTrack.Looped = true
-        activeTrack:Play()
-    else
-        if activeTrack then
-            activeTrack:Stop()
-            activeTrack = nil
-        end
-    end
+	if not plr.Character or not plr.Character:FindFirstChild("Humanoid") then return end
+	local animator = plr.Character.Humanoid:FindFirstChild("Animator") or plr.Character.Humanoid
+	
+	if state then
+		if activeTrack then activeTrack:Stop() end
+		local anim = Instance.new("Animation")
+		anim.AnimationId = id
+		activeTrack = animator:LoadAnimation(anim)
+		activeTrack.Looped = true
+		activeTrack:Play()
+	else
+		if activeTrack then
+			activeTrack:Stop()
+			activeTrack = nil
+		end
+	end
 end
 
 local function playButtonAnim(id)
-    if not plr.Character or not plr.Character:FindFirstChild("Humanoid") then return end
-    local animator = plr.Character.Humanoid:FindFirstChild("Animator") or plr.Character.Humanoid
-    
-    local anim = Instance.new("Animation")
-    anim.AnimationId = id
-    local track = animator:LoadAnimation(anim)
-    track:Play()
+	if not plr.Character or not plr.Character:FindFirstChild("Humanoid") then return end
+	local animator = plr.Character.Humanoid:FindFirstChild("Animator") or plr.Character.Humanoid
+	
+	local anim = Instance.new("Animation")
+	anim.AnimationId = id
+	local track = animator:LoadAnimation(anim)
+	track:Play()
 end
 
 ---- generated interface
 for _, name in ipairs(sortedToggles) do
-    local id = toggleAnims[name]
-    local configFlag = "Toggle_" .. name:gsub("%s+", ""):gsub("['().]", "")
-    
-    tBox:AddToggle(configFlag, {
-        Text = name,
-        Default = false,
-        Callback = function(v)
-            playToggleAnim(name, id, v)
-        end
-    }):AddKeyPicker("Key_" .. configFlag, {
-        Default = "None",
-        SyncToggleState = true,
-        Mode = "Toggle"
-    })
+	local id = toggleAnims[name]
+	local configFlag = "Toggle_" .. name:gsub("%s+", ""):gsub("['().]", "")
+	
+	tBox:AddToggle(configFlag, {
+		Text = name,
+		Default = false,
+		Callback = function(v)
+			playToggleAnim(name, id, v)
+		end
+	}):AddKeyPicker("Key_" .. configFlag, {
+		Default = "None",
+		SyncToggleState = true,
+		Mode = "Toggle"
+	})
 end
 
 bBox:AddDivider("Buttons")
 
 for _, name in ipairs(sortedButtons) do
-    local id = buttonAnims[name]
-    bBox:AddButton({
-        Text = name,
-        Func = function()
-            playButtonAnim(id)
-        end
-    })
+	local id = buttonAnims[name]
+	bBox:AddButton({
+		Text = name,
+		Func = function()
+			playButtonAnim(id)
+		end
+	})
 end
 
 bBox:AddDivider("Keybinds")
 for _, name in ipairs(sortedButtons) do
-    local id = buttonAnims[name]
-    local configFlag = "Button_" .. name:gsub("%s+", ""):gsub("['().]", "")
-    
-    local label = bBox:AddLabel(name)
-    label:AddKeyPicker("Key_" .. configFlag, {
-        Default = "None",
-        SyncToggleState = false,
-        Mode = "Press",
-        Callback = function()
-            playButtonAnim(id)
-        end
-    })
+	local id = buttonAnims[name]
+	local configFlag = "Button_" .. name:gsub("%s+", ""):gsub("['().]", "")
+	
+	local label = bBox:AddLabel(name)
+	label:AddKeyPicker("Key_" .. configFlag, {
+		Default = "None",
+		SyncToggleState = false,
+		Mode = "Press",
+		Callback = function()
+			playButtonAnim(id)
+		end
+	})
 end
 
 -- settings
@@ -538,61 +635,74 @@ MenuGroup:AddSlider("UICornerSlider", {
 	end
 })
 
-MenuGroup:AddLabel("Menu bind")
-	:AddKeyPicker("MenuKeybind", {Default = "K", NoUI = true, Text = "Menu keybind"})
+MenuGroup:AddLabel("Menu bind"):AddKeyPicker("MenuKeybind", {Default = "K", NoUI = true, Text = "Menu keybind"})
 MenuGroup:AddButton("Unload", function()
-    if Toggles.espEnabled then
-        Toggles.espEnabled:SetValue(false)
-    end
-    for _, char in ipairs(workspace.Characters:GetChildren()) do
-        local highlight = char:FindFirstChild("espHighlight")
-        local billboard = char:FindFirstChild("espLabel")
-        if highlight then highlight:Destroy() end
-        if billboard then billboard:Destroy() end
-    end
+	if Toggles.espEnabled then
+		Toggles.espEnabled:SetValue(false)
+	end
+	for _, char in ipairs(workspace.Characters:GetChildren()) do
+		local highlight = char:FindFirstChild("espHighlight")
+		local billboard = char:FindFirstChild("espLabel")
+		if highlight then highlight:Destroy() end
+		if billboard then billboard:Destroy() end
+	end
 	Library:Unload()
 end)
 
 local changelogGroupbox = Tabs.Settings:AddRightGroupbox("Change log", "history")
+
 changelogGroupbox:AddDivider("26.3")
 
 changelogGroupbox:AddLabel("changelogLabel", {
-	Text = "· Changed UI library to Obsidian\n\· Added fullbright\n\· Added name changer\n\· Added rank changer\n\· Added color changer for rank\n\· Added hitbox expander\n\· Added team changer\n\· Improved map parts remover\n\· Improved animations and sortation for animations",
+	Text = "· Changed UI library to Obsidian\n\· Added fullbright\n\· Added name changer\n\· Added rank changer\n\· Added color changer for rank\n\· Added hitbox expander\n\· Added team changer\n\· Improved map parts remover\n\· Improved animations and sortation for animations\n\· Added new animations",
+	DoesWrap = true,
+})
+
+changelogGroupbox:AddDivider("26.2")
+
+changelogGroupbox:AddLabel("changelogLabel", {
+	Text = "· Replaced default keybind from slash to quote",
+	DoesWrap = true,
+})
+
+changelogGroupbox:AddDivider("26.1")
+
+changelogGroupbox:AddLabel("changelogLabel", {
+	Text = "· Fixed ESP breaking bug",
 	DoesWrap = true,
 })
 
 -- loops and respawns
 RunService.RenderStepped:Connect(function()
-    if Toggles.ThirdPerson and Toggles.ThirdPerson.Value then
-        if plr.CameraMode ~= Enum.CameraMode.Classic then
-            plr.CameraMode = Enum.CameraMode.Classic
-        end
-        if plr.CameraMaxZoomDistance < 15 then
-            plr.CameraMaxZoomDistance = 15
-        end
-    end
+	if Toggles.ThirdPerson and Toggles.ThirdPerson.Value then
+		if plr.CameraMode ~= Enum.CameraMode.Classic then
+			plr.CameraMode = Enum.CameraMode.Classic
+		end
+		if plr.CameraMaxZoomDistance < 15 then
+			plr.CameraMaxZoomDistance = 15
+		end
+	end
 end)
 
 plr.CharacterAdded:Connect(function(char)
-    task.wait(1)
-    local clientScripts = char:WaitForChild("ClientScripts", 10)
-    local stagger = clientScripts and clientScripts:WaitForChild("Stagger", 10)
-    if stagger then
-        stagger.Disabled = not config.staggerEnabled
-    end
-    applyNametags(char)
-    applyInfection(char)
-    if Toggles.ThirdPerson and Toggles.ThirdPerson.Value then
-        plr.CameraMode = Enum.CameraMode.Classic
-        plr.CameraMaxZoomDistance = 15
-    end
+	task.wait(1)
+	local clientScripts = char:WaitForChild("ClientScripts", 10)
+	local stagger = clientScripts and clientScripts:WaitForChild("Stagger", 10)
+	if stagger then
+		stagger.Disabled = not config.staggerEnabled
+	end
+	applyNametags(char)
+	applyInfection(char)
+	if Toggles.ThirdPerson and Toggles.ThirdPerson.Value then
+		plr.CameraMode = Enum.CameraMode.Classic
+		plr.CameraMaxZoomDistance = 15
+	end
 end)
 
 Library.ToggleKeybind = Options.MenuKeybind
 
 ThemeManager:SetLibrary(Library)
 SaveManager:SetLibrary(Library)
-SaveManager:IgnoreThemeSettings()
 ThemeManager:SetFolder('Examination UI/themes')
 SaveManager:SetFolder('Examination UI/configs')
 SaveManager:BuildConfigSection(Tabs.Settings)
