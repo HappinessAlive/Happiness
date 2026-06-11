@@ -36,7 +36,7 @@ local config = {
 -- window
 local Window = Library:CreateWindow({
 	Title = "Examination UI",
-	Footer = "v26.3-snapshot3",
+	Footer = "v26.3-snapshot3b",
 	Icon = 91844559586957,
 	NotifySide = "Right",
 	Size = UDim2.fromOffset(1400, 850),
@@ -256,7 +256,8 @@ local teleportPoints = {
 		{"Keycard", Vector3.new(774, -31, -857)}, 
 	}, 
 	["Out-of-map"] = { 
-		{"Baseplate", Vector3.new(-200, -2, -75)} 
+		{"Baseplate", Vector3.new(-200, -2, -75)},
+		{"Rasonian armory", Vector3.new(63, 23, -1705)}
 	}, 
 }
 
@@ -654,7 +655,7 @@ local changelogGroupbox = Tabs.Settings:AddRightGroupbox("Change log", "history"
 changelogGroupbox:AddDivider("26.3")
 
 changelogGroupbox:AddLabel("changelogLabel", {
-	Text = "· Changed UI library to Obsidian\n\· Added fullbright\n\· Added name changer\n\· Added rank changer\n\· Added color changer for rank\n\· Added hitbox expander\n\· Added team changer\n\· Improved map parts remover\n\· Improved animations and sortation for animations\n\· Added new animations",
+	Text = "· Changed UI library to Obsidian\n\· Added fullbright\n\· Added name changer\n\· Added rank changer\n\· Added color changer for rank\n\· Added hitbox expander\n\· Added team changer\n\· Improved map parts remover\n\· Improved animations and sortation for animations\n\· Added new animations\n\· Added new teleport",
 	DoesWrap = true,
 })
 
