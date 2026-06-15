@@ -13,6 +13,7 @@ local Teams = game:GetService("Teams")
 
 -- variables
 local plr = Players.LocalPlayer
+local backpack = plr:WaitForChild("Backpack")
 
 -- tables
 local config = {
@@ -36,7 +37,7 @@ local config = {
 -- window
 local Window = Library:CreateWindow({
 	Title = "Examination UI",
-	Footer = "v26.3-snapshot3b",
+	Footer = "v26.3-snapshot4",
 	Icon = 91844559586957,
 	NotifySide = "Right",
 	Size = UDim2.fromOffset(1400, 850),
@@ -396,38 +397,90 @@ lightingGroupbox:AddToggle("fbEnabled", {
 })
 
 -- fun
+---- functions
+local function updateSilencers(state)
+    if backpack then
+        for _, item in ipairs(backpack:GetChildren()) do
+            if item:GetAttribute("IsGun") == true then
+                item:SetAttribute("Silencer", state)
+            end
+        end
+    end
+    if plr.Character then
+        for _, item in ipairs(plr.Character:GetChildren()) do
+            if item:IsA("Tool") and item:GetAttribute("IsGun") == true then
+                item:SetAttribute("Silencer", state)
+            end
+        end
+    end
+end
+
+local function checkAndApplySilencer(item)
+    if item:GetAttribute("IsGun") == true then
+        local isEnabled = Toggles.SilencerToggle and Toggles.SilencerToggle.Value or false
+        item:SetAttribute("Silencer", isEnabled)
+    end
+end
+
+local function listenToBackpack(currentBackpack)
+    if not currentBackpack then return end
+    currentBackpack.ChildAdded:Connect(function(item)
+        task.wait(0.1) -- Задержка для корректной инициализации атрибутов игрой
+        checkAndApplySilencer(item)
+    end)
+end
+
 ---- default interface
+local weaponGroupbox = Tabs.Fun:AddLeftGroupbox("Weapons", "user")
+
+weaponGroupbox:AddToggle("SilencerToggle", {
+    Text = "Silencer",
+    Tooltip = "Toggles silencer for your weapons",
+    Default = false,
+    Callback = function(Value)
+        updateSilencers(Value)
+    end
+})
+
 local animationsBox = Tabs.Fun:AddRightTabbox() 
 local tBox = animationsBox:AddTab("Toggles") 
 local bBox = animationsBox:AddTab("Buttons")
 
 ---- data tables
 local toggleAnims = {
-	["Legacy Chimera's walk"] = "rbxassetid://97147187591899",
-	["Legacy Chimera's run"] = "rbxassetid://95054120636955",
-	["Gilbert's idle"] = "rbxassetid://93686257760742",
+	["Artur Novas's idle"] = "rbxassetid://105747901312742",
+	["Adam Dice (died)"] = "rbxassetid://114023816208972",
+	["Chimera's walk (old)"] = "rbxassetid://97147187591899",
+	["Chimera's run (old)"] = "rbxassetid://95054120636955",
 	["Sinitzyn's idle"] = "rbxassetid://110122744601596",
 	["Sinitzyn's stun"] = "rbxassetid://111159713841127",
 	["Kamikaze's walk"] = "rbxassetid://87989829896123",
 	["Kamikaze's run"] = "rbxassetid://78355773495995",
-	["Mikhail William's walk"] = "rbxassetid://100407162198079",
-	["Mikhail William's run"] = "rbxassetid://126189604062142",
+	["Mikhail William's walk (old)"] = "rbxassetid://100407162198079",
+	["Mikhail William's run (old)"] = "rbxassetid://126189604062142",
+	["Mikhail William's walk"] = "rbxassetid://91584116987163",
+	["Mikhail William's run"] = "rbxassetid://88561714950741",
 	["Dave's walk"] = "rbxassetid://102796637818967",
 	["Dave's idle"] = "rbxassetid://114416822114803",
 	["Dave's run"] = "rbxassetid://117962541964796",
+	["Gilbert's idle"] = "rbxassetid://93686257760742",
+	["Gabriel Campos's idle"] = "rbxassetid://90243612758647",
+	["Elsher Tachyon's idle"] = "rbxassetid://77191557762002",
 	["Lurker's idle"] = "rbxassetid://86501473853720",
 	["Lurker's sleeping"] = "rbxassetid://115201807246648",
-	["Mikhail Willaim's idle"] = "rbxassetid://88875709567990",
+	["Manhattan Ristretto's idle"] = "rbxassetid://137802244588968",
+	["Masterbait"] = "rbxassetid://72042024",
+	["Mikhail Willaim's idle (old)"] = "rbxassetid://88875709567990",
+	["Mikhail William's idle"] = "rbxassetid://87959458481723",
+	["Mikhail William's walk"] = "rbxassetid://91584116987163",
+	["Mikhail William's run"] = "rbxassetid://88561714950741",
+	["Mutant crawler idle"] = "rbxassetid://81279098398635",
+	["Slasher's idle (old)"] = "rbxassetid://91056825760026",
 	["Slasher's idle"] = "rbxassetid://95464797704887",
 	["Slasher's walk"] = "rbxassetid://139858886667310",
 	["Slasher's stun"] = "rbxassetid://137568989278456",
-	["Legacy Slasher's idle"] = "rbxassetid://91056825760026",
-	["Raged Slasher's run"] = "rbxassetid://94555617501510",
-	["Manhattan Ristretto's idle"] = "rbxassetid://137802244588968",
-	["Elsher Tachyon's idle"] = "rbxassetid://77191557762002",
-	["Artur Novas's idle"] = "rbxassetid://105747901312742",
-	["Gabriel Campos's idle"] = "rbxassetid://90243612758647",
-	["Adam Dice (died)"] = "rbxassetid://114023816208972",
+	["Slasher's run"] = "rbxassetid://94555617501510",
+	["Stan's idle"] = "rbxassetid://108552997989260",
 	["MGF scared"] = "rbxassetid://86398576306953",
 	["MGF patrol"] = "rbxassetid://131603010936163",
 	["MGF musician"] = "rbxassetid://138827413895574",
@@ -440,16 +493,19 @@ local toggleAnims = {
 	["Viral Executioner's walk"] = "rbxassetid://103392791669526",
 	["Viral Commander's walk"] = "rbxassetid://17621267464",
 	["Viral Commander's run"] = "rbxassetid://111821553591135",
-	["Masterbait"] = "rbxassetid://72042024",
 	["Head shake"] = "rbxassetid://118621065272904",
 	["Unstable"] = "rbxassetid://9146103628",
 	["Josh Katzmann idle"] = "rbxassetid://131498119560497",
 	["Josh Katzmann healed idle"] = "rbxassetid://139426604018597",
-	["Mutant crawler idle"] = "rbxassetid://81279098398635",
-	["Stan's idle"] = "rbxassetid://108552997989260",
+	
 }
 
 local buttonAnims = {
+	["Adam Dice's death"] = "rbxassetid://102514666836619",
+	["Chimera's victim (old)"] = "rbxassetid://83991914102646",
+	["Chimera's teleport (old)"] = "rbxassetid://126809285460597",
+	["Chimera's enrage (old)"] = "rbxassetid://75151963392982",
+	["Chimera's execution (old)"] = "rbxassetid://97305733594978",
 	["Chimera's death"] = "rbxassetid://72189339897414",
 	["Chimera's execution"] = "rbxassetid://128010889227844",
 	["Chimera's enrage"] = "rbxassetid://99134420474156",
@@ -458,12 +514,14 @@ local buttonAnims = {
 	["Chimera's teleport execution (1)"] = "rbxassetid://112634711476303",
 	["Chimera's teleport execution (2)"] = "rbxassetid://135404812014332",
 	["Chimera's last stand"] = "rbxassetid://110849469223486",
-	["Legacy Chimera's punch"] = "rbxassetid://84314656273153",
-	["Legacy Chimera's execution"] = "rbxassetid://97305733594978",
-	["Legacy Chimera's victim"] = "rbxassetid://83991914102646",
-	["Legacy Chimera's teleport"] = "rbxassetid://126809285460597",
-	["Legacy Chimera's enrage"] = "rbxassetid://75151963392982",
+	["Chimera's punch"] = "rbxassetid://84314656273153",
+	["Cultist's dropkick"] = "rbxassetid://103266367846238",
+	["Cultist's miss"] = "rbxassetid://120641479913190",
+	["Cloaker's run"] = "rbxassetid://131730874916280",
+	["Controllable infected's turn (old)"] = "rbxassetid://136775254837264",
+	["Cough"] = "rbxassetid://111615919261340",
 	["Gilbert's execution"] = "rbxassetid://125655523925085",
+	["Gilbert's victim"] = "rbxassetid://135138331651211",
 	["D-Zero's vent"] = "rbxassetid://116242805691656",
 	["D-Zero's execution"] = "rbxassetid://127050736497150",
 	["Sinitzyn's swing"] = "rbxassetid://109639053938974",
@@ -473,30 +531,35 @@ local buttonAnims = {
 	["Sinitzyn's execution (melee)"] = "rbxassetid://81984907411347",
 	["Sinitzyn's explosion"] = "rbxassetid://99615889025883",
 	["Slasher's swing"] = "rbxassetid://103822882233361",
+	["Slasher's execution"] = "rbxassetid://132206439126644",
+	["Slasher's victim"] = "rbxassetid://133617679957232",
+	["Shielder's execution"] = "rbxassetid://90580282540451",
+	["Slit Neck"] = "rbxassetid://130568157355000",
 	["Infection fall (1)"] = "rbxassetid://99985127815659",
 	["Infection fall (2)"] = "rbxassetid://139465334169627",
-	["Cough"] = "rbxassetid://111615919261340",
+	["Iris's rage"] = "rbxassetid://102771532479094",
 	["Kick"] = "rbxassetid://86079982232120",
 	["Punch"] = "rbxassetid://83700864626681",
 	["Taunt"] = "rbxassetid://80378935722704",
-	["Legacy controllable infected's turn"] = "rbxassetid://136775254837264",
-	["Adam Dice's death"] = "rbxassetid://102514666836619",
-	["Slit Neck"] = "rbxassetid://130568157355000",
 	["Josh Katzmann healed"] = "rbxassetid://85697630315285",
 	["Lurker awaking"] = "rbxassetid://138937044212276",
 	["Mutant stun"] = "rbxassetid://111539044506405",
 	["Elephant foot"] = "rbxassetid://139981313122152",
 	["Riser's resurrection"] = "rbxassetid://116866937096686",
+	["Riser's death"] = "rbxassetid://89976361144233",
 	["Hatred kill (1)"] = "rbxassetid://138691140561523",
 	["Hatred kill (2)"] = "rbxassetid://91463196236370",
 	["Hatred kill (3)"] = "rbxassetid://83632013221100",
 	["Hatred kill (4)"] = "rbxassetid://91849031357031",
-	["Viral MGF kill"] = "rbxassetid://84530831648572",
+	["Viral runner's execution"] = "rbxassetid://84530831648572",
+	["Viral runner's victim"] = "rbxassetid://76887258783187",
+	["Viral runner's maul"] = "rbxassetid://135884501960780",
+	["Viral runner's maul victim"] = "rbxassetid://118194067755191",
+	["Viral leader's execution"] = "rbxassetid://84358691838862",
+	["Viral leader's victim"] = "rbxassetid://76887258783187",
+	["Viral slasher's execution"] = "rbxassetid://132206439126644",
+	["Viral slasher's victim"] = "rbxassetid://133617679957232",
 	["MGF's last stand"] = "rbxassetid://117105602056649",
-	["Cultist's dropkick"] = "rbxassetid://103266367846238",
-	["Cultist's miss"] = "rbxassetid://120641479913190",
-	["Iris's rage"] = "rbxassetid://102771532479094",
-	["Cloaker's run"] = "rbxassetid://131730874916280",
 }
 
 local sortedToggles = {}
@@ -655,7 +718,7 @@ local changelogGroupbox = Tabs.Settings:AddRightGroupbox("Change log", "history"
 changelogGroupbox:AddDivider("26.3")
 
 changelogGroupbox:AddLabel("changelogLabel", {
-	Text = "· Changed UI library to Obsidian\n\· Added fullbright\n\· Added name changer\n\· Added rank changer\n\· Added color changer for rank\n\· Added hitbox expander\n\· Added team changer\n\· Improved map parts remover\n\· Improved animations and sortation for animations\n\· Added new animations\n\· Added new teleport",
+	Text = "· Changed UI library to Obsidian\n\· Added fullbright\n\· Added name changer\n\· Added rank changer\n\· Added color changer for rank\n\· Added hitbox expander\n\· Added team changer\n\· Improved map parts remover\n\· Improved animations and sortation for animations\n\· Added new animations\n\· Added new teleport\n\· Added silencer toggle",
 	DoesWrap = true,
 })
 
@@ -685,19 +748,45 @@ RunService.RenderStepped:Connect(function()
 	end
 end)
 
+listenToBackpack(backpack)
+
+if plr.Character then
+    plr.Character.ChildAdded:Connect(function(item)
+        if item:IsA("Tool") then
+            checkAndApplySilencer(item)
+        end
+    end)
+end
+
 plr.CharacterAdded:Connect(function(char)
 	task.wait(1)
+
 	local clientScripts = char:WaitForChild("ClientScripts", 10)
+
 	local stagger = clientScripts and clientScripts:WaitForChild("Stagger", 10)
+
 	if stagger then
 		stagger.Disabled = not config.staggerEnabled
 	end
+
 	applyNametags(char)
-	applyInfection(char)
+
 	if Toggles.ThirdPerson and Toggles.ThirdPerson.Value then
 		plr.CameraMode = Enum.CameraMode.Classic
 		plr.CameraMaxZoomDistance = 15
 	end
+
+	backpack = plr:WaitForChild("Backpack")
+    listenToBackpack(backpack)
+    
+    char.ChildAdded:Connect(function(item)
+        if item:IsA("Tool") then
+            checkAndApplySilencer(item)
+        end
+    end)
+    
+    local isSilencerActive = Toggles.SilencerToggle and Toggles.SilencerToggle.Value or false
+    updateSilencers(isSilencerActive)
 end)
 
 Library.ToggleKeybind = Options.MenuKeybind
