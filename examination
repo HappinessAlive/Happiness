@@ -435,7 +435,7 @@ local weaponGroupbox = Tabs.Fun:AddLeftGroupbox("Weapons", "user")
 
 weaponGroupbox:AddToggle("SilencerToggle", {
     Text = "Silencer",
-    Tooltip = "Toggles silencer for your weapons",
+    Tooltip = "Toggles silencer for your weapons. CLIENT ONLY!",
     Default = false,
     Callback = function(Value)
         updateSilencers(Value)
